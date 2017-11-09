@@ -1,211 +1,236 @@
 <!DOCTYPE html>
 <html>
 <head>
-    
-<!-- Google Analytics -->
-<script>
-window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-ga('create', 'UA-109245364-1', 'auto');
-ga('send', 'pageview');
-</script>
-<script async src='https://www.google-analytics.com/analytics.js'></script>
-<!-- End Google Analytics -->
-
-
-    
-
-    
-
-
-
     <meta charset="utf-8">
     
-    <meta name="google-site-verification" content="true">
-    
-    
-    
     <title>HSStockChart介绍 | Hanson的博客</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    
-    
-    <meta name="keywords" content="">
-    <meta name="description" content="HSStockChart 是一个绘制股票分时图、K 线图的库。支持流畅的回弹拖动，长按十字线，捏合放大缩小等功能，主要使用了 CAShapeLayer 来绘图，相比使用 Core Graphics 和重写 drawRect 的方法更高效，占用内存更小。GitHub 地址：HSStockChart">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="HSStockChart 是一个绘制股票分时图、K 线图的库。支持流畅的回弹拖动，长按十字线，捏合放大缩小等功能，主要使用了 CAShapeLayer 来绘图，相比使用 Core Graphics 和重写 drawRect 的方法更高效，占用内存更小。GitHub 地址：HSStockChart  功能  支持绘制分时图，五日分时图，K 线图，MA 线指标，交易量柱等。  支持横屏查看。  K 线">
 <meta property="og:type" content="article">
 <meta property="og:title" content="HSStockChart介绍">
 <meta property="og:url" content="http://myhanson.com/2017/11/04/HSStockChart介绍/index.html">
 <meta property="og:site_name" content="Hanson的博客">
-<meta property="og:description" content="HSStockChart 是一个绘制股票分时图、K 线图的库。支持流畅的回弹拖动，长按十字线，捏合放大缩小等功能，主要使用了 CAShapeLayer 来绘图，相比使用 Core Graphics 和重写 drawRect 的方法更高效，占用内存更小。GitHub 地址：HSStockChart">
+<meta property="og:description" content="HSStockChart 是一个绘制股票分时图、K 线图的库。支持流畅的回弹拖动，长按十字线，捏合放大缩小等功能，主要使用了 CAShapeLayer 来绘图，相比使用 Core Graphics 和重写 drawRect 的方法更高效，占用内存更小。GitHub 地址：HSStockChart  功能  支持绘制分时图，五日分时图，K 线图，MA 线指标，交易量柱等。  支持横屏查看。  K 线">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/757687-92b2069869929ccd.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/757687-36a3d278fd71fc4a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/757687-a773aeda8ac7ff01.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:updated_time" content="2017-11-05T05:39:26.453Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="HSStockChart介绍">
-<meta name="twitter:description" content="HSStockChart 是一个绘制股票分时图、K 线图的库。支持流畅的回弹拖动，长按十字线，捏合放大缩小等功能，主要使用了 CAShapeLayer 来绘图，相比使用 Core Graphics 和重写 drawRect 的方法更高效，占用内存更小。GitHub 地址：HSStockChart">
+<meta name="twitter:description" content="HSStockChart 是一个绘制股票分时图、K 线图的库。支持流畅的回弹拖动，长按十字线，捏合放大缩小等功能，主要使用了 CAShapeLayer 来绘图，相比使用 Core Graphics 和重写 drawRect 的方法更高效，占用内存更小。GitHub 地址：HSStockChart  功能  支持绘制分时图，五日分时图，K 线图，MA 线指标，交易量柱等。  支持横屏查看。  K 线">
 <meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/757687-92b2069869929ccd.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
     
-        <link rel="alternate" type="application/atom+xml" title="Hanson的博客" href="/atom.xml">
-    
-    <link rel="shortcut icon" href="/favicon.ico">
-    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
-    <script>window.lazyScripts=[]</script>
 
-    <!-- custom head -->
     
+
+    
+        <link rel="icon" href="/css/images/favicon.ico" />
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+        <script type="text/javascript">
+(function(i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function() {
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-109245364-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+    
+    
+    
+
 
 </head>
 
 <body>
-    <div id="loading" class="active"></div>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">Hanson的博客</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">Home</a>
+                
+                    <a class="main-nav-link" href="/archives">Archives</a>
+                
+                    <a class="main-nav-link" href="/categories">Categories</a>
+                
+                    <a class="main-nav-link" href="/tags">Tags</a>
+                
+                    <a class="main-nav-link" href="/about">About</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/css/images/avatar.png" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
 
-    <aside id="menu" class="hide" >
-  <div class="inner flex-row-vertical">
-    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
-        <i class="icon icon-lg icon-close"></i>
-    </a>
-    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
-      <div class="brand">
-        <a href="/" class="avatar waves-effect waves-circle waves-light">
-          <img src="/img/avatar.png">
-        </a>
-        <hgroup class="introduce">
-          <h5 class="nickname">Hanson Zhang</h5>
-          <a href="mailto:hanson21@163.com" title="hanson21@163.com" class="mail">hanson21@163.com</a>
-        </hgroup>
-      </div>
+    <form class="search-form" method="GET" action="https://www.baidu.com/s?">
+    <input name="wd" type="text" class="search-form-input" placeholder="Search" />
+    <button type="submit" class="search-form-submit"></button>
+</form>
+<script>
+(function ($) {
+    $('.search-form').on('submit', function (e) {
+        var keyword = $('.search-form-input[name="wd"]').val();
+        window.location = 'https://www.baidu.com/s?wd=site:myhanson.com ' + keyword;
+        return false;
+    });
+})(jQuery);
+</script>
+
+</div>
+        </div>
     </div>
-    <div class="scroll-wrap flex-col">
-      <ul class="nav">
-        
-            <li class="waves-block waves-effect">
-              <a href="/"  >
-                <i class="icon icon-lg icon-home"></i>
-                主页
-              </a>
-            </li>
-        
-            <li class="waves-block waves-effect">
-              <a href="/archives"  >
-                <i class="icon icon-lg icon-archives"></i>
-                Archives
-              </a>
-            </li>
-        
-            <li class="waves-block waves-effect">
-              <a href="/tags"  >
-                <i class="icon icon-lg icon-tags"></i>
-                Tags
-              </a>
-            </li>
-        
-            <li class="waves-block waves-effect">
-              <a href="/categories"  >
-                <i class="icon icon-lg icon-th-list"></i>
-                Categories
-              </a>
-            </li>
-        
-            <li class="waves-block waves-effect">
-              <a href="https://github.com/zyphs21" target="_blank" >
-                <i class="icon icon-lg icon-github"></i>
-                Github
-              </a>
-            </li>
-        
-            <li class="waves-block waves-effect">
-              <a href="http://weibo.com/1775951885/profile?rightmod=1&wvr=6&mod=personinfo" target="_blank" >
-                <i class="icon icon-lg icon-weibo"></i>
-                Weibo
-              </a>
-            </li>
-        
-      </ul>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">Home</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">Archives</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">Categories</a></td>
+                
+                    <td><a class="main-nav-link" href="/tags">Tags</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">About</a></td>
+                
+                <td>
+                    
+    <form class="search-form" method="GET" action="https://www.baidu.com/s?">
+    <input name="wd" type="text" class="search-form-input" placeholder="Search" />
+    <button type="submit" class="search-form-submit"></button>
+</form>
+<script>
+(function ($) {
+    $('.search-form').on('submit', function (e) {
+        var keyword = $('.search-form-input[name="wd"]').val();
+        window.location = 'https://www.baidu.com/s?wd=site:myhanson.com ' + keyword;
+        return false;
+    });
+})(jQuery);
+</script>
+
+                </td>
+            </tr>
+        </table>
     </div>
-  </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/css/images/avatar.png" />
+            <h2 id="name">Hanson</h2>
+            <h3 id="title">Developer &amp; Designer</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>Guangzhou, China</span>
+            <a id="follow" target="_blank" href="https://github.com/zyphs21/">FOLLOW</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                2
+                <span>posts</span>
+            </div>
+            <div class="article-info-block">
+                0
+                <span>tag</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://github.com/zyphs21/" target="_blank" title="github" class=tooltip>
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://twitter.com/yuanpingzhang" target="_blank" title="twitter" class=tooltip>
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
 </aside>
 
-    <main id="main">
-        <header class="top-header" id="header">
-    <div class="flex-row">
-        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
-          <i class="icon icon-lg icon-navicon"></i>
-        </a>
-        <div class="flex-col header-title ellipsis">HSStockChart介绍</div>
-        
-        <div class="search-wrap" id="search-wrap">
-            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
-                <i class="icon icon-lg icon-chevron-left"></i>
-            </a>
-            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
-            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
-                <i class="icon icon-lg icon-search"></i>
-            </a>
-        </div>
-        
-        
-        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
-            <i class="icon icon-lg icon-share-alt"></i>
-        </a>
-        
-    </div>
-</header>
-<header class="content-header post-header">
-
-    <div class="container fade-scale">
-        <h1 class="title">HSStockChart介绍</h1>
-        <h5 class="subtitle">
             
-                <time datetime="2017-11-04T08:13:47.448Z" itemprop="datePublished" class="page-time">
-  2017-11-04
-</time>
+            <section id="main"><article id="post-HSStockChart介绍" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            HSStockChart介绍
+        </h1>
+    
 
-
-            
-        </h5>
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/2017/11/04/HSStockChart介绍/">
+            <time datetime="2017-11-04T08:13:47.448Z" itemprop="datePublished">2017-11-04</time>
+        </a>
     </div>
 
-    
 
-
-</header>
-
-
-<div class="container body-wrap">
-    
-    <aside class="post-widget">
-        <nav class="post-toc-wrap" id="post-toc">
-            <h4>TOC</h4>
-            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#功能"><span class="post-toc-number">1.</span> <span class="post-toc-text">功能</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#版本需求"><span class="post-toc-number">2.</span> <span class="post-toc-text">版本需求</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#说明"><span class="post-toc-number">3.</span> <span class="post-toc-text">说明</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#License"><span class="post-toc-number">4.</span> <span class="post-toc-text">License</span></a></li></ol>
-        </nav>
-    </aside>
-    
-<article id="post-HSStockChart介绍"
-  class="post-article article-type-post fade" itemprop="blogPost">
-
-    <div class="post-card">
-        <h1 class="post-card-title">HSStockChart介绍</h1>
-        <div class="post-meta">
-            <time class="post-time" title="2017-11-04 16:13:47" datetime="2017-11-04T08:13:47.448Z"  itemprop="datePublished">2017-11-04</time>
-
+                        
+                        
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
             
-
-
-            
-<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
-    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
-</span>
-
-
-        </div>
-        <div class="post-content" id="post-content" itemprop="postContent">
             <p>HSStockChart 是一个绘制股票分时图、K 线图的库。支持流畅的回弹拖动，长按十字线，捏合放大缩小等功能，主要使用了 CAShapeLayer 来绘图，相比使用 Core Graphics 和重写 drawRect 的方法更高效，占用内存更小。<br><a href="https://github.com/zyphs21/HSStockChart" target="_blank" rel="external">GitHub 地址：HSStockChart</a></p>
-<figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="http://upload-images.jianshu.io/upload_images/757687-92b2069869929ccd.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png" title="">
-                </div>
-                <div class="image-caption">image.png</div>
-            </figure>
+<p><img src="http://upload-images.jianshu.io/upload_images/757687-92b2069869929ccd.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
 <h2 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h2><ul>
 <li style="list-style: none"><input type="checkbox" checked> 支持绘制分时图，五日分时图，K 线图，MA 线指标，交易量柱等。</li>
 <li style="list-style: none"><input type="checkbox" checked> 支持横屏查看。</li>
@@ -242,283 +267,230 @@ ga('send', 'pageview');
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">HSCAShapeLayer</span>: <span class="title">CAShapeLayer</span> </span>&#123;</div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">action</span><span class="params">(forKey event: String)</span></span> -&gt; <span class="type">CAAction</span>? &#123;</div><div class="line">        <span class="keyword">return</span> <span class="literal">nil</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h2 id="License"><a href="#License" class="headerlink" title="License"></a>License</h2><p>Released under MIT License.</p>
 
+        
         </div>
-
-        <blockquote class="post-copyright">
-    <div class="content">
-        
-<span class="post-time">
-    最后更新时间：<time datetime="2017-11-05T05:39:26.453Z" itemprop="dateUpdated">2017-11-05 13:39:26</time>
-</span><br>
+        <footer class="article-footer">
+            <div class="share-container">
 
 
-        
-    </div>
-    <footer>
-        <a href="http://myhanson.com">
-            <img src="/img/avatar.png" alt="Hanson Zhang">
-            Hanson Zhang
-        </a>
-    </footer>
-</blockquote>
+    <div class="bdsharebuttonbox">
+    <a href="#" class="bds_more" data-cmd="more">分享到：</a>
+    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间">QQ空间</a>
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博">新浪微博</a>
+    <a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博">腾讯微博</a>
+    <a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网">人人网</a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信">微信</a>
+</div>
+<script>
+window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"16"},"share":{"bdSize":16}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+<style>
+    .bdshare_popup_box {
+        border-radius: 4px;
+        border: #e1e1e1 solid 1px;
+    }
+    .bdshare-button-style0-16 a,
+    .bdshare-button-style0-16 .bds_more {
+        padding-left: 20px;
+        margin: 6px 10px 6px 0;
+    }
+    .bdshare_dialog_list a,
+    .bdshare_popup_list a,
+    .bdshare_popup_bottom a {
+        font-family: 'Microsoft Yahei';
+    }
+    .bdshare_popup_top {
+        display: none;
+    }
+    .bdshare_popup_bottom {
+        height: auto;
+        padding: 5px;
+    }
+</style>
 
-        
-<div class="page-reward">
-    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+
 </div>
 
-
-
-        <div class="post-footer">
             
-
-            
-<div class="page-share-wrap">
+    
+        <a href="http://myhanson.com/2017/11/04/HSStockChart介绍/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="http://myhanson.com/2017/11/04/HSStockChart介绍/">Comments</a>
     
 
-<div class="page-share" id="pageShare">
-    <ul class="reset share-icons">
-      <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://myhanson.com/2017/11/04/HSStockChart介绍/&title=《HSStockChart介绍》 — Hanson的博客&pic=http://myhanson.com/img/avatar.png" data-title="微博">
-          <i class="icon icon-weibo"></i>
-        </a>
-      </li>
-      <li>
-        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
-          <i class="icon icon-weixin"></i>
-        </a>
-      </li>
-      <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://myhanson.com/2017/11/04/HSStockChart介绍/&title=《HSStockChart介绍》 — Hanson的博客&source=" data-title=" QQ">
-          <i class="icon icon-qq"></i>
-        </a>
-      </li>
-      <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://myhanson.com/2017/11/04/HSStockChart介绍/" data-title=" Facebook">
-          <i class="icon icon-facebook"></i>
-        </a>
-      </li>
-      <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《HSStockChart介绍》 — Hanson的博客&url=http://myhanson.com/2017/11/04/HSStockChart介绍/&via=http://myhanson.com" data-title=" Twitter">
-          <i class="icon icon-twitter"></i>
-        </a>
-      </li>
-      <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://myhanson.com/2017/11/04/HSStockChart介绍/" data-title=" Google+">
-          <i class="icon icon-google-plus"></i>
-        </a>
-      </li>
-    </ul>
- </div>
-
-
-
-    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
-        <i class="icon icon-share-alt icon-lg"></i>
-    </a>
-</div>
-
-
-
-        </div>
+        </footer>
     </div>
-
     
-<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
-  
-
-  
-    <div class="waves-block waves-effect next">
-      <a href="/2017/11/04/自定义 UISegmentedControl 样式/" id="post-next" class="post-nav-link">
-        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
-        <h4 class="title">自定义 UISegmentedControl 样式</h4>
-      </a>
-    </div>
-  
+        
+<nav id="article-nav">
+    
+    
+        <a href="/2017/11/04/自定义 UISegmentedControl 样式/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">Older</strong>
+            <div class="article-nav-title">自定义 UISegmentedControl 样式</div>
+        </a>
+    
 </nav>
 
 
+    
+</article>
 
+
+    
+    
+        <section id="comments">
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+</section>
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">recent</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2017/11/04/HSStockChart介绍/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"></p>
+                            <p class="item-title"><a href="/2017/11/04/HSStockChart介绍/" class="title">HSStockChart介绍</a></p>
+                            <p class="item-date"><time datetime="2017-11-04T08:13:47.448Z" itemprop="datePublished">2017-11-04</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2017/11/04/自定义 UISegmentedControl 样式/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"></p>
+                            <p class="item-title"><a href="/2017/11/04/自定义 UISegmentedControl 样式/" class="title">自定义 UISegmentedControl 样式</a></p>
+                            <p class="item-date"><time datetime="2017-11-04T08:13:47.448Z" itemprop="datePublished">2017-11-04</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+    
+        
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">archives</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a><span class="archive-list-count">2</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    
+        
+    
+        
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">links</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="http://hexo.io">Hexo</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            &copy; 2017 Hanson Zhang<br>
+            Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="http://github.com/ppoffice">PPOffice</a>
+        </div>
+    </div>
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <span id="busuanzi_container_site_pv">
+        本站总访问量<span id="busuanzi_value_site_pv"></span>次
+    </span>
+    <span id="busuanzi_container_site_uv">
+        本站访客数<span id="busuanzi_value_site_uv"></span>人次
+      </span>
+</footer>
+        
+    
+    <script>
+    var disqus_config = function () {
+        
+            this.page.url = 'http://myhanson.com/2017/11/04/HSStockChart介绍/';
+        
+        this.page.identifier = 'HSStockChart介绍';
+    };
+    (function() { 
+        var d = document, s = d.createElement('script');  
+        s.src = '//' + 'HansonBlog' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
     
 
 
-<section class="comments" id="comments">
-    <div id="disqus_thread"></div>
-    <script>
-    var disqus_shortname = 'HansonBlog';
-    lazyScripts.push('//' + disqus_shortname + '.disqus.com/embed.js')
-    </script>
-    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-</section>
 
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
 
-
-
-
-
-
-
-
-
-</article>
-
-<div id="reward" class="page-modal reward-lay">
-    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
-    <h3 class="reward-title">
-        <i class="icon icon-quote-left"></i>
-        谢谢~
-        <i class="icon icon-quote-right"></i>
-    </h3>
-    <div class="reward-content">
-        
-        <div class="reward-code">
-            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
-        </div>
-        
     </div>
-</div>
-
-
-
-</div>
-
-        <footer class="footer">
-    <div class="top">
-        
-<p>
-    <span id="busuanzi_container_site_uv" style='display:none'>
-        站点总访客数：<span id="busuanzi_value_site_uv"></span>
-    </span>
-    <span id="busuanzi_container_site_pv" style='display:none'>
-        站点总访问量：<span id="busuanzi_value_site_pv"></span>
-    </span>
-</p>
-
-
-        <p>
-            
-                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
-            
-            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
-        </p>
-    </div>
-    <div class="bottom">
-        <p><span>Hanson Zhang &copy; 2015 - 2017</span>
-            <span>
-                
-                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
-            </span>
-        </p>
-    </div>
-</footer>
-
-    </main>
-    <div class="mask" id="mask"></div>
-<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
-
-
-
-<div class="global-share" id="globalShare">
-    <ul class="reset share-icons">
-      <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://myhanson.com/2017/11/04/HSStockChart介绍/&title=《HSStockChart介绍》 — Hanson的博客&pic=http://myhanson.com/img/avatar.png" data-title="微博">
-          <i class="icon icon-weibo"></i>
-        </a>
-      </li>
-      <li>
-        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
-          <i class="icon icon-weixin"></i>
-        </a>
-      </li>
-      <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://myhanson.com/2017/11/04/HSStockChart介绍/&title=《HSStockChart介绍》 — Hanson的博客&source=" data-title=" QQ">
-          <i class="icon icon-qq"></i>
-        </a>
-      </li>
-      <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://myhanson.com/2017/11/04/HSStockChart介绍/" data-title=" Facebook">
-          <i class="icon icon-facebook"></i>
-        </a>
-      </li>
-      <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《HSStockChart介绍》 — Hanson的博客&url=http://myhanson.com/2017/11/04/HSStockChart介绍/&via=http://myhanson.com" data-title=" Twitter">
-          <i class="icon icon-twitter"></i>
-        </a>
-      </li>
-      <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://myhanson.com/2017/11/04/HSStockChart介绍/" data-title=" Google+">
-          <i class="icon icon-google-plus"></i>
-        </a>
-      </li>
-    </ul>
- </div>
-
-
-<div class="page-modal wx-share" id="wxShare">
-    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
-    <p>扫一扫，分享到微信</p>
-    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACLUlEQVR42u3aS27jMBAFwNz/0g4wWyfKe015AJGlVSDHFkuLRv++vuLr9e/67f779f6t90/z/7ntwsDAeCzjdXklx21J7beSp2NgYJzAuA6y16Hw+rjt4XI8BgYGRnK49TvtczEwMDCSn8uPkhSlSVmLgYGB0aZos0QwD7sfr8UxMDAeyGgHA//z7w/ONzAwMB7CeJXXddqXtOTycFycCgMDY2tG+4D1NlmeUCbRdfieMDAwHsXIA+tK+z5Z0ZiVyhgYGCcwZgfKD3r9Utqk8I/TYmBgbMpIwt8MmQ8v29I3msFiYGBsxGiL1baVPyuMZ68SAwNjV8ZSRlk+eH2o+esdDAyMYxh5yjgLrLNlr6hVh4GBcQxjpU1WzEsXBqLFzggGBsZGjNkAIKHmgbtNRou6HAMDYyPGelP+3uK2XdHAwMDYm5GH13ZUcFeYLpYtMDAwjmGsN/HzpYo24Ea1OAYGxqaMtohtk8W29V8XsRgYGFszijFhPLYs2vc3rZ1hYGDszWjHAEW6Nipih6kqBgbGkYy2+MwXyNYXy354OgYGxtaMlWFkHiLb379h1QwDA2MjxizhW1/5ascDxS4bBgbGdow2dWtHBZ8Yji7BMDAwHsuYNc7W31DyrHxQgYGBcQKjPdzKKljdPst7hxgYGMczkqPPCto2NcTAwMCYMfJBwmxI8Md5MDAwDmDMFrzyxbK7hgfR5ggGBsZ2jFkAbVty7VLFXUUvBgbGwxnfBOkd890d694AAAAASUVORK5CYII=" alt="微信分享二维码">
-</div>
-
-
-
-
-    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
-<script>
-var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
-
-
-</script>
-
-<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
-
-
-<div class="search-panel" id="search-panel">
-    <ul class="search-result" id="search-result"></ul>
-</div>
-<template id="search-tpl">
-<li class="item">
-    <a href="{path}" class="waves-block waves-effect">
-        <div class="title ellipsis" title="{title}">{title}</div>
-        <div class="flex-row flex-middle">
-            <div class="tags ellipsis">
-                {tags}
-            </div>
-            <time class="flex-col time">{date}</time>
-        </div>
-    </a>
-</li>
-</template>
-
-<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
-
-
-
-
-
-
-<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-
-
-
-<script>
-(function() {
-    var OriginTitile = document.title, titleTime;
-    document.addEventListener('visibilitychange', function() {
-        if (document.hidden) {
-            document.title = '别走啦~！';
-            clearTimeout(titleTime);
-        } else {
-            document.title = 'Welcome Back!';
-            titleTime = setTimeout(function() {
-                document.title = OriginTitile;
-            },2000);
-        }
-    });
-})();
-</script>
-
-
-
 </body>
 </html>
