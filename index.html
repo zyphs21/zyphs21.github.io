@@ -89,7 +89,7 @@ ga('send', 'pageview');
             <div id="search-form-wrap">
 
     <form class="search-form" method="GET" action="https://www.baidu.com/s?">
-    <input name="wd" type="text" class="search-form-input" placeholder="Rechercher" />
+    <input name="wd" type="text" class="search-form-input" placeholder="Buscar" />
     <button type="submit" class="search-form-submit"></button>
 </form>
 <script>
@@ -122,7 +122,7 @@ ga('send', 'pageview');
                 <td>
                     
     <form class="search-form" method="GET" action="https://www.baidu.com/s?">
-    <input name="wd" type="text" class="search-form-input" placeholder="Rechercher" />
+    <input name="wd" type="text" class="search-form-input" placeholder="Buscar" />
     <button type="submit" class="search-form-submit"></button>
 </form>
 <script>
@@ -152,16 +152,16 @@ ga('send', 'pageview');
             <h2 id="name">Hanson</h2>
             <h3 id="title">Developer &amp; Designer</h3>
             <span id="location"><i class="fa fa-map-marker"></i>Guangzhou, China</span>
-            <a id="follow" target="_blank" href="https://github.com/zyphs21/">SUIVRE</a>
+            <a id="follow" target="_blank" href="https://github.com/zyphs21/">SEGUIR</a>
         </div>
         <div class="article-info profile-block">
             <div class="article-info-block">
                 3
-                <span>Articles</span>
+                <span>Entradas</span>
             </div>
             <div class="article-info-block">
                 0
-                <span>Tag</span>
+                <span>Etiqueta</span>
             </div>
         </div>
         
@@ -229,13 +229,12 @@ ga('send', 'pageview');
         
         <div class="article-entry" itemprop="articleBody">
         
-            
-            <p>想建立一个元组的数组，来简单存放构建 TabViewController 的信息首先我的做法是<br><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> homeTab = (vc: <span class="type">VYHomeViewController</span>(), title: <span class="string">"Home"</span>, image: <span class="string">"home_gray"</span>, selectedImage: <span class="string">"home_blue"</span>)</div><div class="line"><span class="keyword">let</span> infoTab = (vc: <span class="type">VYInformationViewController</span>(), title: <span class="string">"Info"</span>, image: <span class="string">"home_gray"</span>, selectedImage: <span class="string">"home_blue"</span>)</div><div class="line"><span class="keyword">let</span> marketTab = (vc: <span class="type">VYMarketViewController</span>(), title: <span class="string">"Market"</span>, image: <span class="string">"home_gray"</span>, selectedImage: <span class="string">"home_blue"</span>)</div><div class="line"><span class="keyword">let</span> userTab = (vc: <span class="type">VYUserCenterViewController</span>(), title: <span class="string">"Me"</span>, image: <span class="string">"home_gray"</span>, selectedImage: <span class="string">"home_blue"</span>)</div><div class="line"></div><div class="line"><span class="comment">// 下面报错：Heterogeneous collection literal could only be inferred to '[Any]'; add explicit type annotation if this is intentional</span></div><div class="line"><span class="keyword">let</span> data = [homeTab, infoTab, marketTab, userTab]</div></pre></td></tr></table></figure></p>
-<p>但是会报错，Xcode 的修改提示是后面添加 <figure class="highlight as"><figcaption><span>[Any]```</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">```swift</div><div class="line">let data = [selfSelectedTab, infoTab, marketTab, userTab] <span class="keyword">as</span> [Any]</div></pre></td></tr></table></figure></p>
-<p>但是这样做已经不是原来的做一个元组数组的初衷了。无法在遍历数组的时候使用命名元组来获取信息</p>
-<p>接着我用 <figure class="highlight plain"><figcaption><span>的方法改成如下：</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">```swift</div><div class="line">typealias TabInfo = (vc: UIViewController, title: String, image: String, selectedImage: String)</div><div class="line"></div><div class="line">var tabInfo: [TabInfo] = [TabInfo]()</div><div class="line">let homeTab = (vc: VYHomeViewController(), title: &quot;Home&quot;, image: &quot;home_gray&quot;, selectedImage: &quot;home_blue&quot;)</div><div class="line">let infoTab = (vc: VYHomeViewController(), title: &quot;Info&quot;, image: &quot;home_gray&quot;, selectedImage: &quot;home_blue&quot;)</div><div class="line"></div><div class="line">// 下面报错：Cannot express tuple conversion &apos;(vc: VYInformationViewController, title: String, image: String, selectedImage: String)&apos; to &apos;(vc: UIViewController, title: String, image: String, selectedImage: String)&apos;</div><div class="line">tabInfo.append(homeTab)</div></pre></td></tr></table></figure></p>
-<p>给数组添加元素的时候报错，因为元组不支持类型转换，<figure class="highlight plain"><figcaption><span>虽然继承 ```UIViewController```，但是元组看来它们不是同一类型。</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">最后还是放弃了用元组数组的方法：</div><div class="line">```swift</div><div class="line">let homeTab = (vc: VYHomePageViewController(), title: Home, image: &quot;new_home_gray&quot;, selectedImage: &quot;new_home_blue&quot;)</div><div class="line">let infoTab = (vc: VYInformationViewController(), title: Info, image: &quot;msg_gray&quot;, selectedImage: &quot;msg_blue&quot;)</div><div class="line">let marketTab = (vc: VYMarketViewController(), title: Market, image: &quot;hangqing_gray&quot;, selectedImage: &quot;hangqing_blue&quot;)</div><div class="line">let userTab = (vc: VYUserCenterViewController(), title: Me, image: &quot;mine_gray&quot;, selectedImage: &quot;mine_blue&quot;)</div><div class="line"></div><div class="line">addViewController(homeTab.vc, title: homeTab.title, image: homeTab.image, selectedIamge: homeTab.selectedImage)</div><div class="line">addViewController(infoTab.vc, title: infoTab.title, image: infoTab.image, selectedIamge: infoTab.selectedImage)</div><div class="line">addViewController(marketTab.vc, title: marketTab.title, image: marketTab.image, selectedIamge: marketTab.selectedImage)</div><div class="line">addViewController(userTab.vc, title: userTab.title, image: userTab.image, selectedIamge: userTab.selectedImage)</div></pre></td></tr></table></figure></p>
-
+            <p><p>想建立一个元组的数组，来简单存放构建 TabViewController 的信息首先我的做法是<br><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> homeTab = (vc: <span class="type">VYHomeViewController</span>(), title: <span class="string">"Home"</span>, image: <span class="string">"home_gray"</span>, selectedImage: <span class="string">"home_blue"</span>)</div><div class="line"><span class="keyword">let</span> infoTab = (vc: <span class="type">VYInformationViewController</span>(), title: <span class="string">"Info"</span>, image: <span class="string">"home_gray"</span>, selectedImage: <span class="string">"home_blue"</span>)</div><div class="line"><span class="keyword">let</span> marketTab = (vc: <span class="type">VYMarketViewController</span>(), title: <span class="string">"Market"</span>, image: <span class="string">"home_gray"</span>, selectedImage: <span class="string">"home_blue"</span>)</div><div class="line"><span class="keyword">let</span> userTab = (vc: <span class="type">VYUserCenterViewController</span>(), title: <span class="string">"Me"</span>, image: <span class="string">"home_gray"</span>, selectedImage: <span class="string">"home_blue"</span>)</div><div class="line"></div><div class="line"><span class="comment">// 下面报错：Heterogeneous collection literal could only be inferred to '[Any]'; add explicit type annotation if this is intentional</span></div><div class="line"><span class="keyword">let</span> data = [homeTab, infoTab, marketTab, userTab]</div></pre></td></tr></table></figure></p>
+<p>但是会报错，Xcode 的修改提示是后面添加  <code>as [Any]</code><br><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> data = [selfSelectedTab, infoTab, marketTab, userTab] <span class="keyword">as</span> [<span class="type">Any</span>]</div></pre></td></tr></table></figure></p>
+<p>但是这样做已经不是原来的做一个元组数组的初衷了。无法在遍历数组的时候使用命名元组来获取信息</p></p>
+            <p class="article-more-link">
+                <a href="/2017/11/28/记一次失败的 Swift 元组数组实践/#more">자세히 보기</a>
+            </p>
         
         </div>
         <footer class="article-footer">
@@ -282,7 +281,7 @@ window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMin
 
             
     
-        <a href="http://myhanson.com/2017/11/28/记一次失败的 Swift 元组数组实践/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="http://myhanson.com/2017/11/28/记一次失败的 Swift 元组数组实践/">Commentaires</a>
+        <a href="http://myhanson.com/2017/11/28/记一次失败的 Swift 元组数组实践/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="http://myhanson.com/2017/11/28/记一次失败的 Swift 元组数组实践/">Comentarios</a>
     
 
         </footer>
@@ -327,7 +326,7 @@ window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMin
             <p><p>系统的 UISegmentedControl 是个挺方便的控件，这里来讲讲在 Swift3 下自定义 UISegmentedControl 的样式，包括修改底色，边框颜色等等。</p>
 <p>要了解 UISegmentedControl 各个部分的组成，可以在官方的文档中找到 <a href="https://developer.apple.com/library/content/documentation/UserExperience/Conceptual/UIKitUICatalog/UISegmentedControl.html" target="_blank" rel="external">UISegmentedControl 文档</a> 。着重注意这个图：<br>   <img src="http://upload-images.jianshu.io/upload_images/757687-3d89e1b80b4e17b8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"><br>上面这幅图明确的列出了 UISegmentedControl 各个部分所控制的方法。下面就开始自定义吧。  </p></p>
             <p class="article-more-link">
-                <a href="/2017/05/09/自定义 UISegmentedControl 样式/#more">Read More</a>
+                <a href="/2017/05/09/自定义 UISegmentedControl 样式/#more">자세히 보기</a>
             </p>
         
         </div>
@@ -375,7 +374,7 @@ window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMin
 
             
     
-        <a href="http://myhanson.com/2017/05/09/自定义 UISegmentedControl 样式/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="http://myhanson.com/2017/05/09/自定义 UISegmentedControl 样式/">Commentaires</a>
+        <a href="http://myhanson.com/2017/05/09/自定义 UISegmentedControl 样式/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="http://myhanson.com/2017/05/09/自定义 UISegmentedControl 样式/">Comentarios</a>
     
 
         </footer>
@@ -420,7 +419,7 @@ window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMin
             <p><p>HSStockChart 是一个绘制股票分时图、K 线图的库。支持流畅的回弹拖动，长按十字线，捏合放大缩小等功能，主要使用了 CAShapeLayer 来绘图，相比使用 Core Graphics 和重写 drawRect 的方法更高效，占用内存更小。<br><a href="https://github.com/zyphs21/HSStockChart" target="_blank" rel="external">GitHub 地址：HSStockChart</a>  </p>
 <p><img src="http://upload-images.jianshu.io/upload_images/757687-92b2069869929ccd.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p></p>
             <p class="article-more-link">
-                <a href="/2017/05/03/HSStockChart介绍/#more">Read More</a>
+                <a href="/2017/05/03/HSStockChart介绍/#more">자세히 보기</a>
             </p>
         
         </div>
@@ -468,7 +467,7 @@ window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMin
 
             
     
-        <a href="http://myhanson.com/2017/05/03/HSStockChart介绍/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="http://myhanson.com/2017/05/03/HSStockChart介绍/">Commentaires</a>
+        <a href="http://myhanson.com/2017/05/03/HSStockChart介绍/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="http://myhanson.com/2017/05/03/HSStockChart介绍/">Comentarios</a>
     
 
         </footer>
@@ -484,7 +483,7 @@ window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMin
    
         
     <div class="widget-wrap">
-        <h3 class="widget-title">Récents</h3>
+        <h3 class="widget-title">Recientes</h3>
         <div class="widget">
             <ul id="recent-post" class="">
                 
@@ -554,7 +553,7 @@ window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMin
     
         
     <div class="widget-wrap">
-        <h3 class="widget-title">Archives</h3>
+        <h3 class="widget-title">Archivos</h3>
         <div class="widget">
             <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a><span class="archive-list-count">2</span></li></ul>
         </div>
