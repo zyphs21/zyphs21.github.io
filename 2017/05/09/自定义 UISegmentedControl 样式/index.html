@@ -8,12 +8,12 @@
     <meta name="description" content="系统的 UISegmentedControl 是个挺方便的控件，这里来讲讲在 Swift3 下自定义 UISegmentedControl 的样式，包括修改底色，边框颜色等等。 要了解 UISegmentedControl 各个部分的组成，可以在官方的文档中找到 UISegmentedControl 文档 。着重注意这个图：   上面这幅图明确的列出了 UISegmentedControl 各个部">
 <meta property="og:type" content="article">
 <meta property="og:title" content="自定义 UISegmentedControl 样式">
-<meta property="og:url" content="http://myhanson.com/2017/11/04/自定义 UISegmentedControl 样式/index.html">
+<meta property="og:url" content="http://myhanson.com/2017/05/09/自定义 UISegmentedControl 样式/index.html">
 <meta property="og:site_name" content="Hanson的博客">
 <meta property="og:description" content="系统的 UISegmentedControl 是个挺方便的控件，这里来讲讲在 Swift3 下自定义 UISegmentedControl 的样式，包括修改底色，边框颜色等等。 要了解 UISegmentedControl 各个部分的组成，可以在官方的文档中找到 UISegmentedControl 文档 。着重注意这个图：   上面这幅图明确的列出了 UISegmentedControl 各个部">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/757687-3d89e1b80b4e17b8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/757687-b2cff0c753e73846.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2017-11-09T05:54:04.049Z">
+<meta property="og:updated_time" content="2017-11-28T08:18:52.583Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="自定义 UISegmentedControl 样式">
 <meta name="twitter:description" content="系统的 UISegmentedControl 是个挺方便的控件，这里来讲讲在 Swift3 下自定义 UISegmentedControl 的样式，包括修改底色，边框颜色等等。 要了解 UISegmentedControl 各个部分的组成，可以在官方的文档中找到 UISegmentedControl 文档 。着重注意这个图：   上面这幅图明确的列出了 UISegmentedControl 各个部">
@@ -96,7 +96,7 @@ ga('send', 'pageview');
             <div id="search-form-wrap">
 
     <form class="search-form" method="GET" action="https://www.baidu.com/s?">
-    <input name="wd" type="text" class="search-form-input" placeholder="Search" />
+    <input name="wd" type="text" class="search-form-input" placeholder="Rechercher" />
     <button type="submit" class="search-form-submit"></button>
 </form>
 <script>
@@ -129,7 +129,7 @@ ga('send', 'pageview');
                 <td>
                     
     <form class="search-form" method="GET" action="https://www.baidu.com/s?">
-    <input name="wd" type="text" class="search-form-input" placeholder="Search" />
+    <input name="wd" type="text" class="search-form-input" placeholder="Rechercher" />
     <button type="submit" class="search-form-submit"></button>
 </form>
 <script>
@@ -159,16 +159,16 @@ ga('send', 'pageview');
             <h2 id="name">Hanson</h2>
             <h3 id="title">Developer &amp; Designer</h3>
             <span id="location"><i class="fa fa-map-marker"></i>Guangzhou, China</span>
-            <a id="follow" target="_blank" href="https://github.com/zyphs21/">FOLLOW</a>
+            <a id="follow" target="_blank" href="https://github.com/zyphs21/">SUIVRE</a>
         </div>
         <div class="article-info profile-block">
             <div class="article-info-block">
                 3
-                <span>posts</span>
+                <span>Articles</span>
             </div>
             <div class="article-info-block">
                 0
-                <span>tag</span>
+                <span>Tag</span>
             </div>
         </div>
         
@@ -220,8 +220,8 @@ ga('send', 'pageview');
                         
     <div class="article-date">
         <i class="fa fa-calendar"></i>
-        <a href="/2017/11/04/自定义 UISegmentedControl 样式/">
-            <time datetime="2017-11-04T08:13:47.448Z" itemprop="datePublished">2017-11-04</time>
+        <a href="/2017/05/09/自定义 UISegmentedControl 样式/">
+            <time datetime="2017-05-09T14:18:30.000Z" itemprop="datePublished">2017-05-09</time>
         </a>
     </div>
 
@@ -291,7 +291,7 @@ window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMin
 
             
     
-        <a href="http://myhanson.com/2017/11/04/自定义 UISegmentedControl 样式/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="http://myhanson.com/2017/11/04/自定义 UISegmentedControl 样式/">Comments</a>
+        <a href="http://myhanson.com/2017/05/09/自定义 UISegmentedControl 样式/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="http://myhanson.com/2017/05/09/自定义 UISegmentedControl 样式/">Commentaires</a>
     
 
         </footer>
@@ -300,8 +300,8 @@ window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMin
         
 <nav id="article-nav">
     
-        <a href="/2017/11/04/记一次失败的 Swift 元组数组实践/" id="article-nav-newer" class="article-nav-link-wrap">
-            <strong class="article-nav-caption">Newer</strong>
+        <a href="/2017/11/28/记一次失败的 Swift 元组数组实践/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">Plus récent</strong>
             <div class="article-nav-title">
                 
                     记一次失败的 Swift 元组数组实践
@@ -309,6 +309,11 @@ window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMin
             </div>
         </a>
     
+    
+        <a href="/2017/05/03/HSStockChart介绍/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">Plus ancien</strong>
+            <div class="article-nav-title">HSStockChart介绍</div>
+        </a>
     
 </nav>
 
@@ -333,14 +338,14 @@ window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMin
    
         
     <div class="widget-wrap">
-        <h3 class="widget-title">recent</h3>
+        <h3 class="widget-title">Récents</h3>
         <div class="widget">
             <ul id="recent-post" class="">
                 
                     <li>
                         
                         <div class="item-thumbnail">
-                            <a href="/2017/11/04/HSStockChart介绍/" class="thumbnail">
+                            <a href="/2017/11/28/记一次失败的 Swift 元组数组实践/" class="thumbnail">
     
     
         <span class="thumbnail-image thumbnail-none"></span>
@@ -351,15 +356,15 @@ window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMin
                         
                         <div class="item-inner">
                             <p class="item-category"></p>
-                            <p class="item-title"><a href="/2017/11/04/HSStockChart介绍/" class="title">HSStockChart介绍</a></p>
-                            <p class="item-date"><time datetime="2017-11-04T08:13:47.448Z" itemprop="datePublished">2017-11-04</time></p>
+                            <p class="item-title"><a href="/2017/11/28/记一次失败的 Swift 元组数组实践/" class="title">记一次失败的 Swift 元组数组实践</a></p>
+                            <p class="item-date"><time datetime="2017-11-28T08:01:34.000Z" itemprop="datePublished">2017-11-28</time></p>
                         </div>
                     </li>
                 
                     <li>
                         
                         <div class="item-thumbnail">
-                            <a href="/2017/11/04/记一次失败的 Swift 元组数组实践/" class="thumbnail">
+                            <a href="/2017/05/09/自定义 UISegmentedControl 样式/" class="thumbnail">
     
     
         <span class="thumbnail-image thumbnail-none"></span>
@@ -370,15 +375,15 @@ window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMin
                         
                         <div class="item-inner">
                             <p class="item-category"></p>
-                            <p class="item-title"><a href="/2017/11/04/记一次失败的 Swift 元组数组实践/" class="title">记一次失败的 Swift 元组数组实践</a></p>
-                            <p class="item-date"><time datetime="2017-11-04T08:13:47.448Z" itemprop="datePublished">2017-11-04</time></p>
+                            <p class="item-title"><a href="/2017/05/09/自定义 UISegmentedControl 样式/" class="title">自定义 UISegmentedControl 样式</a></p>
+                            <p class="item-date"><time datetime="2017-05-09T14:18:30.000Z" itemprop="datePublished">2017-05-09</time></p>
                         </div>
                     </li>
                 
                     <li>
                         
                         <div class="item-thumbnail">
-                            <a href="/2017/11/04/自定义 UISegmentedControl 样式/" class="thumbnail">
+                            <a href="/2017/05/03/HSStockChart介绍/" class="thumbnail">
     
     
         <span class="thumbnail-image thumbnail-none"></span>
@@ -389,8 +394,8 @@ window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMin
                         
                         <div class="item-inner">
                             <p class="item-category"></p>
-                            <p class="item-title"><a href="/2017/11/04/自定义 UISegmentedControl 样式/" class="title">自定义 UISegmentedControl 样式</a></p>
-                            <p class="item-date"><time datetime="2017-11-04T08:13:47.448Z" itemprop="datePublished">2017-11-04</time></p>
+                            <p class="item-title"><a href="/2017/05/03/HSStockChart介绍/" class="title">HSStockChart介绍</a></p>
+                            <p class="item-date"><time datetime="2017-05-03T08:53:30.000Z" itemprop="datePublished">2017-05-03</time></p>
                         </div>
                     </li>
                 
@@ -403,9 +408,9 @@ window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMin
     
         
     <div class="widget-wrap">
-        <h3 class="widget-title">archives</h3>
+        <h3 class="widget-title">Archives</h3>
         <div class="widget">
-            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a><span class="archive-list-count">3</span></li></ul>
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a><span class="archive-list-count">2</span></li></ul>
         </div>
     </div>
 
@@ -440,7 +445,7 @@ window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMin
     <script>
     var disqus_config = function () {
         
-            this.page.url = 'http://myhanson.com/2017/11/04/自定义 UISegmentedControl 样式/';
+            this.page.url = 'http://myhanson.com/2017/05/09/自定义 UISegmentedControl 样式/';
         
         this.page.identifier = '自定义 UISegmentedControl 样式';
     };
