@@ -89,7 +89,7 @@ ga('send', 'pageview');
             <div id="search-form-wrap">
 
     <form class="search-form" method="GET" action="https://www.baidu.com/s?">
-    <input name="wd" type="text" class="search-form-input" placeholder="Search" />
+    <input name="wd" type="text" class="search-form-input" placeholder="Buscar" />
     <button type="submit" class="search-form-submit"></button>
 </form>
 <script>
@@ -122,7 +122,7 @@ ga('send', 'pageview');
                 <td>
                     
     <form class="search-form" method="GET" action="https://www.baidu.com/s?">
-    <input name="wd" type="text" class="search-form-input" placeholder="Search" />
+    <input name="wd" type="text" class="search-form-input" placeholder="Buscar" />
     <button type="submit" class="search-form-submit"></button>
 </form>
 <script>
@@ -152,16 +152,16 @@ ga('send', 'pageview');
             <h2 id="name">Hanson</h2>
             <h3 id="title">want to be Developer &amp; Designer</h3>
             <span id="location"><i class="fa fa-map-marker"></i>Guangzhou, China</span>
-            <a id="follow" target="_blank" href="https://github.com/zyphs21/">FOLLOW</a>
+            <a id="follow" target="_blank" href="https://github.com/zyphs21/">SEGUIR</a>
         </div>
         <div class="article-info profile-block">
             <div class="article-info-block">
-                4
-                <span>posts</span>
+                5
+                <span>Entradas</span>
             </div>
             <div class="article-info-block">
                 0
-                <span>tag</span>
+                <span>Etiqueta</span>
             </div>
         </div>
         
@@ -280,7 +280,103 @@ window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMin
 
             
     
-        <a href="http://myhanson.com/2017/12/08/用SwiftGen管理UIImage等的String-based接口/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="http://myhanson.com/2017/12/08/用SwiftGen管理UIImage等的String-based接口/">Comments</a>
+        <a href="http://myhanson.com/2017/12/08/用SwiftGen管理UIImage等的String-based接口/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="http://myhanson.com/2017/12/08/用SwiftGen管理UIImage等的String-based接口/">Comentarios</a>
+    
+
+        </footer>
+    </div>
+    
+</article>
+
+
+
+    <article id="post-Swift 实现启动屏动画" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 itemprop="name">
+            <a class="article-title" href="/2017/12/08/Swift 实现启动屏动画/">Swift 实现启动屏动画</a>
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/2017/12/08/Swift 实现启动屏动画/">
+            <time datetime="2017-12-08T02:13:30.000Z" itemprop="datePublished">2017-12-08</time>
+        </a>
+    </div>
+
+
+                        
+                        
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            <p><blockquote>
+<p>Github: <a href="https://github.com/zyphs21/SplashAnimate" target="_blank" rel="external">SplashAnimate</a></p>
+</blockquote>
+<h1 id="准备工作："><a href="#准备工作：" class="headerlink" title="准备工作："></a>准备工作：</h1><p>首先我们需要确定作为宣传的图片的宽高比，这个一般是与 UI 确定的。一般启动屏展示会有上下两部分，上面是宣传图片，下面是 App 的 Logo。</p>
+<h1 id="实现基本思路："><a href="#实现基本思路：" class="headerlink" title="实现基本思路："></a>实现基本思路：</h1><p>在 LaunchScreen 结束后，在 AppDelegate 中将 rootViewController 指向展示广告用的 AdViewController，在AdViewController 中设置一段时间后自己销毁，并提供回调方法在 AppDelegate 中将 rootViewController 指向 App 真正的首页。</p></p>
+            <p class="article-more-link">
+                <a href="/2017/12/08/Swift 实现启动屏动画/#more">Read More</a>
+            </p>
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+    <div class="bdsharebuttonbox">
+    <a href="#" class="bds_more" data-cmd="more">分享到：</a>
+    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间">QQ空间</a>
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博">新浪微博</a>
+    <a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博">腾讯微博</a>
+    <a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网">人人网</a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信">微信</a>
+</div>
+<script>
+window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"16"},"share":{"bdSize":16}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+<style>
+    .bdshare_popup_box {
+        border-radius: 4px;
+        border: #e1e1e1 solid 1px;
+    }
+    .bdshare-button-style0-16 a,
+    .bdshare-button-style0-16 .bds_more {
+        padding-left: 20px;
+        margin: 6px 10px 6px 0;
+    }
+    .bdshare_dialog_list a,
+    .bdshare_popup_list a,
+    .bdshare_popup_bottom a {
+        font-family: 'Microsoft Yahei';
+    }
+    .bdshare_popup_top {
+        display: none;
+    }
+    .bdshare_popup_bottom {
+        height: auto;
+        padding: 5px;
+    }
+</style>
+
+
+</div>
+
+            
+    
+        <a href="http://myhanson.com/2017/12/08/Swift 实现启动屏动画/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="http://myhanson.com/2017/12/08/Swift 实现启动屏动画/">Comentarios</a>
     
 
         </footer>
@@ -374,7 +470,7 @@ window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMin
 
             
     
-        <a href="http://myhanson.com/2017/11/28/记一次失败的 Swift 元组数组实践/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="http://myhanson.com/2017/11/28/记一次失败的 Swift 元组数组实践/">Comments</a>
+        <a href="http://myhanson.com/2017/11/28/记一次失败的 Swift 元组数组实践/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="http://myhanson.com/2017/11/28/记一次失败的 Swift 元组数组实践/">Comentarios</a>
     
 
         </footer>
@@ -467,7 +563,7 @@ window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMin
 
             
     
-        <a href="http://myhanson.com/2017/05/09/自定义 UISegmentedControl 样式/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="http://myhanson.com/2017/05/09/自定义 UISegmentedControl 样式/">Comments</a>
+        <a href="http://myhanson.com/2017/05/09/自定义 UISegmentedControl 样式/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="http://myhanson.com/2017/05/09/自定义 UISegmentedControl 样式/">Comentarios</a>
     
 
         </footer>
@@ -560,7 +656,7 @@ window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMin
 
             
     
-        <a href="http://myhanson.com/2017/05/03/HSStockChart介绍/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="http://myhanson.com/2017/05/03/HSStockChart介绍/">Comments</a>
+        <a href="http://myhanson.com/2017/05/03/HSStockChart介绍/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="http://myhanson.com/2017/05/03/HSStockChart介绍/">Comentarios</a>
     
 
         </footer>
@@ -576,7 +672,7 @@ window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMin
    
         
     <div class="widget-wrap">
-        <h3 class="widget-title">recent</h3>
+        <h3 class="widget-title">Recientes</h3>
         <div class="widget">
             <ul id="recent-post" class="">
                 
@@ -596,6 +692,25 @@ window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMin
                             <p class="item-category"></p>
                             <p class="item-title"><a href="/2017/12/08/用SwiftGen管理UIImage等的String-based接口/" class="title">用SwiftGen管理UIImage等的String-based接口</a></p>
                             <p class="item-date"><time datetime="2017-12-08T07:15:21.000Z" itemprop="datePublished">2017-12-08</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2017/12/08/Swift 实现启动屏动画/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"></p>
+                            <p class="item-title"><a href="/2017/12/08/Swift 实现启动屏动画/" class="title">Swift 实现启动屏动画</a></p>
+                            <p class="item-date"><time datetime="2017-12-08T02:13:30.000Z" itemprop="datePublished">2017-12-08</time></p>
                         </div>
                     </li>
                 
@@ -665,9 +780,9 @@ window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMin
     
         
     <div class="widget-wrap">
-        <h3 class="widget-title">archives</h3>
+        <h3 class="widget-title">Archivos</h3>
         <div class="widget">
-            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a><span class="archive-list-count">2</span></li></ul>
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a><span class="archive-list-count">2</span></li></ul>
         </div>
     </div>
 

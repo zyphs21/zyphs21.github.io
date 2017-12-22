@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    
+    <title>Swift 实现启动屏动画 | Hanson的博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="Github: SplashAnimate  准备工作：首先我们需要确定作为宣传的图片的宽高比，这个一般是与 UI 确定的。一般启动屏展示会有上下两部分，上面是宣传图片，下面是 App 的 Logo。 实现基本思路：在 LaunchScreen 结束后，在 AppDelegate 中将 rootViewController 指向展示广告用的 AdViewController，在AdViewCon">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Swift 实现启动屏动画">
+<meta property="og:url" content="http://myhanson.com/2017/12/08/Swift 实现启动屏动画/index.html">
+<meta property="og:site_name" content="Hanson的博客">
+<meta property="og:description" content="Github: SplashAnimate  准备工作：首先我们需要确定作为宣传的图片的宽高比，这个一般是与 UI 确定的。一般启动屏展示会有上下两部分，上面是宣传图片，下面是 App 的 Logo。 实现基本思路：在 LaunchScreen 结束后，在 AppDelegate 中将 rootViewController 指向展示广告用的 AdViewController，在AdViewCon">
+<meta property="og:updated_time" content="2017-12-22T02:05:53.711Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Swift 实现启动屏动画">
+<meta name="twitter:description" content="Github: SplashAnimate  准备工作：首先我们需要确定作为宣传的图片的宽高比，这个一般是与 UI 确定的。一般启动屏展示会有上下两部分，上面是宣传图片，下面是 App 的 Logo。 实现基本思路：在 LaunchScreen 结束后，在 AppDelegate 中将 rootViewController 指向展示广告用的 AdViewController，在AdViewCon">
+    
+
+    
+        <link rel="alternate" href="/atom.xml" title="Hanson的博客" type="application/atom+xml" />
+    
+
+    
+        <link rel="icon" href="/css/images/favicon.ico" />
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+        <script type="text/javascript">
+(function(i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function() {
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-109245364-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+    
+    
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">Hanson的博客</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">Home</a>
+                
+                    <a class="main-nav-link" href="/archives">Archives</a>
+                
+                    <a class="main-nav-link" href="/categories">Categories</a>
+                
+                    <a class="main-nav-link" href="/tags">Tags</a>
+                
+                    <a class="main-nav-link" href="/about">About</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/css/images/avatar.png" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form" method="GET" action="https://www.baidu.com/s?">
+    <input name="wd" type="text" class="search-form-input" placeholder="Buscar" />
+    <button type="submit" class="search-form-submit"></button>
+</form>
+<script>
+(function ($) {
+    $('.search-form').on('submit', function (e) {
+        var keyword = $('.search-form-input[name="wd"]').val();
+        window.location = 'https://www.baidu.com/s?wd=site:myhanson.com ' + keyword;
+        return false;
+    });
+})(jQuery);
+</script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">Home</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">Archives</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">Categories</a></td>
+                
+                    <td><a class="main-nav-link" href="/tags">Tags</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">About</a></td>
+                
+                <td>
+                    
+    <form class="search-form" method="GET" action="https://www.baidu.com/s?">
+    <input name="wd" type="text" class="search-form-input" placeholder="Buscar" />
+    <button type="submit" class="search-form-submit"></button>
+</form>
+<script>
+(function ($) {
+    $('.search-form').on('submit', function (e) {
+        var keyword = $('.search-form-input[name="wd"]').val();
+        window.location = 'https://www.baidu.com/s?wd=site:myhanson.com ' + keyword;
+        return false;
+    });
+})(jQuery);
+</script>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/css/images/avatar.png" />
+            <h2 id="name">Hanson</h2>
+            <h3 id="title">want to be Developer &amp; Designer</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>Guangzhou, China</span>
+            <a id="follow" target="_blank" href="https://github.com/zyphs21/">SEGUIR</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                5
+                <span>Entradas</span>
+            </div>
+            <div class="article-info-block">
+                0
+                <span>Etiqueta</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://github.com/zyphs21/" target="_blank" title="github" class=tooltip>
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://twitter.com/yuanpingzhang" target="_blank" title="twitter" class=tooltip>
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="/atom.xml" target="_blank" title="rss" class=tooltip>
+                            <i class="fa fa-rss"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-Swift 实现启动屏动画" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            Swift 实现启动屏动画
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/2017/12/08/Swift 实现启动屏动画/">
+            <time datetime="2017-12-08T02:13:30.000Z" itemprop="datePublished">2017-12-08</time>
+        </a>
+    </div>
+
+
+                        
+                        
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <blockquote>
+<p>Github: <a href="https://github.com/zyphs21/SplashAnimate" target="_blank" rel="external">SplashAnimate</a></p>
+</blockquote>
+<h1 id="准备工作："><a href="#准备工作：" class="headerlink" title="准备工作："></a>准备工作：</h1><p>首先我们需要确定作为宣传的图片的宽高比，这个一般是与 UI 确定的。一般启动屏展示会有上下两部分，上面是宣传图片，下面是 App 的 Logo。</p>
+<h1 id="实现基本思路："><a href="#实现基本思路：" class="headerlink" title="实现基本思路："></a>实现基本思路：</h1><p>在 LaunchScreen 结束后，在 AppDelegate 中将 rootViewController 指向展示广告用的 AdViewController，在AdViewController 中设置一段时间后自己销毁，并提供回调方法在 AppDelegate 中将 rootViewController 指向 App 真正的首页。</p>
+<a id="more"></a>
+<h1 id="实现细节："><a href="#实现细节：" class="headerlink" title="实现细节："></a>实现细节：</h1><p>新建一个 AdViewController 用于放置广告宣传等展示.注意有一个回调方法。<br><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">AdViewController</span>: <span class="title">UIViewController</span> </span>&#123;</div><div class="line">    <span class="comment">// 用于 AdViewController 销毁后的回调</span></div><div class="line">    <span class="keyword">var</span> completion: (() -&gt; <span class="type">Void</span>)?</div><div class="line"></div><div class="line">    <span class="keyword">var</span> adImage: <span class="type">UIImage</span>?</div><div class="line">    <span class="keyword">var</span> adView: <span class="type">UIImageView</span>?</div><div class="line"></div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">viewDidLoad</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="comment">// ....</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>在 ViewDidLoad 方法中配置广告图,同时判断 iPhoneX的特殊情况<br><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">viewDidLoad</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="keyword">super</span>.viewDidLoad()</div><div class="line"></div><div class="line">    <span class="keyword">var</span> adViewHeight = (<span class="number">1040</span> / <span class="number">720</span>) * screenWidth</div><div class="line">    <span class="keyword">var</span> imageName = <span class="string">"start_page"</span></div><div class="line">    <span class="keyword">if</span> <span class="type">UIDevice</span>.isiPhoneX() &#123;</div><div class="line">        adViewHeight = (<span class="number">1920</span> / <span class="number">1124</span>) * screenWidth</div><div class="line">        imageName = <span class="string">"start_page_x"</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    adView = <span class="type">UIImageView</span>(frame: <span class="type">CGRect</span>(x: <span class="number">0</span>, y: <span class="number">0</span>, width: screenWidth, height: adViewHeight))</div><div class="line">    adView?.image = <span class="type">UIImage</span>(named: imageName)</div><div class="line">    adView?.contentMode = .scaleAspectFill</div><div class="line">    <span class="keyword">self</span>.view.addSubview(adView!)</div><div class="line"></div><div class="line">    <span class="keyword">let</span> bottomHolderView = <span class="type">UIView</span>(frame: <span class="type">CGRect</span>(x: <span class="number">0</span>, y: screenHeight-<span class="number">120</span>, width: screenWidth, height: <span class="number">120</span>))</div><div class="line">    <span class="keyword">self</span>.view.addSubview(bottomHolderView)</div><div class="line"></div><div class="line">    <span class="keyword">let</span> logo = <span class="type">UIImageView</span>(frame: <span class="type">CGRect</span>(x: (screenWidth-<span class="number">120</span>)/<span class="number">2</span>, y: (<span class="number">120</span>-<span class="number">50</span>)/<span class="number">2</span>, width: <span class="number">120</span>, height: <span class="number">50</span>))</div><div class="line">    logo.image = <span class="type">UIImage</span>(named: <span class="string">"start_logo"</span>)</div><div class="line">    bottomHolderView.addSubview(logo)</div><div class="line"></div><div class="line">    <span class="keyword">let</span> time: <span class="type">TimeInterval</span> = <span class="number">1.0</span></div><div class="line">    <span class="type">DispatchQueue</span>.main.asyncAfter(deadline: <span class="type">DispatchTime</span>.now() + time) &#123;</div><div class="line">        <span class="keyword">self</span>.dismissAdView()</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>上面代码中有几个注意的:</p>
+<p>因为图片要撑满屏幕的宽度，所以宽度是固定的，根据图片的高宽比，算出图片实际应有的高度，这样图片可以在各个尺寸的 iPhone 中才不会因为拉伸而变形。但是因为 iPhoneX 特殊的宽高比，所以还是要为它特定一张图片，不然即使图片在 iPhoneX 上不变形，图片所占的高度会太小，或者顶部被刘海遮挡内容而不美观。<br><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> adViewHeight = (<span class="number">1040</span> / <span class="number">720</span>) * screenWidth</div><div class="line"><span class="keyword">var</span> imageName = <span class="string">"start_page"</span></div><div class="line"><span class="keyword">if</span> <span class="type">UIDevice</span>.isiPhoneX() &#123;</div><div class="line">    adViewHeight = (<span class="number">1920</span> / <span class="number">1124</span>) * screenWidth</div><div class="line">    imageName = <span class="string">"start_page_x"</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>上面判断是否为 iPhoneX 我是在 UIDevice 里扩展了一个方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">extension UIDevice &#123;</div><div class="line">    public static func isiPhoneX() -&gt; Bool &#123;</div><div class="line">        if UIScreen.main.bounds.height == 812 &#123;</div><div class="line">            return true</div><div class="line">        &#125;</div><div class="line">        return false</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>还有注意在执行销毁时调用回调方法<br><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> time: <span class="type">TimeInterval</span> = <span class="number">1.0</span></div><div class="line"><span class="type">DispatchQueue</span>.main.asyncAfter(deadline: <span class="type">DispatchTime</span>.now() + time) &#123;</div><div class="line">    <span class="keyword">self</span>.dismissAdView()</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>在 AppDelegate 中 didFinishLaunchingWithOptions 方法中调用下面的 setUpWindowAndRootView() 来管理页面展示<br><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">extension</span> <span class="title">AppDelegate</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">setUpWindowAndRootView</span><span class="params">()</span></span> &#123;</div><div class="line">        window = <span class="type">UIWindow</span>(frame: <span class="type">UIScreen</span>.main.bounds)</div><div class="line">        window!.backgroundColor = <span class="type">UIColor</span>.white</div><div class="line">        window!.makeKeyAndVisible()</div><div class="line"></div><div class="line">        <span class="keyword">let</span> adVC = <span class="type">AdViewController</span>()</div><div class="line">        adVC.completion = &#123;</div><div class="line">            <span class="keyword">let</span> vc = <span class="type">ViewController</span>()</div><div class="line">            vc.adView = adVC.view</div><div class="line">            <span class="keyword">self</span>.window!.rootViewController = vc</div><div class="line">        &#125;</div><div class="line">        window!.rootViewController = adVC</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>注意在 AdViewController 销毁的回调方法中，将 AdViewController 的 view 传给真正的首页，让首页来执行动画<br><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">adVC.completion = &#123;</div><div class="line">    <span class="keyword">let</span> vc = <span class="type">ViewController</span>()</div><div class="line">    <span class="comment">// 将 AdViewController 的 view 传给真正的首页，让首页来执行动画</span></div><div class="line">    vc.adView = adVC.view</div><div class="line">    <span class="keyword">self</span>.window!.rootViewController = vc</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>在首页 ViewController 里我们有如下方法来执行 AdViewController 的销毁动画，这里配置的动画是常见的扩大渐变消失<br><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="keyword">var</span> advertiseView: <span class="type">UIView</span>?</div><div class="line"><span class="keyword">var</span> adView: <span class="type">UIView</span>? &#123;</div><div class="line">    <span class="keyword">didSet</span> &#123;</div><div class="line">        advertiseView = adView!</div><div class="line">        advertiseView?.frame = <span class="keyword">self</span>.view.bounds</div><div class="line">        <span class="keyword">self</span>.view.addSubview(advertiseView!)</div><div class="line">        <span class="type">UIView</span>.animate(withDuration: <span class="number">1.5</span>, animations: &#123; [<span class="keyword">weak</span> <span class="keyword">self</span>] <span class="keyword">in</span></div><div class="line">            <span class="keyword">self</span>?.advertiseView?.transform = <span class="type">CGAffineTransform</span>(scaleX: <span class="number">1.2</span>, y: <span class="number">1.2</span>)</div><div class="line">            <span class="keyword">self</span>?.advertiseView?.alpha = <span class="number">0</span></div><div class="line">        &#125;) &#123; [<span class="keyword">weak</span> <span class="keyword">self</span>] (isFinish) <span class="keyword">in</span></div><div class="line">            <span class="keyword">self</span>?.advertiseView?.removeFromSuperview()</div><div class="line">            <span class="keyword">self</span>?.advertiseView = <span class="literal">nil</span></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>至此，一个简单的启动屏动画就完成了。</p>
+
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+    <div class="bdsharebuttonbox">
+    <a href="#" class="bds_more" data-cmd="more">分享到：</a>
+    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间">QQ空间</a>
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博">新浪微博</a>
+    <a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博">腾讯微博</a>
+    <a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网">人人网</a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信">微信</a>
+</div>
+<script>
+window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"16"},"share":{"bdSize":16}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+<style>
+    .bdshare_popup_box {
+        border-radius: 4px;
+        border: #e1e1e1 solid 1px;
+    }
+    .bdshare-button-style0-16 a,
+    .bdshare-button-style0-16 .bds_more {
+        padding-left: 20px;
+        margin: 6px 10px 6px 0;
+    }
+    .bdshare_dialog_list a,
+    .bdshare_popup_list a,
+    .bdshare_popup_bottom a {
+        font-family: 'Microsoft Yahei';
+    }
+    .bdshare_popup_top {
+        display: none;
+    }
+    .bdshare_popup_bottom {
+        height: auto;
+        padding: 5px;
+    }
+</style>
+
+
+</div>
+
+            
+    
+        <a href="http://myhanson.com/2017/12/08/Swift 实现启动屏动画/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="http://myhanson.com/2017/12/08/Swift 实现启动屏动画/">Comentarios</a>
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2017/12/08/用SwiftGen管理UIImage等的String-based接口/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">Más nuevo</strong>
+            <div class="article-nav-title">
+                
+                    用SwiftGen管理UIImage等的String-based接口
+                
+            </div>
+        </a>
+    
+    
+        <a href="/2017/11/28/记一次失败的 Swift 元组数组实践/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">Más viejo</strong>
+            <div class="article-nav-title">记一次失败的 Swift 元组数组实践</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+        <section id="comments">
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+</section>
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">Recientes</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2017/12/08/用SwiftGen管理UIImage等的String-based接口/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"></p>
+                            <p class="item-title"><a href="/2017/12/08/用SwiftGen管理UIImage等的String-based接口/" class="title">用SwiftGen管理UIImage等的String-based接口</a></p>
+                            <p class="item-date"><time datetime="2017-12-08T07:15:21.000Z" itemprop="datePublished">2017-12-08</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2017/12/08/Swift 实现启动屏动画/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"></p>
+                            <p class="item-title"><a href="/2017/12/08/Swift 实现启动屏动画/" class="title">Swift 实现启动屏动画</a></p>
+                            <p class="item-date"><time datetime="2017-12-08T02:13:30.000Z" itemprop="datePublished">2017-12-08</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2017/11/28/记一次失败的 Swift 元组数组实践/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"></p>
+                            <p class="item-title"><a href="/2017/11/28/记一次失败的 Swift 元组数组实践/" class="title">记一次失败的 Swift 元组数组实践</a></p>
+                            <p class="item-date"><time datetime="2017-11-28T08:01:34.000Z" itemprop="datePublished">2017-11-28</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2017/05/09/自定义 UISegmentedControl 样式/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"></p>
+                            <p class="item-title"><a href="/2017/05/09/自定义 UISegmentedControl 样式/" class="title">自定义 UISegmentedControl 样式</a></p>
+                            <p class="item-date"><time datetime="2017-05-09T14:18:30.000Z" itemprop="datePublished">2017-05-09</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2017/05/03/HSStockChart介绍/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"></p>
+                            <p class="item-title"><a href="/2017/05/03/HSStockChart介绍/" class="title">HSStockChart介绍</a></p>
+                            <p class="item-date"><time datetime="2017-05-03T08:53:30.000Z" itemprop="datePublished">2017-05-03</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+    
+        
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">Archivos</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a><span class="archive-list-count">2</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    
+        
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            &copy; 2017 Hanson Zhang<br>
+            Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="http://github.com/ppoffice">PPOffice</a>
+        </div>
+    </div>
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <span id="busuanzi_container_site_pv">
+        本站总访问量<span id="busuanzi_value_site_pv"></span>次
+    </span>
+    <span id="busuanzi_container_site_uv">
+        本站访客数<span id="busuanzi_value_site_uv"></span>人次
+      </span>
+</footer>
+        
+    
+    <script>
+    var disqus_config = function () {
+        
+            this.page.url = 'http://myhanson.com/2017/12/08/Swift 实现启动屏动画/';
+        
+        this.page.identifier = 'Swift 实现启动屏动画';
+    };
+    (function() { 
+        var d = document, s = d.createElement('script');  
+        s.src = '//' + 'HansonBlog' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>
