@@ -9,7 +9,7 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" >
-    <title>Hanson&#39;s Blog</title>
+    <title>Hanson Zhang · Hanson&#39;s Blog</title>
     <style type="text/css">
     @font-face {
         font-family: 'Oswald-Regular';
@@ -196,6 +196,8 @@
 </head>
 
     
+        <body class="about-body">
+    
     
 <header class="header">
 
@@ -215,16 +217,22 @@
 
 
 
+height:50vh;
+
 >
     
     <!-- 主页  -->
+    
+    
             
-    <div class="site-intro-img" style="background-image: url(/)"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/about-bg.jpg)"></div>
     <div class="site-intro-placeholder"></div>
     <div class="site-intro-meta">
         <!-- 标题  -->
         <h1 class="intro-title">
             <!-- 主页  -->
+            
+            Hanson Zhang
             
         </h1>
         <!-- 副标题 -->
@@ -316,59 +324,12 @@
 </script>        
         <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
         <div class="container container-unloaded">
-            <main class="main index-page">
-    
-    
-    
-        <article class="index-post">
-            <a class="abstract-title" href = "/2017/12/08/用SwiftGen管理UIImage等的String-based接口/" >
-                
-                    <span>用SwiftGen管理UIImage等的String-based接口</span>
-            </a>
-            <div class="abstract-content">
-                问题现状平时我们使用UIImage，UIFont，UIColor会遇到很多String-based的接口方法，比如常用的UIImage：1let testImage = UIImage(named: "test")
-对于上面的代码，如果我们把 test 拼写错了，Xcode 并不会给出提示，只有当我们运行的时候才会收到报错，这样维护起来是有一定成本的。
+            <!-- 不可以删除，否则会调用post的layout  -->
+<main class="main about-page">
+    <article class="article-entry">
+        <p>My name is Hanson Zhang!</p>
 
-代码解决我们可以用类似如下的代码来解决这个问题：1234567891011121314151617181920212223242526import UIKit.UIImagestruct ImageAssets &#123;    fi...
-            </div>
-            <div class="abstract-post-meta">
-                <!-- date  -->
-                <div class="abstract-date">
-                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2017/12/08</span>
-                </div>
-                <!-- tags  -->
-                
-            </div>
-        </article>
-    
-    
-    
-        <article class="index-post">
-            <a class="abstract-title" href = "/2017/12/08/Swift 实现启动屏动画/" >
-                
-                    <span>Swift 实现启动屏动画</span>
-            </a>
-            <div class="abstract-content">
-                
-Github: SplashAnimate
-
-准备工作：首先我们需要确定作为宣传的图片的宽高比，这个一般是与 UI 确定的。一般启动屏展示会有上下两部分，上面是宣传图片，下面是 App 的 Logo。
-实现基本思路：在 LaunchScreen 结束后，在 AppDelegate 中将 rootViewController 指向展示广告用的 AdViewController，在AdViewController 中设置一段时间后自己销毁，并提供回调方法在 AppDelegate 中将 rootViewController 指向 App 真正的首页。
-
-实现细节：新建一个 AdViewCo...
-            </div>
-            <div class="abstract-post-meta">
-                <!-- date  -->
-                <div class="abstract-date">
-                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2017/12/08</span>
-                </div>
-                <!-- tags  -->
-                
-            </div>
-        </article>
-    
-    <!-- paginator  -->
-    
+    </article>
 </main>
             <!-- profile -->
             
