@@ -10,7 +10,7 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" >
     <meta name="description" content="">
-    <title>Swift 实现启动屏动画 · Hanson&#39;s Blog</title>
+    <title>上架个小工具-ImageGotcha · Hanson&#39;s Blog</title>
     <style type="text/css">
     @font-face {
         font-family: 'Oswald-Regular';
@@ -212,7 +212,7 @@
                 <a href="/" >Hanson&#39;s Blog.</a>
             </div>
             <div class="post-title">
-                <a href="#" class="post-name">Swift 实现启动屏动画</a>
+                <a href="#" class="post-name">上架个小工具-ImageGotcha</a>
             </div>
     </div>
     
@@ -244,7 +244,7 @@ height:50vh;
         <h1 class="intro-title">
             <!-- 主页  -->
             
-            Swift 实现启动屏动画
+            上架个小工具-ImageGotcha
             <!-- 404 -->
             
         </h1>
@@ -262,7 +262,7 @@ height:50vh;
             
             <div class="post-intro-meta">
                 <span class="post-intro-calander iconfont-archer">&#xe676;</span>
-                <span class="post-intro-time">2017/12/08</span>
+                <span class="post-intro-time">2018/05/18</span>
                 
                 <span id="busuanzi_container_page_pv" class="busuanzi-pv">
                     <span class="iconfont-archer">&#xe602;</span>
@@ -368,39 +368,28 @@ height:50vh;
         <div class="container container-unloaded">
             <main class="main post-page">
     <article class="article-entry">
-        <blockquote>
-<p>Github: <a href="https://github.com/zyphs21/SplashAnimate" target="_blank" rel="external">SplashAnimate</a></p>
-</blockquote>
-<h1 id="准备工作："><a href="#准备工作：" class="headerlink" title="准备工作："></a>准备工作：</h1><p>首先我们需要确定作为宣传的图片的宽高比，这个一般是与 UI 确定的。一般启动屏展示会有上下两部分，上面是宣传图片，下面是 App 的 Logo。</p>
-<h1 id="实现基本思路："><a href="#实现基本思路：" class="headerlink" title="实现基本思路："></a>实现基本思路：</h1><p>在 LaunchScreen 结束后，在 AppDelegate 中将 rootViewController 指向展示广告用的 AdViewController，在AdViewController 中设置一段时间后自己销毁，并提供回调方法在 AppDelegate 中将 rootViewController 指向 App 真正的首页。</p>
-<a id="more"></a>
-<h1 id="实现细节："><a href="#实现细节：" class="headerlink" title="实现细节："></a>实现细节：</h1><p>新建一个 AdViewController 用于放置广告宣传等展示.注意有一个回调方法。<br><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">AdViewController</span>: <span class="title">UIViewController</span> </span>&#123;</div><div class="line">    <span class="comment">// 用于 AdViewController 销毁后的回调</span></div><div class="line">    <span class="keyword">var</span> completion: (() -&gt; <span class="type">Void</span>)?</div><div class="line"></div><div class="line">    <span class="keyword">var</span> adImage: <span class="type">UIImage</span>?</div><div class="line">    <span class="keyword">var</span> adView: <span class="type">UIImageView</span>?</div><div class="line"></div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">viewDidLoad</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="comment">// ....</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>在 ViewDidLoad 方法中配置广告图,同时判断 iPhoneX的特殊情况<br><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">viewDidLoad</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="keyword">super</span>.viewDidLoad()</div><div class="line"></div><div class="line">    <span class="keyword">var</span> adViewHeight = (<span class="number">1040</span> / <span class="number">720</span>) * screenWidth</div><div class="line">    <span class="keyword">var</span> imageName = <span class="string">"start_page"</span></div><div class="line">    <span class="keyword">if</span> <span class="type">UIDevice</span>.isiPhoneX() &#123;</div><div class="line">        adViewHeight = (<span class="number">1920</span> / <span class="number">1124</span>) * screenWidth</div><div class="line">        imageName = <span class="string">"start_page_x"</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    adView = <span class="type">UIImageView</span>(frame: <span class="type">CGRect</span>(x: <span class="number">0</span>, y: <span class="number">0</span>, width: screenWidth, height: adViewHeight))</div><div class="line">    adView?.image = <span class="type">UIImage</span>(named: imageName)</div><div class="line">    adView?.contentMode = .scaleAspectFill</div><div class="line">    <span class="keyword">self</span>.view.addSubview(adView!)</div><div class="line"></div><div class="line">    <span class="keyword">let</span> bottomHolderView = <span class="type">UIView</span>(frame: <span class="type">CGRect</span>(x: <span class="number">0</span>, y: screenHeight-<span class="number">120</span>, width: screenWidth, height: <span class="number">120</span>))</div><div class="line">    <span class="keyword">self</span>.view.addSubview(bottomHolderView)</div><div class="line"></div><div class="line">    <span class="keyword">let</span> logo = <span class="type">UIImageView</span>(frame: <span class="type">CGRect</span>(x: (screenWidth-<span class="number">120</span>)/<span class="number">2</span>, y: (<span class="number">120</span>-<span class="number">50</span>)/<span class="number">2</span>, width: <span class="number">120</span>, height: <span class="number">50</span>))</div><div class="line">    logo.image = <span class="type">UIImage</span>(named: <span class="string">"start_logo"</span>)</div><div class="line">    bottomHolderView.addSubview(logo)</div><div class="line"></div><div class="line">    <span class="keyword">let</span> time: <span class="type">TimeInterval</span> = <span class="number">1.0</span></div><div class="line">    <span class="type">DispatchQueue</span>.main.asyncAfter(deadline: <span class="type">DispatchTime</span>.now() + time) &#123;</div><div class="line">        <span class="keyword">self</span>.dismissAdView()</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>上面代码中有几个注意的:</p>
-<p>因为图片要撑满屏幕的宽度，所以宽度是固定的，根据图片的高宽比，算出图片实际应有的高度，这样图片可以在各个尺寸的 iPhone 中才不会因为拉伸而变形。但是因为 iPhoneX 特殊的宽高比，所以还是要为它特定一张图片，不然即使图片在 iPhoneX 上不变形，图片所占的高度会太小，或者顶部被刘海遮挡内容而不美观。<br><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> adViewHeight = (<span class="number">1040</span> / <span class="number">720</span>) * screenWidth</div><div class="line"><span class="keyword">var</span> imageName = <span class="string">"start_page"</span></div><div class="line"><span class="keyword">if</span> <span class="type">UIDevice</span>.isiPhoneX() &#123;</div><div class="line">    adViewHeight = (<span class="number">1920</span> / <span class="number">1124</span>) * screenWidth</div><div class="line">    imageName = <span class="string">"start_page_x"</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>上面判断是否为 iPhoneX 我是在 UIDevice 里扩展了一个方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">extension UIDevice &#123;</div><div class="line">    public static func isiPhoneX() -&gt; Bool &#123;</div><div class="line">        if UIScreen.main.bounds.height == 812 &#123;</div><div class="line">            return true</div><div class="line">        &#125;</div><div class="line">        return false</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>还有注意在执行销毁时调用回调方法<br><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> time: <span class="type">TimeInterval</span> = <span class="number">1.0</span></div><div class="line"><span class="type">DispatchQueue</span>.main.asyncAfter(deadline: <span class="type">DispatchTime</span>.now() + time) &#123;</div><div class="line">    <span class="keyword">self</span>.dismissAdView()</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>在 AppDelegate 中 didFinishLaunchingWithOptions 方法中调用下面的 setUpWindowAndRootView() 来管理页面展示<br><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">extension</span> <span class="title">AppDelegate</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">setUpWindowAndRootView</span><span class="params">()</span></span> &#123;</div><div class="line">        window = <span class="type">UIWindow</span>(frame: <span class="type">UIScreen</span>.main.bounds)</div><div class="line">        window!.backgroundColor = <span class="type">UIColor</span>.white</div><div class="line">        window!.makeKeyAndVisible()</div><div class="line"></div><div class="line">        <span class="keyword">let</span> adVC = <span class="type">AdViewController</span>()</div><div class="line">        adVC.completion = &#123;</div><div class="line">            <span class="keyword">let</span> vc = <span class="type">ViewController</span>()</div><div class="line">            vc.adView = adVC.view</div><div class="line">            <span class="keyword">self</span>.window!.rootViewController = vc</div><div class="line">        &#125;</div><div class="line">        window!.rootViewController = adVC</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>注意在 AdViewController 销毁的回调方法中，将 AdViewController 的 view 传给真正的首页，让首页来执行动画<br><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">adVC.completion = &#123;</div><div class="line">    <span class="keyword">let</span> vc = <span class="type">ViewController</span>()</div><div class="line">    <span class="comment">// 将 AdViewController 的 view 传给真正的首页，让首页来执行动画</span></div><div class="line">    vc.adView = adVC.view</div><div class="line">    <span class="keyword">self</span>.window!.rootViewController = vc</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>在首页 ViewController 里我们有如下方法来执行 AdViewController 的销毁动画，这里配置的动画是常见的扩大渐变消失<br><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="keyword">var</span> advertiseView: <span class="type">UIView</span>?</div><div class="line"><span class="keyword">var</span> adView: <span class="type">UIView</span>? &#123;</div><div class="line">    <span class="keyword">didSet</span> &#123;</div><div class="line">        advertiseView = adView!</div><div class="line">        advertiseView?.frame = <span class="keyword">self</span>.view.bounds</div><div class="line">        <span class="keyword">self</span>.view.addSubview(advertiseView!)</div><div class="line">        <span class="type">UIView</span>.animate(withDuration: <span class="number">1.5</span>, animations: &#123; [<span class="keyword">weak</span> <span class="keyword">self</span>] <span class="keyword">in</span></div><div class="line">            <span class="keyword">self</span>?.advertiseView?.transform = <span class="type">CGAffineTransform</span>(scaleX: <span class="number">1.2</span>, y: <span class="number">1.2</span>)</div><div class="line">            <span class="keyword">self</span>?.advertiseView?.alpha = <span class="number">0</span></div><div class="line">        &#125;) &#123; [<span class="keyword">weak</span> <span class="keyword">self</span>] (isFinish) <span class="keyword">in</span></div><div class="line">            <span class="keyword">self</span>?.advertiseView?.removeFromSuperview()</div><div class="line">            <span class="keyword">self</span>?.advertiseView = <span class="literal">nil</span></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>至此，一个简单的启动屏动画就完成了。</p>
+        <p>上架了个小工具。<code>ImageGotcha</code> 是一个 <code>Safari</code> 的 <code>Action Extension</code>，它可以提取当前网页的图片方便查看和批量保存，比如可以去某些 <code>Instagram</code> 用户的主页批量下载图片，或者下载 <code>Bing</code> 的每日背景图等等。点击 <a href="https://itunes.apple.com/cn/app/imagegotcha/id1384107130?mt=8" target="_blank" rel="external">这里</a> 到 <code>AppStore</code> 查看。</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_jpg/r4bfe3x7N4qUqAVlfjNY1VhViaUFaAE61a3JhxhT56icWTEEhXf7au2Cic2Ct7btf6pbibz2nSETXsxXrNicDicQgOoQ/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1" alt=""></p>
+<p><code>ImageGotcha</code> 也做了国际化，支持英文、简体中文、繁体中文、日语以及韩语。要想使用<code>ImageGotcha</code>，需先在 <code>Safari</code> 开启这个<code>Extension</code>，<code>App</code> 内有操作指导，如下图是各种语言的指导说明：</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/r4bfe3x7N4qUqAVlfjNY1VhViaUFaAE614hII2IRL1hX1oiaGdibPaNFGYr2cH0AbszUe8onCCicgQDPtibMuMCgtWg/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1" alt=""></p>
+<p>这是演示如何启动 <code>ImageGotcha</code> 的 <code>Action Extension</code>：</p>
+<embed src="https://imgcache.qq.com/tencentvideo_v1/playerv3/TPout.swf?max_age=86400&v=20161117&vid=o1339za69qd&auto=0" allowfullscreen="true" quality="high" width="480" height="400" align="middle" allowscriptaccess="always" type="application/x-shockwave-flash">
+
+<p>这是操作的演示：</p>
+<embed src="https://imgcache.qq.com/tencentvideo_v1/playerv3/TPout.swf?max_age=86400&v=20161117&vid=w1339c8t6nc&auto=0" allowfullscreen="true" quality="high" width="480" height="400" align="middle" allowscriptaccess="always" type="application/x-shockwave-flash">
+
 
     </article>
     <!-- 前后页  -->
     <ul class="post-paginator">
         <li class="next">
             
-                <div class="nextSlogan">Next Post</div>
-                <a href= "/2017/12/08/用SwiftGen管理UIImage等的String-based接口/" title= 用SwiftGen管理UIImage等的String-based接口 >
-                    <div class="nextTitle">用SwiftGen管理UIImage等的String-based接口</div>
-                </a>
-            
         </li>
         <li class="previous">
             
                 <div class="prevSlogan">Previous Post</div>
-                <a href= "/2017/11/28/记一次失败的 Swift 元组数组实践/" title= 记一次失败的 Swift 元组数组实践 >
-                    <div class="prevTitle">记一次失败的 Swift 元组数组实践</div>
+                <a href= "/2018/03/28/使用SVN建立和发布私有CocoaPods库/" title= 使用SVN建立和发布私有CocoaPods库 >
+                    <div class="prevTitle">使用SVN建立和发布私有CocoaPods库</div>
                 </a>
             
         </li>
@@ -417,8 +406,8 @@ height:50vh;
     *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
         
         var disqus_config = function () {
-        this.page.url = "http://myhanson.com/2017/12/08/Swift 实现启动屏动画/";  // Replace PAGE_URL with your page's canonical URL variable
-        this.page.identifier = "Swift 实现启动屏动画"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        this.page.url = "http://myhanson.com/2018/05/18/上架个小工具-ImageGotcha/";  // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = "上架个小工具-ImageGotcha"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
         };
         
         (function () { // DON'T EDIT BELOW THIS LINE
@@ -535,7 +524,7 @@ top:50vh;
         <div class="toc-catalog">
             <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
         </div>
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#准备工作："><span class="toc-number">1.</span> <span class="toc-text">准备工作：</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#实现基本思路："><span class="toc-number">2.</span> <span class="toc-text">实现基本思路：</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#实现细节："><span class="toc-number">3.</span> <span class="toc-text">实现细节：</span></a></li></ol>
+        
     </div>
     
     <div class="back-top iconfont-archer">&#xe639;</div>
