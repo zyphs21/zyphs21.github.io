@@ -321,54 +321,18 @@
     
     
         <article class="index-post">
-            <a class="abstract-title" href = "/2017/05/09/自定义 UISegmentedControl 样式/" >
+            <a class="abstract-title" href = "/2018/07/17/在Swift扩展里添加"存储属性"/" >
                 
-                    <span>自定义 UISegmentedControl 样式</span>
+                    <span>在Swift扩展里添加&#34;存储属性&#34;</span>
             </a>
             <div class="abstract-content">
-                系统的 UISegmentedControl 是个挺方便的控件，这里来讲讲在 Swift3 下自定义 UISegmentedControl 的样式，包括修改底色，边框颜色等等。
-要了解 UISegmentedControl 各个部分的组成，可以在官方的文档中找到 UISegmentedControl 文档 。着重注意这个图：   上面这幅图明确的列出了 UISegmentedControl 各个部分所控制的方法。下面就开始自定义吧。  
-
-首先我们先做一个通过颜色生成图片的的一个扩展方法：1234567891011121314extension UIImage&#123;    publ...
+                由来最近 ImageGotcha 收到了第一封用户反馈的邮件。这个用户希望可以有 Dark Mode。ImageGotcha 只是一个工具类 App ，好像也没有什么必要加上这个黑夜模式，不过我还是去想了想如何给应用加上黑夜模式，或者说加上一个换肤的功能。
+基本的思路就是 post 一个自定义的 NSNotification，然后在需要修改颜色的地方监听这个通知然后进行修改。按照惯例，我还是去 Github 上搜搜，看看别人是怎么做的。然后发现一部分人的做法是给现有的 UIKit 控件添加扩展属性，然后可以在定义这些控件的时候指定不同模式下的颜色，这的确是一种好方法。那么是如何在 Swi...
             </div>
             <div class="abstract-post-meta">
                 <!-- date  -->
                 <div class="abstract-date">
-                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2017/05/09</span>
-                </div>
-                <!-- tags  -->
-                
-            </div>
-        </article>
-    
-    
-    
-        <article class="index-post">
-            <a class="abstract-title" href = "/2017/05/03/HSStockChart介绍/" >
-                
-                    <span>HSStockChart介绍</span>
-            </a>
-            <div class="abstract-content">
-                HSStockChart 是一个绘制股票分时图、K 线图的库。支持流畅的回弹拖动，长按十字线，捏合放大缩小等功能，主要使用了 CAShapeLayer 来绘图，相比使用 Core Graphics 和重写 drawRect 的方法更高效，占用内存更小。GitHub 地址：HSStockChart  
-
-
-功能
- 支持绘制分时图，五日分时图，K 线图，MA 线指标，交易量柱等。
- 支持横屏查看。
- K 线图利用 UIScrollView 达到流畅的滑动查看效果。
- 使用 CAShapeLayer 绘图，内存占用更小，效率更高。
-
-版本需求
-iOS 8.0+
-Swift 3
-
-说明
-之前绘图...
-            </div>
-            <div class="abstract-post-meta">
-                <!-- date  -->
-                <div class="abstract-date">
-                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2017/05/03</span>
+                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/07/17</span>
                 </div>
                 <!-- tags  -->
                 

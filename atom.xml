@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://myhanson.com/"/>
-  <updated>2018-05-21T01:36:46.235Z</updated>
+  <updated>2018-07-17T07:42:37.263Z</updated>
   <id>http://myhanson.com/</id>
   
   <author>
@@ -15,6 +15,27 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>在Swift扩展里添加&quot;存储属性&quot;</title>
+    <link href="http://myhanson.com/2018/07/17/%E5%9C%A8Swift%E6%89%A9%E5%B1%95%E9%87%8C%E6%B7%BB%E5%8A%A0%22%E5%AD%98%E5%82%A8%E5%B1%9E%E6%80%A7%22/"/>
+    <id>http://myhanson.com/2018/07/17/在Swift扩展里添加&quot;存储属性&quot;/</id>
+    <published>2018-07-17T05:46:33.000Z</published>
+    <updated>2018-07-17T07:42:37.263Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="由来"><a href="#由来" class="headerlink" title="由来"></a>由来</h2><p>最近 <a href="https://itunes.apple.com/cn/app/imagegotcha/id1384107130?mt=8" target="_blank" rel="external">ImageGotcha</a> 收到了第一封用户反馈的邮件。<br><img src="" alt=""><br>这个用户希望可以有 <code>Dark Mode</code>。<code>ImageGotcha</code> 只是一个工具类 <code>App</code> ，好像也没有什么必要加上这个黑夜模式，不过我还是去想了想如何给应用加上黑夜模式，或者说加上一个换肤的功能。</p><p>基本的思路就是 <code>post</code> 一个自定义的 <code>NSNotification</code>，然后在需要修改颜色的地方监听这个通知然后进行修改。<br>按照惯例，我还是去 <code>Github</code> 上搜搜，看看别人是怎么做的。然后发现一部分人的做法是给现有的 <code>UIKit</code> 控件添加扩展属性，然后可以在定义这些控件的时候指定不同模式下的颜色，这的确是一种好方法。那么是如何在 <code>Swift</code> 的 <code>Extension 扩展</code> 里添加所谓的<code>&quot;存储属性&quot;</code>呢？</p><p>我们都知道，在 <code>Swift</code> 的 <code>Extension</code> 里是不能添加<code>存储属性</code>的，这里可以类比 <code>Objective-C</code>的 <code>Category 分类</code>，分类是不能添加实例变量和属性的。</p><h2 id="疑问"><a href="#疑问" class="headerlink" title="疑问"></a>疑问</h2><p>这里就有个问题了，为什么不能添加呢？</p><blockquote><p>因为不管是 <code>Swift</code> 的 <code>Extension</code> 还是 <code>Objective-C</code> 的 <code>Category</code> 都不能改变原有的类或者结构体的内存结构，在实例化这些类的时候，内存结构是确定的，而添加属性或者实例变量需要内存空间，会改变原有的内存结构。</p></blockquote><h2 id="利用关联对象"><a href="#利用关联对象" class="headerlink" title="利用关联对象"></a>利用关联对象</h2><p>在 <code>Objective-C</code> 中我们常常用运行时 <code>Associated Object 关联对象</code> 来给 <code>Category</code> 添加属性，而在 <code>Swift</code> 里，我们同样可以利用关联对象在 <code>Extension</code> 中添加计算属性，以达到所谓的<code>存储属性</code>的效果。</p><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">AssociatedKeys</span> </span>&#123;</div><div class="line">    <span class="keyword">static</span> <span class="keyword">var</span> testNameKey: <span class="type">String</span> = <span class="string">"testNameKey"</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">extension</span> <span class="title">UIView</span> </span>&#123;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">var</span> testName: <span class="type">String</span>? &#123;</div><div class="line">        <span class="keyword">get</span> &#123;</div><div class="line">            <span class="keyword">return</span> objc_getAssociatedObject(<span class="keyword">self</span>, &amp;<span class="type">AssociatedKeys</span>.testNameKey) <span class="keyword">as</span>? <span class="type">String</span></div><div class="line">        &#125;</div><div class="line">        <span class="keyword">set</span> &#123;</div><div class="line">            objc_setAssociatedObject(<span class="keyword">self</span>, &amp;<span class="type">AssociatedKeys</span>.testNameKey, newValue, .<span class="type">OBJC_ASSOCIATION_RETAIN_NONATOMIC</span>)</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure><p><code>&amp;AssociatedKeys.testNameKey</code>: <code>&amp;</code> 操作符是取出地址作为 <code>UnsafeRawPointer</code> 参数传入。<br><code>.OBJC_ASSOCIATION_RETAIN_NONATOMIC</code>: 是一个 <code>objc_AssociationPolicy</code> 枚举，它有以下几种选择(从字面意思可以猜测是与Objective-C中的属性修饰符相关)：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">public enum objc_AssociationPolicy : UInt &#123;</div><div class="line">    case OBJC_ASSOCIATION_ASSIGN</div><div class="line">    case OBJC_ASSOCIATION_RETAIN_NONATOMIC</div><div class="line">    case OBJC_ASSOCIATION_COPY_NONATOMIC</div><div class="line">    case OBJC_ASSOCIATION_RETAIN</div><div class="line">    case OBJC_ASSOCIATION_COPY</div><div class="line">&#125;</div></pre></td></tr></table></figure></p><p>我们可以测试一下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">var testString = &quot;test&quot;</div><div class="line"></div><div class="line">let view = UIView()</div><div class="line"></div><div class="line">view.testName = testString</div><div class="line">print(view.testName) // 输出 Optional(&quot;test&quot;)</div><div class="line"></div><div class="line">testString.append(&quot;change&quot;)</div><div class="line">print(view.testName) // 输出 Optional(&quot;test&quot;)</div><div class="line"></div><div class="line">view.testName = &quot;testChange&quot;</div><div class="line">print(view.testName) // 输出 Optional(&quot;testChange&quot;)</div></pre></td></tr></table></figure></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;由来&quot;&gt;&lt;a href=&quot;#由来&quot; class=&quot;headerlink&quot; title=&quot;由来&quot;&gt;&lt;/a&gt;由来&lt;/h2&gt;&lt;p&gt;最近 &lt;a href=&quot;https://itunes.apple.com/cn/app/imagegotcha/id1384107130?m
+      
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>上架个小工具-ImageGotcha</title>
