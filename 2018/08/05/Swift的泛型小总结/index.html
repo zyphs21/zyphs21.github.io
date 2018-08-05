@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html>
+    <!-- title -->
+
+
+
+
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" >
+    <meta name="description" content="">
+    <title>Swift的泛型小总结 · Hanson&#39;s Blog</title>
+    <style type="text/css">
+    @font-face {
+        font-family: 'Oswald-Regular';
+        src: url("/font/Oswald-Regular.ttf");
+    }
+
+    body {
+        margin: 0;
+    }
+
+    header,
+    footer,
+    .back-top,
+    .sidebar,
+    .container,
+    .site-intro-meta,
+    .toc-wrapper {
+        display: none;
+    }
+
+    .site-intro {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        /* height: 50vh; */
+        overflow: hidden;
+    }
+
+    .site-intro-placeholder {
+        position: absolute;
+        z-index: -2;
+        top: 0;
+        left: 0;
+        width: calc(100% + 300px);
+        height: 100%;
+        background: repeating-linear-gradient(-45deg, #444 0, #444 80px, #333 80px, #333 160px);
+        background-position: center center;
+        transform: translate3d(-226px, 0, 0);
+        animation: gradient-move 2.5s ease-out 0s 1;
+    }
+
+    @keyframes gradient-move {
+        0% {
+            transform: translate3d(-226px, 0, 0);
+        }
+        100% {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+
+</style>
+
+    <link rel="preload" href= /css/style.css?v=20180317 as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="stylesheet" type="text/css" href= /css/mobile.css?v=20180317 media="(max-width: 980px)"/>
+    
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        
+    <link rel="icon" href= /assets/favicon.ico>
+    <script>
+        (function (w) {
+            "use strict";
+            // rel=preload support test
+            if (!w.loadCSS) {
+                w.loadCSS = function () { };
+            }
+            // define on the loadCSS obj
+            var rp = loadCSS.relpreload = {};
+            // rel=preload feature support test
+            // runs once and returns a function for compat purposes
+            rp.support = (function () {
+                var ret;
+                try {
+                    ret = w.document.createElement("link").relList.supports("preload");
+                } catch (e) {
+                    ret = false;
+                }
+                return function () {
+                    return ret;
+                };
+            })();
+
+            // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+            // then change that media back to its intended value on load
+            rp.bindMediaToggle = function (link) {
+                // remember existing media attr for ultimate state, or default to 'all'
+                var finalMedia = link.media || "all";
+
+                function enableStylesheet() {
+                    link.media = finalMedia;
+                }
+
+                // bind load handlers to enable media
+                if (link.addEventListener) {
+                    link.addEventListener("load", enableStylesheet);
+                } else if (link.attachEvent) {
+                    link.attachEvent("onload", enableStylesheet);
+                }
+
+                // Set rel and non-applicable media type to start an async request
+                // note: timeout allows this to happen async to let rendering continue in IE
+                setTimeout(function () {
+                    link.rel = "stylesheet";
+                    link.media = "only x";
+                });
+                // also enable media after 3 seconds,
+                // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+                setTimeout(enableStylesheet, 3000);
+            };
+
+            // loop through link elements in DOM
+            rp.poly = function () {
+                // double check this to prevent external calls from running
+                if (rp.support()) {
+                    return;
+                }
+                var links = w.document.getElementsByTagName("link");
+                for (var i = 0; i < links.length; i++) {
+                    var link = links[i];
+                    // qualify links to those with rel=preload and as=style attrs
+                    if (link.rel === "preload" && link.getAttribute("as") === "style" && !link.getAttribute("data-loadcss")) {
+                        // prevent rerunning on link
+                        link.setAttribute("data-loadcss", true);
+                        // bind listeners to toggle media back
+                        rp.bindMediaToggle(link);
+                    }
+                }
+            };
+
+            // if unsupported, run the polyfill
+            if (!rp.support()) {
+                // run once at least
+                rp.poly();
+
+                // rerun poly on an interval until onload
+                var run = w.setInterval(rp.poly, 500);
+                if (w.addEventListener) {
+                    w.addEventListener("load", function () {
+                        rp.poly();
+                        w.clearInterval(run);
+                    });
+                } else if (w.attachEvent) {
+                    w.attachEvent("onload", function () {
+                        rp.poly();
+                        w.clearInterval(run);
+                    });
+                }
+            }
+            // commonjs
+            if (typeof exports !== "undefined") {
+                exports.loadCSS = loadCSS;
+            }
+            else {
+                w.loadCSS = loadCSS;
+            }
+        }(typeof global !== "undefined" ? global : this));
+    </script>
+    <script src="//cdn.staticfile.org/jquery/3.2.1/jquery.min.js" defer></script>
+    <script src="/scripts/main.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script>
+    <!-- 百度统计  -->
+    
+    <script>
+        var _hmt = _hmt || [];
+        (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?1d67485965ad28437990f18cffd5cd08";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+    
+    <!-- 谷歌统计  -->
+    
+    <script>
+        (function (i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+        (i[r].q = i[r].q || []).push(arguments)
+        }, i[r].l = 1 * new Date(); a = s.createElement(o),
+        m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+        ga('create', 'UA-109245364-1', 'auto');
+        ga('send', 'pageview');
+    </script>
+    
+</head>
+
+    
+        <body class="post-body">
+    
+    
+<header class="header">
+
+    <div class="read-progress"></div>
+    <div class="header-sidebar-menu">&#xe775;</div>
+    <!-- post页的toggle banner  -->
+    
+    <div class="banner">
+            <div class="blog-title">
+                <a href="/" >Hanson&#39;s Blog.</a>
+            </div>
+            <div class="post-title">
+                <a href="#" class="post-name">Swift的泛型小总结</a>
+            </div>
+    </div>
+    
+    <a class="home-link" href=/>Hanson's Blog.</a>
+</header>
+    <div class="wrapper">
+        <div class="site-intro" style=
+
+
+
+
+
+
+
+
+height:50vh;
+
+>
+    
+    <!-- 主页  -->
+    
+    
+    <!-- 404页  -->
+            
+    <div class="site-intro-img" style="background-image: url(/intro/post-bg.jpg)"></div>
+    <div class="site-intro-placeholder"></div>
+    <div class="site-intro-meta">
+        <!-- 标题  -->
+        <h1 class="intro-title">
+            <!-- 主页  -->
+            
+            Swift的泛型小总结
+            <!-- 404 -->
+            
+        </h1>
+        <!-- 副标题 -->
+        <p class="intro-subtitle">
+            <!-- 主页副标题  -->
+            
+            
+            <!-- 404 -->
+            
+        </p>
+        <!-- 文章页meta -->
+        
+            <!-- 文章页标签  -->
+            
+            <div class="post-intro-meta">
+                <span class="post-intro-calander iconfont-archer">&#xe676;</span>
+                <span class="post-intro-time">2018/08/05</span>
+                
+                <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                    <span class="iconfont-archer">&#xe602;</span>
+                    <span id="busuanzi_value_page_pv"></span>
+                </span>
+                
+                <span class="shareWrapper">
+                    <span class="iconfont-archer shareIcon">&#xe71d;</span>
+                    <span class="shareText">Share</span>
+                    <ul class="shareList">
+                        <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                            <div class="share-qrcode"></div>
+                        </li>
+                        <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                        <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                        <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                        <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                    </ul>
+                </span>
+            </div>
+        
+    </div>
+</div>
+        <script>
+  // load webfont-loader async, and add callback function
+  function async(u, c) {
+    var d = document, t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0];
+    o.src = u;
+    if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+    s.parentNode.insertBefore(o, s);
+  }
+  
+  // get user agent
+  var browser = {
+    versions: function () {
+      var u = window.navigator.userAgent;
+      return {
+        userAgent: u,
+        trident: u.indexOf('Trident') > -1, //IE内核
+        presto: u.indexOf('Presto') > -1, //opera内核
+        webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+        gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+        mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+        ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+        android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
+        iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者安卓QQ浏览器
+        iPad: u.indexOf('iPad') > -1, //是否为iPad
+        webApp: u.indexOf('Safari') == -1, //是否为web应用程序，没有头部与底部
+        weixin: u.indexOf('MicroMessenger') == -1, //是否为微信浏览器
+        uc: u.indexOf('UCBrowser') > -1 //是否为android下的UC浏览器
+      };
+    }()
+  }
+  console.log("userAgent:" + browser.versions.userAgent);
+
+  // callback
+  function fontLoaded() {
+    console.log('font loaded');
+    if (document.getElementsByClassName('site-intro-meta')) {
+      document.getElementsByClassName('intro-title')[0].classList.add('intro-fade-in');
+      document.getElementsByClassName('intro-subtitle')[0].classList.add('intro-fade-in');
+      var postIntroTags = document.getElementsByClassName('post-intro-tags')[0],
+        postIntroMeat = document.getElementsByClassName('post-intro-meta')[0];
+      if (postIntroTags) {
+        postIntroTags.classList.add('post-fade-in');
+      }
+      if (postIntroMeat) {
+        postIntroMeat.classList.add('post-fade-in');
+      }
+    }
+  }
+
+  // UC不支持跨域，所以直接显示
+  function asyncCb(){
+    if (browser.versions.uc) {
+      console.log("UCBrowser");
+      fontLoaded();
+    } else {
+      WebFont.load({
+        custom: {
+          families: ['Oswald-Regular']
+        },
+        loading: function () {  //所有字体开始加载
+          // console.log('loading');
+        },
+        active: function () {  //所有字体已渲染
+          fontLoaded();
+        },
+        inactive: function () { //字体预加载失败，无效字体或浏览器不支持加载
+          console.log('inactive: timeout');
+          fontLoaded();
+        },
+        timeout: 5000 // Set the timeout to two seconds
+      });
+    }
+  }
+
+  async("https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js", asyncCb)
+</script>        
+        <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
+        <div class="container container-unloaded">
+            <main class="main post-page">
+    <article class="article-entry">
+        <p>[TOC]</p>
+<hr>
+<p><strong>本文针对网上一些关于泛型的知识点进行汇总和总结，已在文中标记出参考文章的链接</strong></p>
+<blockquote>
+<p>泛型是程序设计语言的一种特性。允许程序员在强类型程序设计语言中编写代码时定义一些可变部分，那些部分在使用前必须作出指明。</p>
+</blockquote>
+<p><code>Objective-C</code> 缺乏一个重要特性:不支持泛型。幸运地是，<code>Swift</code>拥有这一特性。==泛型允许你声明的函数、类以及结构体支持不同的数据类型==。</p>
+<p>泛型代码可以让你写出根据自我需求定义、适用于任何类型的，灵活且可重用的函数和类型。它的可以让你避免重复的代码，用一种清晰和抽象的方式来表达代码的意图。</p>
+<p>泛型是 Swift 强大特征中的其中一个，许多 Swift 标准库是通过泛型代码构建出来的。事实上，泛型的使用贯穿了整本语言手册，只是你没有发现而已。 <span style="border-bottom:2px solid brown;">例如，Swift 的数组和字典类型都是泛型集。你可以创建一个Int数组，也可创建一个String数组，或者甚至于可以是任何其他 Swift 的类型数据数组。同样的，你也可以创建存储任何指定类型的字典（dictionary），而且这些类型可以是没有限制的。</span></p>
+<blockquote>
+<p><a href="https://swift.gg/2015/09/16/swift-generics/" target="_blank" rel="external">参考</a></p>
+</blockquote>
+<h2 id="实现栈的例子，说明泛型的作用"><a href="#实现栈的例子，说明泛型的作用" class="headerlink" title="实现栈的例子，说明泛型的作用"></a>实现栈的例子，说明泛型的作用</h2><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">IntStack</span></span>&#123;</div><div class="line">  <span class="comment">// 采用数组作为容器保存数据 类型为Int</span></div><div class="line">  <span class="keyword">private</span> <span class="keyword">var</span> stackItems:[<span class="type">Int</span>] = []</div><div class="line">  <span class="comment">// 入栈操作 即Push 添加最新数据到容器最顶部</span></div><div class="line">  <span class="function"><span class="keyword">func</span> <span class="title">pushItem</span><span class="params">(item:Int)</span></span>&#123;</div><div class="line">    stackItems.append(item)    </div><div class="line">  &#125;</div><div class="line">  <span class="comment">// 出栈操作 即Pop 将容器最顶部数据移除</span></div><div class="line">  <span class="function"><span class="keyword">func</span> <span class="title">popItem</span><span class="params">()</span></span>-&gt;<span class="type">Int</span>?&#123;</div><div class="line">    <span class="keyword">let</span> lastItem = stackItems.last</div><div class="line">    stackItems.removeLast()</div><div class="line">    <span class="keyword">return</span> lastItem</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这栈能够处理<code>Int</code>类型数据。但是如果要一个能够处理<code>String</code>类型的栈呢？我们需要替换所有<code>Int</code>为<code>String</code>，不过这显然是一个糟糕的解决方法。此外另外一种方法是用<code>AnyObject</code>，如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">class AnyObjectStack&#123;</div><div class="line">  // 采用数组作为容器保存数据 类型为AnyObject</div><div class="line">  private var stackItems:[AnyObject] = []</div><div class="line">  </div><div class="line">  func pushItem(item:AnyObject)&#123;</div><div class="line">    stackItems.append(item)    </div><div class="line">  &#125;</div><div class="line">  </div><div class="line">  func popItem()-&gt;AnyObject?&#123;</div><div class="line">    let lastItem = stackItems.last</div><div class="line">    stackItems.removeLast()</div><div class="line">    return lastItem</div><div class="line">  &#125;    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>不过这种情况下我们就失去了数据类型的安全，并且每当我们对栈进行操作时,都需要进行一系列繁琐的类型转换(casting操作,使用as来进行类型转换)</p>
+<ul>
+<li>通过泛型来解决：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">class Stack&lt;T&gt; &#123;</div><div class="line"></div><div class="line">  private var stackItems: [T] = []  </div><div class="line"></div><div class="line">  func pushItem(item:T) &#123;</div><div class="line">    stackItems.append(item)</div><div class="line">  &#125;  </div><div class="line">  </div><div class="line">  func popItem() -&gt; T? &#123;</div><div class="line">    let lastItem = stackItems.last</div><div class="line">    stackItems.removeLast()</div><div class="line">    return lastItem</div><div class="line">  &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>泛型定义方式:由一对尖括号(&lt;&gt;)包裹，命名方式通常为大写字母开头(这里我们命名为T)。在初始化阶段，我们通过明确的类型(这里为Int)来定义参数,之后编译器将所有的泛型T替换成Int类型:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">// 指定了泛型T 就是 Int </div><div class="line">// 编译器会替换所有T为Int</div><div class="line">let aStack = Stack&lt;Int&gt;()</div><div class="line"></div><div class="line">aStack.pushItem(10)</div><div class="line">if let lastItem = aStack.popItem() &#123;</div><div class="line">  print(&quot;last item: \(lastItem)&quot;)</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="泛型扩展"><a href="#泛型扩展" class="headerlink" title="泛型扩展"></a>泛型扩展</h2><blockquote>
+<p><a href="http://swifter.tips/extension-generic/" target="_blank" rel="external">参考</a></p>
+</blockquote>
+<p>Swift 对于泛型的支持使得我们可以避免为类似的功能多次书写重复的代码，这是一种很好的简化。而对于泛型类型，我们也可以使用 extension 为泛型类型添加新的方法。</p>
+<p>与为普通的类型添加扩展不同的是，<span style="border-bottom: 2px solid brown">泛型类型在类型定义时就引入了类型标志，我们可以直接使用</span>。例如 Swift 的 Array 类型的定义是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public struct Array&lt;Element&gt; : CollectionType, Indexable, ... &#123;</div><div class="line">    //...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在这个定义中，已经声明了 <code>Element</code> 为泛型类型。在为类似这样的泛型类型写扩展的时候，我们不需要在 extension 关键字后的声明中重复地去写 <code>&lt;Element&gt;</code> 这样的泛型类型名字 (其实编译器也不允许我们这么做)，在扩展中可以使用和原来所定义一样的符号即可指代类型本体声明的泛型。比如我们想在扩展中实现一个 random 方法来随机地取出 Array 中的一个元素</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">extension Array &#123;</div><div class="line">    var random: Element? &#123;</div><div class="line">        return self.count != 0 ?</div><div class="line">          self[Int.random(in: 0..&lt;self.count)] : nil</div><div class="line">        // self[Int(arc4random_uniform(UInt32(self.count)))]</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">let languages = [&quot;Swift&quot;,&quot;ObjC&quot;,&quot;C++&quot;,&quot;Java&quot;]</div><div class="line">languages.random!</div><div class="line">// 随机输出是这四个字符串中的某个</div><div class="line"></div><div class="line">let ranks = [1,2,3,4]</div><div class="line">ranks.random!</div><div class="line">// 随机输出是这四个数字中的某个</div></pre></td></tr></table></figure>
+<p><span style="border-bottom: 2px solid brown">在扩展中是不能添加整个类型可用的新泛型符号的，但是对于某个特定的方法来说，我们可以添加 T 以外的其他泛型符号</span>。比如在刚才的扩展中加上：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">func appendRandomDescription</div><div class="line">    &lt;U: CustomStringConvertible&gt;(input: U) -&gt; String &#123;</div><div class="line"></div><div class="line">        if let element = self.random &#123;</div><div class="line">            return &quot;\(element) &quot; + input.description</div><div class="line">        &#125; else &#123;</div><div class="line">            return &quot;empty array&quot;</div><div class="line">        &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>我们限定了只接受实现了 <code>CustomStringConvertible</code> 的参数作为参数，然后将这个内容附加到自身的某个随机元素的描述上。因为参数 input 实现了 <code>CustomStringConvertible</code>，所以在方法中我们可以使用 description 来获取描述字符串。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">let languages = [&quot;Swift&quot;,&quot;ObjC&quot;,&quot;C++&quot;,&quot;Java&quot;]</div><div class="line">languages.random!</div><div class="line"></div><div class="line">let ranks = [1,2,3,4]</div><div class="line">ranks.random!</div><div class="line"></div><div class="line">languages.appendRandomDescription(ranks.random!)</div><div class="line">// 随机组合 languages 和 ranks 中的各一个元素，然后输出</div></pre></td></tr></table></figure>
+<p>虽然这是个生造的需求，但是能说明泛型在扩展里的使用方式。简单说就是我们++不能通过扩展来重新定义当前已有的泛型符号，但是可以对其进行使用；在扩展中也不能为这个类型添加泛型符号；但只要名字不冲突，我们是可以在新声明的方法中定义和使用新的泛型符号的++。</p>
+<h2 id="typealias-和-泛型"><a href="#typealias-和-泛型" class="headerlink" title="typealias 和 泛型"></a>typealias 和 泛型</h2><h3 id="typealias-作用"><a href="#typealias-作用" class="headerlink" title="typealias 作用"></a>typealias 作用</h3><blockquote>
+<p><a href="http://swifter.tips/typealias/" target="_blank" rel="external">参考</a></p>
+</blockquote>
+<p>typealias 是用来为已经存在的类型重新定义名字的，通过命名，可以使代码变得更加清晰。使用的语法也很简单，使用 typealias 关键字像使用普通的赋值语句一样，可以将某个已经存在的类型赋值为新的名字。比如在计算二维平面上的距离和位置的时候，我们一般使用 Double 来表示距离，用 CGPoint 来表示位置：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">func distanceBetweenPoint(point: CGPoint, toPoint: CGPoint) -&gt; Double &#123;</div><div class="line">    let dx = Double(toPoint.x - point.x)</div><div class="line">    let dy = Double(toPoint.y - point.y)</div><div class="line">    return sqrt(dx * dx + dy * dy)</div><div class="line">&#125;</div><div class="line"></div><div class="line">let origin: CGPoint = CGPoint(x: 0, y: 0)</div><div class="line">let point: CGPoint = CGPoint(x: 1, y: 1)</div><div class="line"></div><div class="line">let distance: Double =  distanceBetweenPoint(origin, point)</div></pre></td></tr></table></figure>
+<p>虽然在数学上和最后的程序运行上都没什么问题，但是阅读和维护的时候总是觉得有哪里不对。因为我们没有将数学抽象和实际问题结合起来，使得在阅读代码时我们还需要在大脑中进行一次额外的转换：CGPoint 代表一个点，而这个点就是我们在定义的坐标系里的位置；Double 是一个数字，它代表两个点之间的距离。</p>
+<p>如果我们使用 typealias，就可以将这种转换直接写在代码里，从而减轻阅读和维护的负担：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">import UIKit</div><div class="line"></div><div class="line">typealias Location = CGPoint</div><div class="line">typealias Distance = Double</div><div class="line"></div><div class="line">func distanceBetweenPoint(location: Location,</div><div class="line">    toLocation: Location) -&gt; Distance &#123;</div><div class="line">        let dx = Distance(location.x - toLocation.x)</div><div class="line">        let dy = Distance(location.y - toLocation.y)</div><div class="line">        return sqrt(dx * dx + dy * dy)</div><div class="line">&#125;</div><div class="line"></div><div class="line">let origin: Location = Location(x: 0, y: 0)</div><div class="line">let point: Location = Location(x: 1, y: 1)</div><div class="line"></div><div class="line">let distance: Distance =  distanceBetweenPoint(origin, toLocation: point)</div></pre></td></tr></table></figure>
+<p>同样的代码，在 typealias 的帮助下，读起来就轻松多了。</p>
+<h3 id="用-typealias-给泛型重命名"><a href="#用-typealias-给泛型重命名" class="headerlink" title="用 typealias 给泛型重命名"></a>用 typealias 给泛型重命名</h3><p>泛型类型的确定性得到保证后，才可以重命名</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">class Person&lt;T&gt; &#123;&#125;</div><div class="line"></div><div class="line">typealias WorkId = String</div><div class="line">typealias Worker = Person&lt;WorkId&gt;</div></pre></td></tr></table></figure>
+<h2 id="在协议中使用-associatedtype"><a href="#在协议中使用-associatedtype" class="headerlink" title="在协议中使用 associatedtype"></a>在协议中使用 associatedtype</h2><blockquote>
+<p><a href="https://numbbbbb.gitbooks.io/-the-swift-programming-language-/content/chapter2/22_Generics.html" target="_blank" rel="external">参考</a></p>
+</blockquote>
+<p>定义一个协议时，有的时候声明一个或多个关联类型作为协议定义的一部分将会非常有用。关联类型为协议中的某个类型提供了一个占位名（或者说别名），其代表的实际类型在协议被采纳时才会被指定。你可以通过 associatedtype 关键字来指定关联类型。</p>
+<p>新建一个Container协议</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">protocol Container &#123;</div><div class="line">    associatedtype Item</div><div class="line">    mutating func append(_ item: Item)</div><div class="line">    var count: Int &#123; get &#125;</div><div class="line">    subscript(i: Int) -&gt; Item &#123; get &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可以给协议里的关联类型添加类型注释，让遵守协议的类型必须遵循这个约束条件。例如，下面的代码定义了一个 Item 必须遵循 Equatable 的 Container 类型：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">protocol Container &#123;</div><div class="line">    associatedtype Item: Equatable</div><div class="line">    mutating func append(_ item: Item)</div><div class="line">    var count: Int &#123; get &#125;</div><div class="line">    subscript(i: Int) -&gt; Item &#123; get &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>生成遵循Container协议的泛型Stack:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">struct Stack&lt;T&gt;: Container &#123;</div><div class="line">    // original Stack&lt;T&gt; implementation</div><div class="line">    var items = [T]()</div><div class="line">    mutating func push(_ item: T) &#123;</div><div class="line">        items.append(item)</div><div class="line">    &#125;</div><div class="line">    mutating func pop() -&gt; T &#123;</div><div class="line">        return items.removeLast()</div><div class="line">    &#125;</div><div class="line">    // 遵循Container协议的实现</div><div class="line">    mutating func append(_ item: T) &#123;</div><div class="line">        self.push(item)</div><div class="line">    &#125;</div><div class="line">    var count: Int &#123;</div><div class="line">        return items.count</div><div class="line">    &#125;</div><div class="line">    subscript(i: Int) -&gt; T &#123;</div><div class="line">        return items[i]</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="类型约束"><a href="#类型约束" class="headerlink" title="类型约束"></a>类型约束</h2><blockquote>
+<p><a href="https://numbbbbb.gitbooks.io/-the-swift-programming-language-/content/chapter2/22_Generics.html" target="_blank" rel="external">参考</a></p>
+</blockquote>
+<h3 id="实现Equtable协议-使得泛型可以比较"><a href="#实现Equtable协议-使得泛型可以比较" class="headerlink" title="实现Equtable协议,使得泛型可以比较"></a>实现Equtable协议,使得泛型可以比较</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">class Stack&lt;T:Equatable&gt; &#123;</div><div class="line"></div><div class="line">  private var stackItems: [T] = []</div><div class="line"></div><div class="line">  func pushItem(item:T) &#123;</div><div class="line">    .append(item)</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  func popItem() -&gt; T? &#123;</div><div class="line">    let lastItem = stackItems.last</div><div class="line">    stackItems.removeLast()</div><div class="line">    return lastItem</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  func isItemInStack(item:T) -&gt; Bool &#123;</div><div class="line">    var found = false</div><div class="line">    for stackItem in stackItems &#123;</div><div class="line">      // 如果没有 &lt;T:Equatable&gt; 这里会报错</div><div class="line">      if stackItem == item &#123;</div><div class="line">        ound = true</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">    return found</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="Where-语句"><a href="#Where-语句" class="headerlink" title="Where 语句"></a>Where 语句</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">func allItemsMatch&lt;</div><div class="line">    C1: Container, C2: Container</div><div class="line">    where C1.ItemType == C2.ItemType, C1.ItemType: Equatable&gt;</div><div class="line">    (someContainer: C1, anotherContainer: C2) -&gt; Bool &#123;</div><div class="line"></div><div class="line">        // 检查两个Container的元素个数是否相同</div><div class="line">        if someContainer.count != anotherContainer.count &#123;</div><div class="line">            return false</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        // 检查两个Container相应位置的元素彼此是否相等</div><div class="line">        for i in 0..&lt;someContainer.count &#123;</div><div class="line">            if someContainer[i] != anotherContainer[i] &#123;</div><div class="line">                return false</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        // 如果所有元素检查都相同则返回true</div><div class="line">        return true</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+    </article>
+    <!-- 前后页  -->
+    <ul class="post-paginator">
+        <li class="next">
+            
+        </li>
+        <li class="previous">
+            
+                <div class="prevSlogan">Previous Post</div>
+                <a href= "/2018/07/17/在Swift扩展里添加"存储属性"/" title= 在Swift扩展里添加"存储属性" >
+                    <div class="prevTitle">在Swift扩展里添加"存储属性"</div>
+                </a>
+            
+        </li>
+    </ul>
+    <!-- 评论插件 -->
+    <!-- 来必力City版安装代码 -->
+
+<!-- City版安装代码已完成 -->
+    
+    <div id="disqus_thread"></div>
+    <script>
+        /**
+    *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+    *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+        
+        var disqus_config = function () {
+        this.page.url = "http://myhanson.com/2018/08/05/Swift的泛型小总结/";  // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = "Swift的泛型小总结"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+        
+        (function () { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = 'https://HansonBlog.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+    
+    <!--PC版-->
+
+    <!--PC版-->
+
+
+    
+    <!-- 评论 -->
+</main>
+            <!-- profile -->
+            
+        </div>
+        <footer class="footer footer-unloaded">
+    <!-- social  -->
+    
+    <div class="social">
+        
+    
+        
+            
+                <a href="mailto:hansenhs21@live.com" class="iconfont-archer email" title=email ></a>
+            
+        
+    
+        
+            
+                <a href="//github.com/zyphs21" class="iconfont-archer github" target="_blank" title=github></a>
+            
+        
+    
+        
+            
+                <span class="iconfont-archer wechat" title=wechat>
+                  
+                  <img class="profile-qr" src="/assets/qr.png" />
+                </span>
+            
+        
+    
+        
+    
+        
+            
+                <a href="//weibo.com/1775951885/profile?rightmod=1&wvr=6&mod=personinfo" class="iconfont-archer weibo" target="_blank" title=weibo></a>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+            
+                <a href="/atom.xml" class="iconfont-archer rss" target="_blank" title=rss></a>
+            
+        
+    
+
+    </div>
+    
+    <!-- powered by Hexo  -->
+    <div class="copyright">
+        <span id="hexo-power">Powered by <a href="https://hexo.io/" target="_blank">Hexo</a></span><span class="iconfont-archer power">&#xe635;</span><span id="theme-info">theme <a href="https://github.com/fi3ework/hexo-theme-archer" target="_blank">Archer</a></span>
+    </div>
+    <!-- 不蒜子  -->
+    
+    <div class="busuanzi-container">
+        <span id="busuanzi_container_site_pv">PV: <span id="busuanzi_value_site_pv"></span>
+        </span>
+    </div>
+    
+</footer>
+    </div>
+    <!-- toc -->
+    
+    <div class="toc-wrapper" style=
+    
+
+
+
+
+
+
+
+top:50vh;
+
+    >
+        <div class="toc-catalog">
+            <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+        </div>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#实现栈的例子，说明泛型的作用"><span class="toc-number">1.</span> <span class="toc-text">实现栈的例子，说明泛型的作用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#泛型扩展"><span class="toc-number">2.</span> <span class="toc-text">泛型扩展</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#typealias-和-泛型"><span class="toc-number">3.</span> <span class="toc-text">typealias 和 泛型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#typealias-作用"><span class="toc-number">3.1.</span> <span class="toc-text">typealias 作用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#用-typealias-给泛型重命名"><span class="toc-number">3.2.</span> <span class="toc-text">用 typealias 给泛型重命名</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#在协议中使用-associatedtype"><span class="toc-number">4.</span> <span class="toc-text">在协议中使用 associatedtype</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#类型约束"><span class="toc-number">5.</span> <span class="toc-text">类型约束</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#实现Equtable协议-使得泛型可以比较"><span class="toc-number">5.1.</span> <span class="toc-text">实现Equtable协议,使得泛型可以比较</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Where-语句"><span class="toc-number">5.2.</span> <span class="toc-text">Where 语句</span></a></li></ol></li></ol>
+    </div>
+    
+    <div class="back-top iconfont-archer">&#xe639;</div>
+    <div class="sidebar sidebar-hide">
+    <ul class="sidebar-tabs sidebar-tabs-active-0">
+        <li class="sidebar-tab-archives"><span class="iconfont-archer">&#xe67d;</span><span class="tab-name">Archive</span></li>
+        <li class="sidebar-tab-tags"><span class="iconfont-archer">&#xe61b;</span><span class="tab-name">Tag</span></li>
+        <li class="sidebar-tab-categories"><span class="iconfont-archer">&#xe666;</span><span class="tab-name">Cate</span></li>
+    </ul>
+    <div class="sidebar-content sidebar-content-show-archive">
+          <div class="sidebar-panel-archives">
+    <!-- 在ejs中将archive按照时间排序 -->
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <div class="total-archive"> Total : 11 </div>
+    
+    <div class="post-archive">
+    
+    
+    
+    
+    <div class="archive-year"> 2018 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/05</span><a class="archive-post-title" href= "/2018/08/05/Swift的泛型小总结/" >Swift的泛型小总结</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/17</span><a class="archive-post-title" href= "/2018/07/17/在Swift扩展里添加"存储属性"/" >在Swift扩展里添加"存储属性"</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/18</span><a class="archive-post-title" href= "/2018/05/18/上架个小工具-ImageGotcha/" >上架个小工具-ImageGotcha</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/28</span><a class="archive-post-title" href= "/2018/03/28/使用SVN建立和发布私有CocoaPods库/" >使用SVN建立和发布私有CocoaPods库</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/14</span><a class="archive-post-title" href= "/2018/03/14/通过RunScript给iOS项目自增版本号(Versioin和Build)/" >通过RunScript给iOS项目自增版本号(Versioin和Build)</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/02</span><a class="archive-post-title" href= "/2018/03/02/PathToGo诞生记/" >PathToGo诞生记</a>
+        </li>
+    
+    
+    
+    
+    
+        </ul>
+    
+    <div class="archive-year"> 2017 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/08</span><a class="archive-post-title" href= "/2017/12/08/用SwiftGen管理UIImage等的String-based接口/" >用SwiftGen管理UIImage等的String-based接口</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/08</span><a class="archive-post-title" href= "/2017/12/08/Swift 实现启动屏动画/" >Swift 实现启动屏动画</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/28</span><a class="archive-post-title" href= "/2017/11/28/记一次失败的 Swift 元组数组实践/" >记一次失败的 Swift 元组数组实践</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/09</span><a class="archive-post-title" href= "/2017/05/09/自定义 UISegmentedControl 样式/" >自定义 UISegmentedControl 样式</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/03</span><a class="archive-post-title" href= "/2017/05/03/HSStockChart介绍/" >HSStockChart介绍</a>
+        </li>
+    
+    </div>
+  </div>
+        <div class="sidebar-panel-tags">
+    <div class="sidebar-tags-name">
+    
+    </div>
+    <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
+    <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
+    缺失模块。<br/>
+    1、请确保node版本大于6.2<br/>
+    2、在博客根目录（注意不是archer根目录）执行以下命令：<br/>
+    <span style="color: #f75357; font-size: 1rem; line-height: 2rem;">npm i hexo-generator-json-content --save</span><br/>
+    3、在根目录_config.yml里添加配置：
+    <pre style="color: #787878; font-size: 0.6rem;">
+jsonContent:
+  meta: false
+  pages: false
+  posts:
+    title: true
+    date: true
+    path: true
+    text: false
+    raw: false
+    content: false
+    slug: false
+    updated: false
+    comments: false
+    link: false
+    permalink: false
+    excerpt: false
+    categories: true
+    tags: true</pre>
+    </div> 
+    <div class="sidebar-tags-list"></div>
+</div>
+        <div class="sidebar-panel-categories">
+    <div class="sidebar-categories-name">
+    
+    </div>
+    <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
+    <div class="sidebar-categories-list"></div>
+</div>
+    </div>
+</div> 
+    <script>
+    var siteMeta = {
+        root: '/',
+        author: 'Hanson Zhang'
+    }
+</script>
+    <!-- busuanzi  -->
+    
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+    <!-- CNZZ  -->
+    
+    </div>
+    <!-- async load share.js -->
+    
+        <script src="/scripts/share.js" async></script>    
+    
+    </body>
+</html>
+
+
