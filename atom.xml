@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://myhanson.com/"/>
-  <updated>2018-08-05T08:46:30.150Z</updated>
+  <updated>2019-02-17T09:42:41.131Z</updated>
   <id>http://myhanson.com/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>如何判断一个多边形是否合法</title>
+    <link href="http://myhanson.com/2019/02/17/%E5%A6%82%E4%BD%95%E5%88%A4%E6%96%AD%E4%B8%80%E4%B8%AA%E5%A4%9A%E8%BE%B9%E5%BD%A2%E6%98%AF%E5%90%A6%E5%90%88%E6%B3%95/"/>
+    <id>http://myhanson.com/2019/02/17/如何判断一个多边形是否合法/</id>
+    <published>2019-02-17T09:41:37.000Z</published>
+    <updated>2019-02-17T09:42:41.131Z</updated>
+    
+    <content type="html"><![CDATA[<p>[TOC]</p><hr><blockquote><p>本文最早发布于 <a href="https://xiaozhuanlan.com/topic/2970354186" target="_blank" rel="external">小专栏</a></p></blockquote><p>利用无人机对一片区域进行测绘前，我们会先在地图上框选一个区域，然后再规划飞行的路线，而需要测绘的这片区域往往是一个多边形。在 Mesh iOS 即将推出的新版本中，我们加入了多边形区域的编辑功能，其中就涉及判断用户所编辑出来的多边形是否合法的问题。</p><p>首先我们要确定一个标准：<strong>怎么样才算一个不合法的多边形</strong> ？我们可以简单地通过下面这幅图来解释一下：<br><img src="https://diycode.b0.upaiyun.com/photo/2018/6a0f71ccaf748ec2ef7e0c8acdd79526.png" alt=""></p><p>我们可以看出前面两个分别是凹多边形和凸多边形，而最后一张则是我们所说的不合法多边形，可以看出这个不合法的多边形的特征就是：<strong>它存在某条边与另外一条边相交的情况</strong> 。</p><p>那么要判断一个多边形是否合法，我们只要判断组成多边形的所有线段是否存在相交的情况即可，当然，我们这里所说的相交是 <strong>规范相交</strong> ，即 <strong>交点不在线段的端点上</strong> 。</p><p>好了，那么现在的问题可以简化成：<strong>如何判断两条线段是否规范相交</strong> 。</p><p>这里我们需要借助 <strong>向量的叉积</strong> 来进行判断。</p><blockquote><p>叉积，又称向量积，是对三维空间中的两个向量的二元运算。</p></blockquote><p>这里推荐 3Blue1Brown 的 <a href="https://www.bilibili.com/video/av6731067/?p=11" target="_blank" rel="external">视频</a> 来快速回顾一下叉积的概念(下面的两幅截图来自此视频)。我们只需知道叉积的结果是有正负的，比如我们以向量 $\vec{v}$ 为标准，如下图，向量  $\vec{w}$  在  $\vec{v}$ 的 <strong>顺时针方向</strong>，那么   $\vec{v} \times \vec{w} &lt; 0$ ：</p><p><img src="https://diycode.b0.upaiyun.com/photo/2018/2ebc329c403a28b29c54fdbd99d5272b.png" alt=""><br>$$\vec{v} \times \vec{w} &lt; 0$$</p><p>如果向量 $\vec{w}$  在  $\vec{v}$ 的 <strong>逆时针方向</strong>，那么 $\vec{v} \times \vec{w} &gt; 0$ ：</p><p><img src="https://diycode.b0.upaiyun.com/photo/2018/69d0ae4bb274750daeb7a04d0faff77b.png" alt=""><br>$$\vec{v} \times \vec{w} &gt; 0$$</p><p>那么我们如何利用叉积的特性运用到判断线段是否相交上呢？</p><p>我们先看下面最直接的一个线段相交的情况：<br><img src="https://diycode.b0.upaiyun.com/photo/2018/b1600b7cdef2e2cc294344553e065f41.png" alt=""></p><p>线段 $P_1P_2$ 和 线段 $Q_1Q_2$ 明显存在一个交点，从上面这张图我们可以做一个简单的结论：<strong>如果一条的线段的两个端点在另外一条线段两侧，那么这两条线段可能相交</strong>，注意这里说的是可能相交，稍后会讲到另外一种情况。</p><p>我们可以将上面的图转换为向量的情况来看：<br><img src="https://diycode.b0.upaiyun.com/photo/2018/fb2b2c8d70635c6abf4f11a59f5d5728.png" alt=""></p><p>是不是觉得似曾相识，这跟上面提到的叉积的情况是不是很类似？<br>向量  $\vec{P_1Q_1}$  在  $\vec{P_1P_2}$ 的逆时针方向，那么：$\vec{P_1P_2} \times \vec{P_1Q_1} &gt; 0$<br>向量  $\vec{P_1Q_2}$  在  $\vec{P_1P_2}$ 的顺时针方向，那么：$\vec{P_1P_2} \times \vec{P_1Q_2} &lt; 0$</p><p>用 A 表示 $\vec{P_1P_2} \times \vec{P_1Q_1} $ 的叉积结果，用 B 表示 $\vec{P_1P_2} \times \vec{P_1Q_2}$ 的叉积结果，那么 <strong>一条的线段的两个端点在另外一条线段两侧</strong> 这个几何现象可以用这个公式表示 ：A*B &lt; 0</p><p>我们前面提到 <strong>如果一条的线段的两个端点在另外一条线段两侧，那么这两条线段可能相交</strong> ，为什么是可能相交呢？如果我们将 线段 $Q_1Q_2$ 往右边移动一下，会存在下面这种情况：<br><img src="https://diycode.b0.upaiyun.com/photo/2018/62f7e896af48884e3fd5e15f8da8b9e0.png" alt=""><br>从上图可以看出，线段 $Q_1Q_2$ 的两个端点在线段 $P_1P_2$  两侧，但是它们并没有相交。</p><p>那么如何排除这种情况呢？其实很简单，我们之前都是以线段 $P_1P_2$ 作为主视角，如果将主视角换成线段 $Q_1Q_2$，那么我们很容易看出 线段 $P_1P_2$ 的两个端点并没有在 线段 $Q_1Q_2$ 的两侧。所以我们再次看回上面相交的那幅图，为了能够充分的判断两条线段相交，这次以 $Q_1Q_2$ 为主视角看待这个问题，求叉积：<br><img src="https://diycode.b0.upaiyun.com/photo/2018/de36402079d4c0fb3b5331edd8486804.png" alt=""><br>向量  $\vec{Q_1P_2}$  在  $\vec{Q_1Q_2}$ 的逆时针方向，那么：$\vec{Q_1Q_2} \times \vec{Q_1P_2} &gt; 0$<br>向量  $\vec{Q_1P_1}$  在  $\vec{Q_1Q_2}$ 的顺时针方向，那么：$\vec{Q_1Q_2} \times \vec{Q_1P_1} &lt; 0$</p><p>综上，我们可以得出：<br>A =  $\vec{P_1P_2} \times \vec{P_1Q_1} $<br>B = $\vec{P_1P_2} \times \vec{P_1Q_2} $<br>C = $\vec{Q_1Q_2} \times \vec{Q_1P_1} $<br>D = $\vec{Q_1Q_2} \times \vec{Q_1P_2} $<br>当 A <em> B &lt; 0 &amp;&amp; C </em> D &lt; 0 的时候，两条线段规范相交。<br>至于向量的叉积如何运算，这里就不细写了，给出一张计算草稿给大家过目一下：<br><img src="https://diycode.b0.upaiyun.com/photo/2018/863a9498c419614ec70ea7a64847a53f.png" alt=""><br>根据计算草稿的内容，我们就很容易通过代码来实现了：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">private func isIntersect(line1: (CGPoint, CGPoint), line2: (CGPoint, CGPoint)) -&gt; Bool &#123;</div><div class="line">        let p1 = line1.0</div><div class="line">        let p2 = line1.1</div><div class="line">        let q1 = line2.0</div><div class="line">        let q2 = line2.1</div><div class="line"></div><div class="line">        let a1 = (p2.x - p1.x) * (q1.y - p1.y) - (q1.x - p1.x) * (p2.y - p1.y)</div><div class="line">        let a2 = (p2.x - p1.x) * (q2.y - p1.y) - (q2.x - p1.x) * (p2.y - p1.y)</div><div class="line">        </div><div class="line">        let b1 = (q2.x - q1.x) * (p1.y - q1.y) - (p1.x - q1.x) * (q2.y - q1.y)</div><div class="line">        let b2 = (q2.x - q1.x) * (p2.y - q1.y) - (p2.x - q1.x) * (q2.y - q1.y)</div><div class="line">        </div><div class="line">        if a1 * a2 &lt; 0 &amp;&amp; b1 * b2 &lt; 0 &#123;</div><div class="line">            return true</div><div class="line">        &#125;</div><div class="line">        return false</div><div class="line">&#125;</div></pre></td></tr></table></figure><p>由于笔者能力有限，文中如有错误还请各位读者不吝赐教。</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;[TOC]&lt;/p&gt;
+&lt;hr&gt;
+&lt;blockquote&gt;
+&lt;p&gt;本文最早发布于 &lt;a href=&quot;https://xiaozhuanlan.com/topic/2970354186&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;小专栏&lt;/a&gt;&lt;/p&gt;
+&lt;/b
+      
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>Swift的泛型小总结</title>

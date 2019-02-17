@@ -10,7 +10,7 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" >
     <meta name="description" content="">
-    <title>HSStockChart介绍 · Hanson&#39;s Blog</title>
+    <title>如何判断一个多边形是否合法 · Hanson&#39;s Blog</title>
     <style type="text/css">
     @font-face {
         font-family: 'Oswald-Regular';
@@ -212,7 +212,7 @@
                 <a href="/" >Hanson&#39;s Blog.</a>
             </div>
             <div class="post-title">
-                <a href="#" class="post-name">HSStockChart介绍</a>
+                <a href="#" class="post-name">如何判断一个多边形是否合法</a>
             </div>
     </div>
     
@@ -244,7 +244,7 @@ height:50vh;
         <h1 class="intro-title">
             <!-- 主页  -->
             
-            HSStockChart介绍
+            如何判断一个多边形是否合法
             <!-- 404 -->
             
         </h1>
@@ -262,7 +262,7 @@ height:50vh;
             
             <div class="post-intro-meta">
                 <span class="post-intro-calander iconfont-archer">&#xe676;</span>
-                <span class="post-intro-time">2017/05/03</span>
+                <span class="post-intro-time">2019/02/17</span>
                 
                 <span id="busuanzi_container_page_pv" class="busuanzi-pv">
                     <span class="iconfont-archer">&#xe602;</span>
@@ -368,57 +368,48 @@ height:50vh;
         <div class="container container-unloaded">
             <main class="main post-page">
     <article class="article-entry">
-        <p>HSStockChart 是一个绘制股票分时图、K 线图的库。支持流畅的回弹拖动，长按十字线，捏合放大缩小等功能，主要使用了 CAShapeLayer 来绘图，相比使用 Core Graphics 和重写 drawRect 的方法更高效，占用内存更小。<br><a href="https://github.com/zyphs21/HSStockChart" target="_blank" rel="external">GitHub 地址：HSStockChart</a>  </p>
-<p><img src="http://upload-images.jianshu.io/upload_images/757687-92b2069869929ccd.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
-<a id="more"></a>
-<h2 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h2><ul>
-<li style="list-style: none"><input type="checkbox" checked> 支持绘制分时图，五日分时图，K 线图，MA 线指标，交易量柱等。</li>
-<li style="list-style: none"><input type="checkbox" checked> 支持横屏查看。</li>
-<li style="list-style: none"><input type="checkbox" checked> K 线图利用 <code>UIScrollView</code> 达到流畅的滑动查看效果。</li>
-<li style="list-style: none"><input type="checkbox" checked> 使用 <code>CAShapeLayer</code> 绘图，内存占用更小，效率更高。</li>
-</ul>
-<h2 id="版本需求"><a href="#版本需求" class="headerlink" title="版本需求"></a>版本需求</h2><ul>
-<li>iOS 8.0+</li>
-<li>Swift 3</li>
-</ul>
-<h2 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h2><ol>
-<li><p>之前绘图的方法是重写 <code>drawRect</code> 方法，在方法里获取 <code>CGContext</code> 然后利用Core Graphics 来进行绘图，调用 <code>setNeedsDisplay</code> 来刷新。但是这种方法有个问题是：</p>
+        <p>[TOC]</p>
+<hr>
 <blockquote>
-<p>一旦你实现了 CALayerDelegate 协议中的 -drawLayer:inContext: 方法或者 UIView 中的 -drawRect: 方法（其实就是前者的包装方法），图层就创建了一个绘制上下文，这个上下文需要的内存可从这个公式得出：图层宽x图层高x4字节，宽高的单位均为像素。对于一个在 Retina iPad 上的全屏图层来说，这个内存量就是 2048x1526x4字节，相当于12MB内存，图层每次重绘的时候都需要重新抹掉内存然后重新分配。【摘自 iOS Core Animation- Advanced Techniques 中文译本 高效绘图一章】</p>
+<p>本文最早发布于 <a href="https://xiaozhuanlan.com/topic/2970354186" target="_blank" rel="external">小专栏</a></p>
 </blockquote>
-<p>因为我要达到流畅滑动查看的效果，所以在 <code>UIScrollView</code> 上添加了一个 <code>UIView</code> 这个 View 的宽度会依据当前展示数据的多少而变化，结合 <code>UIScrollView</code> 的 <code>ContentSize</code> 就能达到很好的滑动效果。</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/757687-36a3d278fd71fc4a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
-<p>如果我用之前重写 <code>drawRect</code> 的方法，那么这个 View 会根据数据量的变大而变大，从而导致绘图内存急剧上升，数据量大的时候会崩溃。基于此，我采用了 <code>CAShapeLayer</code> 的方式绘图，此方式的特点如下：</p>
+<p>利用无人机对一片区域进行测绘前，我们会先在地图上框选一个区域，然后再规划飞行的路线，而需要测绘的这片区域往往是一个多边形。在 Mesh iOS 即将推出的新版本中，我们加入了多边形区域的编辑功能，其中就涉及判断用户所编辑出来的多边形是否合法的问题。</p>
+<p>首先我们要确定一个标准：<strong>怎么样才算一个不合法的多边形</strong> ？我们可以简单地通过下面这幅图来解释一下：<br><img src="https://diycode.b0.upaiyun.com/photo/2018/6a0f71ccaf748ec2ef7e0c8acdd79526.png" alt=""></p>
+<p>我们可以看出前面两个分别是凹多边形和凸多边形，而最后一张则是我们所说的不合法多边形，可以看出这个不合法的多边形的特征就是：<strong>它存在某条边与另外一条边相交的情况</strong> 。</p>
+<p>那么要判断一个多边形是否合法，我们只要判断组成多边形的所有线段是否存在相交的情况即可，当然，我们这里所说的相交是 <strong>规范相交</strong> ，即 <strong>交点不在线段的端点上</strong> 。</p>
+<p>好了，那么现在的问题可以简化成：<strong>如何判断两条线段是否规范相交</strong> 。</p>
+<p>这里我们需要借助 <strong>向量的叉积</strong> 来进行判断。</p>
 <blockquote>
-<p>CAShapeLayer 是一个通过矢量图形而不是 bitmap 来绘制的图层子类。你指定诸如颜色和线宽等属性，用 CGPath 来定义想要绘制的图形，最后就自动渲染出来了。当然，你也可以用 Core Graphics 直接向原始的内容中绘制一个路径，相比之下，使用 CAShapeLayer 有以下一些优点:</p>
-<ul>
-<li>渲染快速。CAShapeLayer 使用了硬件加速，绘制同一图形会比用 Core Graphics 快很多。</li>
-<li>高效使用内存。一个 CAShapeLayer 不需要像普通 CALayer 一样创建一个寄宿图形，所以无论有多大，都不会占用太多的内存。 </li>
-<li>不会被图层边界剪裁掉，一个 CAShapeLayer 可以在边界之外绘制。你的图层路径不会像在使用 Core Graphics 的普通 CALayer 一样被剪裁掉。</li>
-<li>不会出现像素化。当你给 CAShapeLayer 做3D变换时，它不像一个有寄宿图的普通图层一样变得像素化</li>
-</ul>
+<p>叉积，又称向量积，是对三维空间中的两个向量的二元运算。</p>
 </blockquote>
-<p>最终在真机上测试(注意是在真机上测试)两种方式的结果如图，内存大大降低并且稳定在13M左右</p>
-<p> <img src="http://upload-images.jianshu.io/upload_images/757687-a773aeda8ac7ff01.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
-</li>
-<li><p>自定义 CAShapeLayer，重写 action(forKey event: String) 方法。目的是 关闭 CAShapeLayer 的隐式动画，避免滑动时候或者十字线出现时有残影的现象(实际上是因为 Layer 的 position 属性变化而产生的隐式动画)</p>
-</li>
-</ol>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">HSCAShapeLayer</span>: <span class="title">CAShapeLayer</span> </span>&#123;</div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">action</span><span class="params">(forKey event: String)</span></span> -&gt; <span class="type">CAAction</span>? &#123;</div><div class="line">        <span class="keyword">return</span> <span class="literal">nil</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="License"><a href="#License" class="headerlink" title="License"></a>License</h2><p>Released under MIT License.</p>
+<p>这里推荐 3Blue1Brown 的 <a href="https://www.bilibili.com/video/av6731067/?p=11" target="_blank" rel="external">视频</a> 来快速回顾一下叉积的概念(下面的两幅截图来自此视频)。我们只需知道叉积的结果是有正负的，比如我们以向量 $\vec{v}$ 为标准，如下图，向量  $\vec{w}$  在  $\vec{v}$ 的 <strong>顺时针方向</strong>，那么   $\vec{v} \times \vec{w} &lt; 0$ ：</p>
+<p><img src="https://diycode.b0.upaiyun.com/photo/2018/2ebc329c403a28b29c54fdbd99d5272b.png" alt=""><br>$$\vec{v} \times \vec{w} &lt; 0$$</p>
+<p>如果向量 $\vec{w}$  在  $\vec{v}$ 的 <strong>逆时针方向</strong>，那么 $\vec{v} \times \vec{w} &gt; 0$ ：</p>
+<p><img src="https://diycode.b0.upaiyun.com/photo/2018/69d0ae4bb274750daeb7a04d0faff77b.png" alt=""><br>$$\vec{v} \times \vec{w} &gt; 0$$</p>
+<p>那么我们如何利用叉积的特性运用到判断线段是否相交上呢？</p>
+<p>我们先看下面最直接的一个线段相交的情况：<br><img src="https://diycode.b0.upaiyun.com/photo/2018/b1600b7cdef2e2cc294344553e065f41.png" alt=""></p>
+<p>线段 $P_1P_2$ 和 线段 $Q_1Q_2$ 明显存在一个交点，从上面这张图我们可以做一个简单的结论：<strong>如果一条的线段的两个端点在另外一条线段两侧，那么这两条线段可能相交</strong>，注意这里说的是可能相交，稍后会讲到另外一种情况。</p>
+<p>我们可以将上面的图转换为向量的情况来看：<br><img src="https://diycode.b0.upaiyun.com/photo/2018/fb2b2c8d70635c6abf4f11a59f5d5728.png" alt=""></p>
+<p>是不是觉得似曾相识，这跟上面提到的叉积的情况是不是很类似？<br>向量  $\vec{P_1Q_1}$  在  $\vec{P_1P_2}$ 的逆时针方向，那么：$\vec{P_1P_2} \times \vec{P_1Q_1} &gt; 0$<br>向量  $\vec{P_1Q_2}$  在  $\vec{P_1P_2}$ 的顺时针方向，那么：$\vec{P_1P_2} \times \vec{P_1Q_2} &lt; 0$</p>
+<p>用 A 表示 $\vec{P_1P_2} \times \vec{P_1Q_1} $ 的叉积结果，用 B 表示 $\vec{P_1P_2} \times \vec{P_1Q_2}$ 的叉积结果，那么 <strong>一条的线段的两个端点在另外一条线段两侧</strong> 这个几何现象可以用这个公式表示 ：A*B &lt; 0</p>
+<p>我们前面提到 <strong>如果一条的线段的两个端点在另外一条线段两侧，那么这两条线段可能相交</strong> ，为什么是可能相交呢？如果我们将 线段 $Q_1Q_2$ 往右边移动一下，会存在下面这种情况：<br><img src="https://diycode.b0.upaiyun.com/photo/2018/62f7e896af48884e3fd5e15f8da8b9e0.png" alt=""><br>从上图可以看出，线段 $Q_1Q_2$ 的两个端点在线段 $P_1P_2$  两侧，但是它们并没有相交。</p>
+<p>那么如何排除这种情况呢？其实很简单，我们之前都是以线段 $P_1P_2$ 作为主视角，如果将主视角换成线段 $Q_1Q_2$，那么我们很容易看出 线段 $P_1P_2$ 的两个端点并没有在 线段 $Q_1Q_2$ 的两侧。所以我们再次看回上面相交的那幅图，为了能够充分的判断两条线段相交，这次以 $Q_1Q_2$ 为主视角看待这个问题，求叉积：<br><img src="https://diycode.b0.upaiyun.com/photo/2018/de36402079d4c0fb3b5331edd8486804.png" alt=""><br>向量  $\vec{Q_1P_2}$  在  $\vec{Q_1Q_2}$ 的逆时针方向，那么：$\vec{Q_1Q_2} \times \vec{Q_1P_2} &gt; 0$<br>向量  $\vec{Q_1P_1}$  在  $\vec{Q_1Q_2}$ 的顺时针方向，那么：$\vec{Q_1Q_2} \times \vec{Q_1P_1} &lt; 0$</p>
+<p>综上，我们可以得出：<br>A =  $\vec{P_1P_2} \times \vec{P_1Q_1} $<br>B = $\vec{P_1P_2} \times \vec{P_1Q_2} $<br>C = $\vec{Q_1Q_2} \times \vec{Q_1P_1} $<br>D = $\vec{Q_1Q_2} \times \vec{Q_1P_2} $<br>当 A <em> B &lt; 0 &amp;&amp; C </em> D &lt; 0 的时候，两条线段规范相交。<br>至于向量的叉积如何运算，这里就不细写了，给出一张计算草稿给大家过目一下：<br><img src="https://diycode.b0.upaiyun.com/photo/2018/863a9498c419614ec70ea7a64847a53f.png" alt=""><br>根据计算草稿的内容，我们就很容易通过代码来实现了：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">private func isIntersect(line1: (CGPoint, CGPoint), line2: (CGPoint, CGPoint)) -&gt; Bool &#123;</div><div class="line">        let p1 = line1.0</div><div class="line">        let p2 = line1.1</div><div class="line">        let q1 = line2.0</div><div class="line">        let q2 = line2.1</div><div class="line"></div><div class="line">        let a1 = (p2.x - p1.x) * (q1.y - p1.y) - (q1.x - p1.x) * (p2.y - p1.y)</div><div class="line">        let a2 = (p2.x - p1.x) * (q2.y - p1.y) - (q2.x - p1.x) * (p2.y - p1.y)</div><div class="line">        </div><div class="line">        let b1 = (q2.x - q1.x) * (p1.y - q1.y) - (p1.x - q1.x) * (q2.y - q1.y)</div><div class="line">        let b2 = (q2.x - q1.x) * (p2.y - q1.y) - (p2.x - q1.x) * (q2.y - q1.y)</div><div class="line">        </div><div class="line">        if a1 * a2 &lt; 0 &amp;&amp; b1 * b2 &lt; 0 &#123;</div><div class="line">            return true</div><div class="line">        &#125;</div><div class="line">        return false</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>由于笔者能力有限，文中如有错误还请各位读者不吝赐教。</p>
 
     </article>
     <!-- 前后页  -->
     <ul class="post-paginator">
         <li class="next">
             
-                <div class="nextSlogan">Next Post</div>
-                <a href= "/2017/05/09/自定义 UISegmentedControl 样式/" title= 自定义 UISegmentedControl 样式 >
-                    <div class="nextTitle">自定义 UISegmentedControl 样式</div>
-                </a>
-            
         </li>
         <li class="previous">
+            
+                <div class="prevSlogan">Previous Post</div>
+                <a href= "/2018/08/05/Swift的泛型小总结/" title= Swift的泛型小总结 >
+                    <div class="prevTitle">Swift的泛型小总结</div>
+                </a>
             
         </li>
     </ul>
@@ -434,8 +425,8 @@ height:50vh;
     *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
         
         var disqus_config = function () {
-        this.page.url = "http://myhanson.com/2017/05/03/HSStockChart介绍/";  // Replace PAGE_URL with your page's canonical URL variable
-        this.page.identifier = "HSStockChart介绍"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        this.page.url = "http://myhanson.com/2019/02/17/如何判断一个多边形是否合法/";  // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = "如何判断一个多边形是否合法"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
         };
         
         (function () { // DON'T EDIT BELOW THIS LINE
@@ -552,7 +543,7 @@ top:50vh;
         <div class="toc-catalog">
             <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
         </div>
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#功能"><span class="toc-number">1.</span> <span class="toc-text">功能</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#版本需求"><span class="toc-number">2.</span> <span class="toc-text">版本需求</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#说明"><span class="toc-number">3.</span> <span class="toc-text">说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#License"><span class="toc-number">4.</span> <span class="toc-text">License</span></a></li></ol>
+        
     </div>
     
     <div class="back-top iconfont-archer">&#xe639;</div>
