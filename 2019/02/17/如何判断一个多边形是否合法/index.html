@@ -1,379 +1,618 @@
 <!DOCTYPE html>
 <html>
-    <!-- title -->
-
-
-
-
-
-<head>
-    <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" >
-    <meta name="description" content="">
-    <title>如何判断一个多边形是否合法 · Hanson&#39;s Blog</title>
-    <style type="text/css">
-    @font-face {
-        font-family: 'Oswald-Regular';
-        src: url("/font/Oswald-Regular.ttf");
-    }
-
-    body {
-        margin: 0;
-    }
-
-    header,
-    footer,
-    .back-top,
-    .sidebar,
-    .container,
-    .site-intro-meta,
-    .toc-wrapper {
-        display: none;
-    }
-
-    .site-intro {
-        position: relative;
-        z-index: 3;
-        width: 100%;
-        /* height: 50vh; */
-        overflow: hidden;
-    }
-
-    .site-intro-placeholder {
-        position: absolute;
-        z-index: -2;
-        top: 0;
-        left: 0;
-        width: calc(100% + 300px);
-        height: 100%;
-        background: repeating-linear-gradient(-45deg, #444 0, #444 80px, #333 80px, #333 160px);
-        background-position: center center;
-        transform: translate3d(-226px, 0, 0);
-        animation: gradient-move 2.5s ease-out 0s 1;
-    }
-
-    @keyframes gradient-move {
-        0% {
-            transform: translate3d(-226px, 0, 0);
-        }
-        100% {
-            transform: translate3d(0, 0, 0);
-        }
-    }
-
-</style>
-
-    <link rel="preload" href= /css/style.css?v=20180317 as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <link rel="stylesheet" type="text/css" href= /css/mobile.css?v=20180317 media="(max-width: 980px)"/>
+<head hexo-theme='https://volantis.js.org/#2.6.1'>
+  <meta charset="utf-8">
+  <!-- SEO相关 -->
+  
     
-    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-        
-    <link rel="icon" href= /assets/favicon.ico>
-    <script>
-        (function (w) {
-            "use strict";
-            // rel=preload support test
-            if (!w.loadCSS) {
-                w.loadCSS = function () { };
-            }
-            // define on the loadCSS obj
-            var rp = loadCSS.relpreload = {};
-            // rel=preload feature support test
-            // runs once and returns a function for compat purposes
-            rp.support = (function () {
-                var ret;
-                try {
-                    ret = w.document.createElement("link").relList.supports("preload");
-                } catch (e) {
-                    ret = false;
-                }
-                return function () {
-                    return ret;
-                };
-            })();
+  
+  <!-- 渲染优化 -->
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-            // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
-            // then change that media back to its intended value on load
-            rp.bindMediaToggle = function (link) {
-                // remember existing media attr for ultimate state, or default to 'all'
-                var finalMedia = link.media || "all";
+  <!-- 页面元数据 -->
+  
+    <title>如何判断一个多边形是否合法 - Hanson的博客</title>
+  
+  
+    <meta name="description" content="利用无人机对一片区域进行测绘前，我们会先在地图上框选一个区域，然后再规划飞行的路线，而需要测绘的这片区域往往是一个多边形。这就涉及判断多边形是否合法的问题。">
+  
 
-                function enableStylesheet() {
-                    link.media = finalMedia;
-                }
+  <!-- feed -->
+  
 
-                // bind load handlers to enable media
-                if (link.addEventListener) {
-                    link.addEventListener("load", enableStylesheet);
-                } else if (link.attachEvent) {
-                    link.attachEvent("onload", enableStylesheet);
-                }
+  <!-- import meta -->
+  
 
-                // Set rel and non-applicable media type to start an async request
-                // note: timeout allows this to happen async to let rendering continue in IE
-                setTimeout(function () {
-                    link.rel = "stylesheet";
-                    link.media = "only x";
-                });
-                // also enable media after 3 seconds,
-                // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
-                setTimeout(enableStylesheet, 3000);
-            };
-
-            // loop through link elements in DOM
-            rp.poly = function () {
-                // double check this to prevent external calls from running
-                if (rp.support()) {
-                    return;
-                }
-                var links = w.document.getElementsByTagName("link");
-                for (var i = 0; i < links.length; i++) {
-                    var link = links[i];
-                    // qualify links to those with rel=preload and as=style attrs
-                    if (link.rel === "preload" && link.getAttribute("as") === "style" && !link.getAttribute("data-loadcss")) {
-                        // prevent rerunning on link
-                        link.setAttribute("data-loadcss", true);
-                        // bind listeners to toggle media back
-                        rp.bindMediaToggle(link);
-                    }
-                }
-            };
-
-            // if unsupported, run the polyfill
-            if (!rp.support()) {
-                // run once at least
-                rp.poly();
-
-                // rerun poly on an interval until onload
-                var run = w.setInterval(rp.poly, 500);
-                if (w.addEventListener) {
-                    w.addEventListener("load", function () {
-                        rp.poly();
-                        w.clearInterval(run);
-                    });
-                } else if (w.attachEvent) {
-                    w.attachEvent("onload", function () {
-                        rp.poly();
-                        w.clearInterval(run);
-                    });
-                }
-            }
-            // commonjs
-            if (typeof exports !== "undefined") {
-                exports.loadCSS = loadCSS;
-            }
-            else {
-                w.loadCSS = loadCSS;
-            }
-        }(typeof global !== "undefined" ? global : this));
-    </script>
-    <script src="//cdn.staticfile.org/jquery/3.2.1/jquery.min.js" defer></script>
-    <script src="/scripts/main.js" defer></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script>
-    <!-- 百度统计  -->
+  <!-- link -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13/css/all.min.css">
+  
     
-    <script>
-        var _hmt = _hmt || [];
-        (function () {
-        var hm = document.createElement("script");
-        hm.src = "https://hm.baidu.com/hm.js?1d67485965ad28437990f18cffd5cd08";
-        var s = document.getElementsByTagName("script")[0];
-        s.parentNode.insertBefore(hm, s);
-        })();
-    </script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
+
+  
+  
     
-    <!-- 谷歌统计  -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-waves@0.7.6/dist/waves.min.css">
+
+  
+
+  
+
+  
+
+  <!-- import link -->
+  
+
+  
+  
     
-    <script>
-        (function (i, s, o, g, r, a, m) {
-        i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
-        (i[r].q = i[r].q || []).push(arguments)
-        }, i[r].l = 1 * new Date(); a = s.createElement(o),
-        m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
-        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
-        ga('create', 'UA-109245364-1', 'auto');
-        ga('send', 'pageview');
-    </script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
-    
+<link rel="stylesheet" href="/css/style.css">
+
+  
+
+  <script>
+    function setLoadingBarProgress(num) {
+      document.getElementById('loading-bar').style.width=num+"%";
+    }
+  </script>
+
+  
+  
 </head>
 
-    
-        <body class="post-body">
-    
-    
-<!-- hexo-inject:begin --><!-- hexo-inject:end --><header class="header">
-
-    <div class="read-progress"></div>
-    <div class="header-sidebar-menu">&#xe775;</div>
-    <!-- post页的toggle banner  -->
-    
-    <div class="banner">
-            <div class="blog-title">
-                <a href="/" >Hanson&#39;s Blog.</a>
-            </div>
-            <div class="post-title">
-                <a href="#" class="post-name">如何判断一个多边形是否合法</a>
-            </div>
-    </div>
-    
-    <a class="home-link" href=/>Hanson's Blog.</a>
-</header>
-    <div class="wrapper">
-        <div class="site-intro" style=
-
-
-
-
-
-
-
-
-height:50vh;
-
->
-    
-    <!-- 主页  -->
-    
-    
-    <!-- 404页  -->
-            
-    <div class="site-intro-img" style="background-image: url(/intro/post-bg.jpg)"></div>
-    <div class="site-intro-placeholder"></div>
-    <div class="site-intro-meta">
-        <!-- 标题  -->
-        <h1 class="intro-title">
-            <!-- 主页  -->
-            
-            如何判断一个多边形是否合法
-            <!-- 404 -->
-            
-        </h1>
-        <!-- 副标题 -->
-        <p class="intro-subtitle">
-            <!-- 主页副标题  -->
-            
-            
-            <!-- 404 -->
-            
-        </p>
-        <!-- 文章页meta -->
-        
-            <!-- 文章页标签  -->
-            
-            <div class="post-intro-meta">
-                <span class="post-intro-calander iconfont-archer">&#xe676;</span>
-                <span class="post-intro-time">2019/02/17</span>
-                
-                <span id="busuanzi_container_page_pv" class="busuanzi-pv">
-                    <span class="iconfont-archer">&#xe602;</span>
-                    <span id="busuanzi_value_page_pv"></span>
-                </span>
-                
-                <span class="shareWrapper">
-                    <span class="iconfont-archer shareIcon">&#xe71d;</span>
-                    <span class="shareText">Share</span>
-                    <ul class="shareList">
-                        <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
-                            <div class="share-qrcode"></div>
-                        </li>
-                        <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
-                        <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
-                        <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
-                        <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
-                    </ul>
-                </span>
-            </div>
-        
-    </div>
-</div>
-        <script>
-  // load webfont-loader async, and add callback function
-  function async(u, c) {
-    var d = document, t = 'script',
-      o = d.createElement(t),
-      s = d.getElementsByTagName(t)[0];
-    o.src = u;
-    if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
-    s.parentNode.insertBefore(o, s);
-  }
+<body>
   
-  // get user agent
-  var browser = {
-    versions: function () {
-      var u = window.navigator.userAgent;
-      return {
-        userAgent: u,
-        trident: u.indexOf('Trident') > -1, //IE内核
-        presto: u.indexOf('Presto') > -1, //opera内核
-        webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
-        gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
-        mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
-        ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
-        android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
-        iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者安卓QQ浏览器
-        iPad: u.indexOf('iPad') > -1, //是否为iPad
-        webApp: u.indexOf('Safari') == -1, //是否为web应用程序，没有头部与底部
-        weixin: u.indexOf('MicroMessenger') == -1, //是否为微信浏览器
-        uc: u.indexOf('UCBrowser') > -1 //是否为android下的UC浏览器
-      };
-    }()
-  }
-  console.log("userAgent:" + browser.versions.userAgent);
+  <div id="loading-bar-wrapper">
+  <div id="loading-bar"></div>
+</div>
+<header class="l_header shadow blur">
+  <div class='container'>
+  <div class='wrapper'>
+    <div class='nav-sub'>
+      <p class="title"></p>
+      <ul class='switcher nav-list-h'>
+        <li><a class="s-comment fas fa-comments fa-fw" target="_self" href='javascript:void(0)'></a></li>
+        
+          <li><a class="s-toc fas fa-list fa-fw" target="_self" href='javascript:void(0)'></a></li>
+        
+      </ul>
+    </div>
+		<div class="nav-main">
+      
+        
+        <a class="title flat-box" target="_self" href='/'>
+          
+          
+          
+            Hanson
+          
+          
+        </a>
+      
 
-  // callback
-  function fontLoaded() {
-    console.log('font loaded');
-    if (document.getElementsByClassName('site-intro-meta')) {
-      document.getElementsByClassName('intro-title')[0].classList.add('intro-fade-in');
-      document.getElementsByClassName('intro-subtitle')[0].classList.add('intro-fade-in');
-      var postIntroTags = document.getElementsByClassName('post-intro-tags')[0],
-        postIntroMeat = document.getElementsByClassName('post-intro-meta')[0];
-      if (postIntroTags) {
-        postIntroTags.classList.add('post-fade-in');
-      }
-      if (postIntroMeat) {
-        postIntroMeat.classList.add('post-fade-in');
-      }
-    }
-  }
+			<div class='menu navigation'>
+				<ul class='nav-list-h'>
+          
+          
+          
+            
+            
+              <li>
+                <a class="flat-box" href=/archives/
+                  
+                  
+                  
+                    id="archives"
+                  >
+                  <i class='fas fa-list-alt fa-fw'></i>所有文章
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="flat-box" href=/categories/
+                  
+                  
+                  
+                    id="categories"
+                  >
+                  <i class='fas fa-laptop-code fa-fw'></i>我的项目
+                </a>
+                
+                  <ul class="list-v">
+                    
+                      
+            
+              <li>
+                <a class="flat-box" 
+                  
+                  
+                  >
+                  开源项目🌟
+                </a>
+                
+                  <ul class="list-v">
+                    
+                      
+            
+              <li>
+                <a class="flat-box" href=https://github.com/zyphs21/HSStockChart
+                  
+                  
+                  
+                    id="https:githubcomzyphs21HSStockChart"
+                  >
+                  HSStockChart - 使用Swift绘制股票走势图
+                </a>
+                
+              </li>
+            
+          
+                    
+                  </ul>
+                
+              </li>
+            
+          
+                    
+                      
+            
+              <li>
+                <a class="flat-box" 
+                  
+                  
+                  >
+                  App Store 作品🍏
+                </a>
+                
+                  <ul class="list-v">
+                    
+                      
+            
+              <li>
+                <a class="flat-box" href=https://apps.apple.com/cn/app/imagegotcha/id1384107130
+                  
+                  
+                  
+                    id="https:appsapplecomcnappimagegotchaid1384107130"
+                  >
+                  ImageGotcha - Safari 抓图神器
+                </a>
+                
+              </li>
+            
+          
+                    
+                      
+            
+              <li>
+                <a class="flat-box" href=https://apps.apple.com/cn/app/livegotcha/id1502021802
+                  
+                  
+                  
+                    id="https:appsapplecomcnapplivegotchaid1502021802"
+                  >
+                  LiveGotcha - LivePhoto 转视频/GIF
+                </a>
+                
+              </li>
+            
+          
+                    
+                      
+            
+              <li>
+                <a class="flat-box" href=https://apps.apple.com/cn/app/hansonsticker/id1158544571
+                  
+                  
+                  
+                    id="https:appsapplecomcnapphansonstickerid1158544571"
+                  >
+                  HansonSticker - iMessage Sticker 表情
+                </a>
+                
+              </li>
+            
+          
+                    
+                  </ul>
+                
+              </li>
+            
+          
+                    
+                      
+            
+              <li>
+                <a class="flat-box" 
+                  
+                  
+                  >
+                  macOS 小工具🔧
+                </a>
+                
+                  <ul class="list-v">
+                    
+                      
+            
+              <li>
+                <a class="flat-box" href=https://github.com/HansonStudio/PathToGo
+                  
+                  
+                  
+                    id="https:githubcomHansonStudioPathToGo"
+                  >
+                  PathToGo - 一键获取文件路径
+                </a>
+                
+              </li>
+            
+          
+                    
+                  </ul>
+                
+              </li>
+            
+          
+                    
+                  </ul>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="flat-box" href=/categories/
+                  
+                  
+                  
+                    id="categories"
+                  >
+                  <i class='fas fa-folder-open fa-fw'></i>分类
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="flat-box" href=/about/
+                  
+                  
+                  
+                    id="about"
+                  >
+                  <i class='fas fa-info-circle fa-fw'></i>关于
+                </a>
+                
+              </li>
+            
+          
+          
+				</ul>
+			</div>
 
-  // UC不支持跨域，所以直接显示
-  function asyncCb(){
-    if (browser.versions.uc) {
-      console.log("UCBrowser");
-      fontLoaded();
-    } else {
-      WebFont.load({
-        custom: {
-          families: ['Oswald-Regular']
-        },
-        loading: function () {  //所有字体开始加载
-          // console.log('loading');
-        },
-        active: function () {  //所有字体已渲染
-          fontLoaded();
-        },
-        inactive: function () { //字体预加载失败，无效字体或浏览器不支持加载
-          console.log('inactive: timeout');
-          fontLoaded();
-        },
-        timeout: 5000 // Set the timeout to two seconds
-      });
-    }
-  }
+      <div class="m_search">
+        <form name="searchform" class="form u-search-form">
+          <i class="icon fas fa-search fa-fw"></i>
+          <input type="text" class="input u-search-input" placeholder="Search..." />
+        </form>
+      </div>
 
-  async("https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js", asyncCb)
-</script>        
-        <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
-        <div class="container container-unloaded">
-            <main class="main post-page">
-    <article class="article-entry">
-        <p>[TOC]</p>
-<hr>
-<blockquote>
-<p>本文最早发布于 <a href="https://xiaozhuanlan.com/topic/2970354186" target="_blank" rel="external">小专栏</a></p>
-</blockquote>
-<p>利用无人机对一片区域进行测绘前，我们会先在地图上框选一个区域，然后再规划飞行的路线，而需要测绘的这片区域往往是一个多边形。在 Mesh iOS 即将推出的新版本中，我们加入了多边形区域的编辑功能，其中就涉及判断用户所编辑出来的多边形是否合法的问题。</p>
+			<ul class='switcher nav-list-h'>
+				
+					<li><a class="s-search fas fa-search fa-fw" target="_self" href='javascript:void(0)'></a></li>
+				
+				<li>
+          <a class="s-menu fas fa-bars fa-fw" target="_self" href='javascript:void(0)'></a>
+          <ul class="menu-phone list-v navigation white-box">
+            
+              
+            
+              <li>
+                <a class="flat-box" href=/archives/
+                  
+                  
+                  
+                    id="archives"
+                  >
+                  <i class='fas fa-list-alt fa-fw'></i>所有文章
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="flat-box" href=/categories/
+                  
+                  
+                  
+                    id="categories"
+                  >
+                  <i class='fas fa-laptop-code fa-fw'></i>我的项目
+                </a>
+                
+                  <ul class="list-v">
+                    
+                      
+            
+              <li>
+                <a class="flat-box" 
+                  
+                  
+                  >
+                  开源项目🌟
+                </a>
+                
+                  <ul class="list-v">
+                    
+                      
+            
+              <li>
+                <a class="flat-box" href=https://github.com/zyphs21/HSStockChart
+                  
+                  
+                  
+                    id="https:githubcomzyphs21HSStockChart"
+                  >
+                  HSStockChart - 使用Swift绘制股票走势图
+                </a>
+                
+              </li>
+            
+          
+                    
+                  </ul>
+                
+              </li>
+            
+          
+                    
+                      
+            
+              <li>
+                <a class="flat-box" 
+                  
+                  
+                  >
+                  App Store 作品🍏
+                </a>
+                
+                  <ul class="list-v">
+                    
+                      
+            
+              <li>
+                <a class="flat-box" href=https://apps.apple.com/cn/app/imagegotcha/id1384107130
+                  
+                  
+                  
+                    id="https:appsapplecomcnappimagegotchaid1384107130"
+                  >
+                  ImageGotcha - Safari 抓图神器
+                </a>
+                
+              </li>
+            
+          
+                    
+                      
+            
+              <li>
+                <a class="flat-box" href=https://apps.apple.com/cn/app/livegotcha/id1502021802
+                  
+                  
+                  
+                    id="https:appsapplecomcnapplivegotchaid1502021802"
+                  >
+                  LiveGotcha - LivePhoto 转视频/GIF
+                </a>
+                
+              </li>
+            
+          
+                    
+                      
+            
+              <li>
+                <a class="flat-box" href=https://apps.apple.com/cn/app/hansonsticker/id1158544571
+                  
+                  
+                  
+                    id="https:appsapplecomcnapphansonstickerid1158544571"
+                  >
+                  HansonSticker - iMessage Sticker 表情
+                </a>
+                
+              </li>
+            
+          
+                    
+                  </ul>
+                
+              </li>
+            
+          
+                    
+                      
+            
+              <li>
+                <a class="flat-box" 
+                  
+                  
+                  >
+                  macOS 小工具🔧
+                </a>
+                
+                  <ul class="list-v">
+                    
+                      
+            
+              <li>
+                <a class="flat-box" href=https://github.com/HansonStudio/PathToGo
+                  
+                  
+                  
+                    id="https:githubcomHansonStudioPathToGo"
+                  >
+                  PathToGo - 一键获取文件路径
+                </a>
+                
+              </li>
+            
+          
+                    
+                  </ul>
+                
+              </li>
+            
+          
+                    
+                  </ul>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="flat-box" href=/categories/
+                  
+                  
+                  
+                    id="categories"
+                  >
+                  <i class='fas fa-folder-open fa-fw'></i>分类
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="flat-box" href=/about/
+                  
+                  
+                  
+                    id="about"
+                  >
+                  <i class='fas fa-info-circle fa-fw'></i>关于
+                </a>
+                
+              </li>
+            
+          
+            
+          </ul>
+        </li>
+			</ul>
+		</div>
+	</div>
+  </div>
+</header>
+
+<script>setLoadingBarProgress(40);</script>
+
+
+
+  <div class="l_body nocover">
+    <div class='body-wrapper'>
+      
+
+<div class='l_main'>
+  
+
+  
+    <article id="post" class="post white-box shadow article-type-post" itemscope itemprop="blogPost">
+      
+
+
+  <section class='meta'>
+    
+      
+      
+      <div class="meta" id="header-meta">
+        
+          
+  
+    <h1 class="title">
+      <a href="/2019/02/17/%E5%A6%82%E4%BD%95%E5%88%A4%E6%96%AD%E4%B8%80%E4%B8%AA%E5%A4%9A%E8%BE%B9%E5%BD%A2%E6%98%AF%E5%90%A6%E5%90%88%E6%B3%95/">
+        如何判断一个多边形是否合法
+      </a>
+    </h1>
+  
+
+
+        
+        <div class='new-meta-box'>
+          
+            
+          
+            
+              
+<div class='new-meta-item author'>
+  <a href="http://www.myhanson.com" target="_blank" rel="nofollow noopener">
+    <img src="https://cdn.jsdelivr.net/gh/zyphs21/cdn-assets/avatar/avatar.png">
+    <p>Hanson</p>
+  </a>
+</div>
+
+            
+          
+            
+              
+
+            
+          
+            
+              <div class="new-meta-item date">
+  <a class='notlink'>
+    <i class="fas fa-calendar-alt fa-fw" aria-hidden="true"></i>
+    <p>发布于：Feb 17, 2019</p>
+  </a>
+</div>
+
+            
+          
+            
+              
+
+            
+          
+        </div>
+        
+          <hr>
+        
+      </div>
+    
+  </section>
+
+
+      <section class="article typo">
+        <div class="article-entry" itemprop="articleBody">
+          
+          <p>利用无人机对一片区域进行测绘前，我们会先在地图上框选一个区域，然后再规划飞行的路线，而需要测绘的这片区域往往是一个多边形。这就涉及判断多边形是否合法的问题。</p>
+<a id="more"></a>
+
 <p>首先我们要确定一个标准：<strong>怎么样才算一个不合法的多边形</strong> ？我们可以简单地通过下面这幅图来解释一下：<br><img src="https://diycode.b0.upaiyun.com/photo/2018/6a0f71ccaf748ec2ef7e0c8acdd79526.png" alt=""></p>
 <p>我们可以看出前面两个分别是凹多边形和凸多边形，而最后一张则是我们所说的不合法多边形，可以看出这个不合法的多边形的特征就是：<strong>它存在某条边与另外一条边相交的情况</strong> 。</p>
 <p>那么要判断一个多边形是否合法，我们只要判断组成多边形的所有线段是否存在相交的情况即可，当然，我们这里所说的相交是 <strong>规范相交</strong> ，即 <strong>交点不在线段的端点上</strong> 。</p>
@@ -382,7 +621,7 @@ height:50vh;
 <blockquote>
 <p>叉积，又称向量积，是对三维空间中的两个向量的二元运算。</p>
 </blockquote>
-<p>这里推荐 3Blue1Brown 的 <a href="https://www.bilibili.com/video/av6731067/?p=11" target="_blank" rel="external">视频</a> 来快速回顾一下叉积的概念(下面的两幅截图来自此视频)。我们只需知道叉积的结果是有正负的，比如我们以向量 $\vec{v}$ 为标准，如下图，向量  $\vec{w}$  在  $\vec{v}$ 的 <strong>顺时针方向</strong>，那么   $\vec{v} \times \vec{w} &lt; 0$ ：</p>
+<p>这里推荐 3Blue1Brown 的 <a href="https://www.bilibili.com/video/av6731067/?p=11" target="_blank" rel="noopener">视频</a> 来快速回顾一下叉积的概念(下面的两幅截图来自此视频)。我们只需知道叉积的结果是有正负的，比如我们以向量 $\vec{v}$ 为标准，如下图，向量  $\vec{w}$  在  $\vec{v}$ 的 <strong>顺时针方向</strong>，那么   $\vec{v} \times \vec{w} &lt; 0$ ：</p>
 <p><img src="https://diycode.b0.upaiyun.com/photo/2018/2ebc329c403a28b29c54fdbd99d5272b.png" alt=""><br>$$\vec{v} \times \vec{w} &lt; 0$$</p>
 <p>如果向量 $\vec{w}$  在  $\vec{v}$ 的 <strong>逆时针方向</strong>，那么 $\vec{v} \times \vec{w} &gt; 0$ ：</p>
 <p><img src="https://diycode.b0.upaiyun.com/photo/2018/69d0ae4bb274750daeb7a04d0faff77b.png" alt=""><br>$$\vec{v} \times \vec{w} &gt; 0$$</p>
@@ -394,444 +633,501 @@ height:50vh;
 <p>用 A 表示 $\vec{P_1P_2} \times \vec{P_1Q_1} $ 的叉积结果，用 B 表示 $\vec{P_1P_2} \times \vec{P_1Q_2}$ 的叉积结果，那么 <strong>一条的线段的两个端点在另外一条线段两侧</strong> 这个几何现象可以用这个公式表示 ：A*B &lt; 0</p>
 <p>我们前面提到 <strong>如果一条的线段的两个端点在另外一条线段两侧，那么这两条线段可能相交</strong> ，为什么是可能相交呢？如果我们将 线段 $Q_1Q_2$ 往右边移动一下，会存在下面这种情况：<br><img src="https://diycode.b0.upaiyun.com/photo/2018/62f7e896af48884e3fd5e15f8da8b9e0.png" alt=""><br>从上图可以看出，线段 $Q_1Q_2$ 的两个端点在线段 $P_1P_2$  两侧，但是它们并没有相交。</p>
 <p>那么如何排除这种情况呢？其实很简单，我们之前都是以线段 $P_1P_2$ 作为主视角，如果将主视角换成线段 $Q_1Q_2$，那么我们很容易看出 线段 $P_1P_2$ 的两个端点并没有在 线段 $Q_1Q_2$ 的两侧。所以我们再次看回上面相交的那幅图，为了能够充分的判断两条线段相交，这次以 $Q_1Q_2$ 为主视角看待这个问题，求叉积：<br><img src="https://diycode.b0.upaiyun.com/photo/2018/de36402079d4c0fb3b5331edd8486804.png" alt=""><br>向量  $\vec{Q_1P_2}$  在  $\vec{Q_1Q_2}$ 的逆时针方向，那么：$\vec{Q_1Q_2} \times \vec{Q_1P_2} &gt; 0$<br>向量  $\vec{Q_1P_1}$  在  $\vec{Q_1Q_2}$ 的顺时针方向，那么：$\vec{Q_1Q_2} \times \vec{Q_1P_1} &lt; 0$</p>
-<p>综上，我们可以得出：<br>A =  $\vec{P_1P_2} \times \vec{P_1Q_1} $<br>B = $\vec{P_1P_2} \times \vec{P_1Q_2} $<br>C = $\vec{Q_1Q_2} \times \vec{Q_1P_1} $<br>D = $\vec{Q_1Q_2} \times \vec{Q_1P_2} $<br>当 A <em> B &lt; 0 &amp;&amp; C </em> D &lt; 0 的时候，两条线段规范相交。<br>至于向量的叉积如何运算，这里就不细写了，给出一张计算草稿给大家过目一下：<br><img src="https://diycode.b0.upaiyun.com/photo/2018/863a9498c419614ec70ea7a64847a53f.png" alt=""><br>根据计算草稿的内容，我们就很容易通过代码来实现了：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">private func isIntersect(line1: (CGPoint, CGPoint), line2: (CGPoint, CGPoint)) -&gt; Bool &#123;</div><div class="line">        let p1 = line1.0</div><div class="line">        let p2 = line1.1</div><div class="line">        let q1 = line2.0</div><div class="line">        let q2 = line2.1</div><div class="line"></div><div class="line">        let a1 = (p2.x - p1.x) * (q1.y - p1.y) - (q1.x - p1.x) * (p2.y - p1.y)</div><div class="line">        let a2 = (p2.x - p1.x) * (q2.y - p1.y) - (q2.x - p1.x) * (p2.y - p1.y)</div><div class="line">        </div><div class="line">        let b1 = (q2.x - q1.x) * (p1.y - q1.y) - (p1.x - q1.x) * (q2.y - q1.y)</div><div class="line">        let b2 = (q2.x - q1.x) * (p2.y - q1.y) - (p2.x - q1.x) * (q2.y - q1.y)</div><div class="line">        </div><div class="line">        if a1 * a2 &lt; 0 &amp;&amp; b1 * b2 &lt; 0 &#123;</div><div class="line">            return true</div><div class="line">        &#125;</div><div class="line">        return false</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>综上，我们可以得出：<br>A =  $\vec{P_1P_2} \times \vec{P_1Q_1} $<br>B = $\vec{P_1P_2} \times \vec{P_1Q_2} $<br>C = $\vec{Q_1Q_2} \times \vec{Q_1P_1} $<br>D = $\vec{Q_1Q_2} \times \vec{Q_1P_2} $<br>当 A * B &lt; 0 &amp;&amp; C * D &lt; 0 的时候，两条线段规范相交。<br>至于向量的叉积如何运算，这里就不细写了，给出一张计算草稿给大家过目一下：<br><img src="https://diycode.b0.upaiyun.com/photo/2018/863a9498c419614ec70ea7a64847a53f.png" alt=""><br>根据计算草稿的内容，我们就很容易通过代码来实现了：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">private func isIntersect(line1: (CGPoint, CGPoint), line2: (CGPoint, CGPoint)) -&gt; Bool &#123;</span><br><span class="line">        let p1 &#x3D; line1.0</span><br><span class="line">        let p2 &#x3D; line1.1</span><br><span class="line">        let q1 &#x3D; line2.0</span><br><span class="line">        let q2 &#x3D; line2.1</span><br><span class="line"></span><br><span class="line">        let a1 &#x3D; (p2.x - p1.x) * (q1.y - p1.y) - (q1.x - p1.x) * (p2.y - p1.y)</span><br><span class="line">        let a2 &#x3D; (p2.x - p1.x) * (q2.y - p1.y) - (q2.x - p1.x) * (p2.y - p1.y)</span><br><span class="line">        </span><br><span class="line">        let b1 &#x3D; (q2.x - q1.x) * (p1.y - q1.y) - (p1.x - q1.x) * (q2.y - q1.y)</span><br><span class="line">        let b2 &#x3D; (q2.x - q1.x) * (p2.y - q1.y) - (p2.x - q1.x) * (q2.y - q1.y)</span><br><span class="line">        </span><br><span class="line">        if a1 * a2 &lt; 0 &amp;&amp; b1 * b2 &lt; 0 &#123;</span><br><span class="line">            return true</span><br><span class="line">        &#125;</span><br><span class="line">        return false</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>由于笔者能力有限，文中如有错误还请各位读者不吝赐教。</p>
 
-    </article>
-    <!-- 前后页  -->
-    <ul class="post-paginator">
-        <li class="next">
+          
+            <br>
             
-        </li>
-        <li class="previous">
-            
-                <div class="prevSlogan">Previous Post</div>
-                <a href= "/2018/08/05/Swift的泛型小总结/" title= Swift的泛型小总结 >
-                    <div class="prevTitle">Swift的泛型小总结</div>
-                </a>
-            
-        </li>
-    </ul>
-    <!-- 评论插件 -->
-    <!-- 来必力City版安装代码 -->
-
-<!-- City版安装代码已完成 -->
+              
+  
     
-    <div id="disqus_thread"></div>
-    <script>
-        /**
-    *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
-    *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
-        
-        var disqus_config = function () {
-        this.page.url = "http://myhanson.com/2019/02/17/如何判断一个多边形是否合法/";  // Replace PAGE_URL with your page's canonical URL variable
-        this.page.identifier = "如何判断一个多边形是否合法"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
-        };
-        
-        (function () { // DON'T EDIT BELOW THIS LINE
-            var d = document, s = d.createElement('script');
-            s.src = 'https://HansonBlog.disqus.com/embed.js';
-            s.setAttribute('data-timestamp', +new Date());
-            (d.head || d.body).appendChild(s);
-        })();
-
-    </script>
-    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-
-    
-    <!--PC版-->
-
-    <!--PC版-->
-
-
-    
-    <!-- 评论 -->
-</main>
-            <!-- profile -->
-            
-        </div>
-        <footer class="footer footer-unloaded">
-    <!-- social  -->
-    
-    <div class="social">
-        
-    
-        
-            
-                <a href="mailto:hansenhs21@live.com" class="iconfont-archer email" title=email ></a>
-            
-        
-    
-        
-            
-                <a href="//github.com/zyphs21" class="iconfont-archer github" target="_blank" title=github></a>
-            
-        
-    
-        
-            
-                <span class="iconfont-archer wechat" title=wechat>
-                  
-                  <img class="profile-qr" src="/assets/qr.png" />
-                </span>
-            
-        
-    
-        
-    
-        
-            
-                <a href="//weibo.com/1775951885/profile?rightmod=1&wvr=6&mod=personinfo" class="iconfont-archer weibo" target="_blank" title=weibo></a>
-            
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-            
-                <a href="/atom.xml" class="iconfont-archer rss" target="_blank" title=rss></a>
-            
-        
-    
-
-    </div>
-    
-    <!-- powered by Hexo  -->
-    <div class="copyright">
-        <span id="hexo-power">Powered by <a href="https://hexo.io/" target="_blank">Hexo</a></span><span class="iconfont-archer power">&#xe635;</span><span id="theme-info">theme <a href="https://github.com/fi3ework/hexo-theme-archer" target="_blank">Archer</a></span>
-    </div>
-    <!-- 不蒜子  -->
-    
-    <div class="busuanzi-container">
-        <span id="busuanzi_container_site_pv">PV: <span id="busuanzi_value_site_pv"></span>
-        </span>
-    </div>
-    
-</footer>
-    </div>
-    <!-- toc -->
-    
-    <div class="toc-wrapper" style=
     
 
 
 
+  
+
+  
+    
+    
 
 
 
+  
 
-top:50vh;
+  
+    
+    
 
-    >
-        <div class="toc-catalog">
-            <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
-        </div>
+<section class="widget copyright  ">
+  <div class='content'>
+    
+      <blockquote>
         
-    </div>
+          
+            <p>博客内容遵循 署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0) 协议</p>
+
+          
+        
+          
+            <p>本文永久链接是：<a href=http://myhanson.com/2019/02/17/%E5%A6%82%E4%BD%95%E5%88%A4%E6%96%AD%E4%B8%80%E4%B8%AA%E5%A4%9A%E8%BE%B9%E5%BD%A2%E6%98%AF%E5%90%A6%E5%90%88%E6%B3%95/>http://myhanson.com/2019/02/17/%E5%A6%82%E4%BD%95%E5%88%A4%E6%96%AD%E4%B8%80%E4%B8%AA%E5%A4%9A%E8%BE%B9%E5%BD%A2%E6%98%AF%E5%90%A6%E5%90%88%E6%B3%95/</a></p>
+          
+        
+      </blockquote>
     
-    <div class="back-top iconfont-archer">&#xe639;</div>
-    <div class="sidebar sidebar-hide">
-    <ul class="sidebar-tabs sidebar-tabs-active-0">
-        <li class="sidebar-tab-archives"><span class="iconfont-archer">&#xe67d;</span><span class="tab-name">Archive</span></li>
-        <li class="sidebar-tab-tags"><span class="iconfont-archer">&#xe61b;</span><span class="tab-name">Tag</span></li>
-        <li class="sidebar-tab-categories"><span class="iconfont-archer">&#xe666;</span><span class="tab-name">Cate</span></li>
-    </ul>
-    <div class="sidebar-content sidebar-content-show-archive">
-          <div class="sidebar-panel-archives">
-    <!-- 在ejs中将archive按照时间排序 -->
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    <div class="total-archive"> Total : 12 </div>
-    
-    <div class="post-archive">
-    
-    
-    
-    
-    <div class="archive-year"> 2019 </div>
-    <ul class="year-list">
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">02/17</span><a class="archive-post-title" href= "/2019/02/17/如何判断一个多边形是否合法/" >如何判断一个多边形是否合法</a>
-        </li>
-    
-    
-    
-    
-    
-        </ul>
-    
-    <div class="archive-year"> 2018 </div>
-    <ul class="year-list">
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">08/05</span><a class="archive-post-title" href= "/2018/08/05/Swift的泛型小总结/" >Swift的泛型小总结</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">07/17</span><a class="archive-post-title" href= "/2018/07/17/在Swift扩展里添加"存储属性"/" >在Swift扩展里添加"存储属性"</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">05/18</span><a class="archive-post-title" href= "/2018/05/18/上架个小工具-ImageGotcha/" >上架个小工具-ImageGotcha</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">03/28</span><a class="archive-post-title" href= "/2018/03/28/使用SVN建立和发布私有CocoaPods库/" >使用SVN建立和发布私有CocoaPods库</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">03/14</span><a class="archive-post-title" href= "/2018/03/14/通过RunScript给iOS项目自增版本号(Versioin和Build)/" >通过RunScript给iOS项目自增版本号(Versioin和Build)</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">03/02</span><a class="archive-post-title" href= "/2018/03/02/PathToGo诞生记/" >PathToGo诞生记</a>
-        </li>
-    
-    
-    
-    
-    
-        </ul>
-    
-    <div class="archive-year"> 2017 </div>
-    <ul class="year-list">
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">12/08</span><a class="archive-post-title" href= "/2017/12/08/用SwiftGen管理UIImage等的String-based接口/" >用SwiftGen管理UIImage等的String-based接口</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">12/08</span><a class="archive-post-title" href= "/2017/12/08/Swift 实现启动屏动画/" >Swift 实现启动屏动画</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">11/28</span><a class="archive-post-title" href= "/2017/11/28/记一次失败的 Swift 元组数组实践/" >记一次失败的 Swift 元组数组实践</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">05/09</span><a class="archive-post-title" href= "/2017/05/09/自定义 UISegmentedControl 样式/" >自定义 UISegmentedControl 样式</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">05/03</span><a class="archive-post-title" href= "/2017/05/03/HSStockChart介绍/" >HSStockChart介绍</a>
-        </li>
-    
-    </div>
   </div>
-        <div class="sidebar-panel-tags">
-    <div class="sidebar-tags-name">
+</section>
+
+  
+
+  
     
-    </div>
-    <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
-    <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
-    缺失模块。<br/>
-    1、请确保node版本大于6.2<br/>
-    2、在博客根目录（注意不是archer根目录）执行以下命令：<br/>
-    <span style="color: #f75357; font-size: 1rem; line-height: 2rem;">npm i hexo-generator-json-content --save</span><br/>
-    3、在根目录_config.yml里添加配置：
-    <pre style="color: #787878; font-size: 0.6rem;">
-jsonContent:
-  meta: false
-  pages: false
-  posts:
-    title: true
-    date: true
-    path: true
-    text: false
-    raw: false
-    content: false
-    slug: false
-    updated: false
-    comments: false
-    link: false
-    permalink: false
-    excerpt: false
-    categories: true
-    tags: true</pre>
-    </div> 
-    <div class="sidebar-tags-list"></div>
-</div>
-        <div class="sidebar-panel-categories">
-    <div class="sidebar-categories-name">
     
-    </div>
-    <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
-    <div class="sidebar-categories-list"></div>
+
+<section class="widget qrcode  desktop mobile">
+  
+
+  <div class='content article-entry'>
+    
+      
+        <div class='fancybox'><img src='https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/qrcode/wiki_volantis.png'
+        
+          height='64px'
+        ></div>
+      
+    
+      
+        <div class='fancybox'><img src='https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/qrcode/wiki_volantis.png'
+        
+          height='64px'
+        ></div>
+      
+    
+  </div>
+</section>
+
+  
+
+
+            
+          
+        </div>
+        
+          
+
+
+  <section class='meta' id="footer-meta">
+    <div class='new-meta-box'>
+      
+        
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2020-04-16T14:12:03+08:00">
+  <a class='notlink'>
+    <i class="fas fa-edit fa-fw" aria-hidden="true"></i>
+    <p>更新于：Apr 16, 2020</p>
+  </a>
 </div>
+
+        
+      
+        
+          
+
+        
+      
+        
+          
+
+        
+      
+        
+          
+  <div class="new-meta-item share -mob-share-list">
+  <div class="-mob-share-list share-body">
+    
+      
+        <a class="-mob-share-qq" title="" rel="external nofollow noopener noreferrer"
+          
+          href="http://connect.qq.com/widget/shareqq/index.html?url=http://myhanson.com/2019/02/17/%E5%A6%82%E4%BD%95%E5%88%A4%E6%96%AD%E4%B8%80%E4%B8%AA%E5%A4%9A%E8%BE%B9%E5%BD%A2%E6%98%AF%E5%90%A6%E5%90%88%E6%B3%95/&title=如何判断一个多边形是否合法 - Hanson的博客&summary=利用无人机对一片区域进行测绘前，我们会先在地图上框选一个区域，然后再规划飞行的路线，而需要测绘的这片区域往往是一个多边形。这就涉及判断多边形是否合法的问题。"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/logo/128/qq.png">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-qzone" title="" rel="external nofollow noopener noreferrer"
+          
+          href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://myhanson.com/2019/02/17/%E5%A6%82%E4%BD%95%E5%88%A4%E6%96%AD%E4%B8%80%E4%B8%AA%E5%A4%9A%E8%BE%B9%E5%BD%A2%E6%98%AF%E5%90%A6%E5%90%88%E6%B3%95/&title=如何判断一个多边形是否合法 - Hanson的博客&summary=利用无人机对一片区域进行测绘前，我们会先在地图上框选一个区域，然后再规划飞行的路线，而需要测绘的这片区域往往是一个多边形。这就涉及判断多边形是否合法的问题。"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/logo/128/qzone.png">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-weibo" title="" rel="external nofollow noopener noreferrer"
+          
+          href="http://service.weibo.com/share/share.php?url=http://myhanson.com/2019/02/17/%E5%A6%82%E4%BD%95%E5%88%A4%E6%96%AD%E4%B8%80%E4%B8%AA%E5%A4%9A%E8%BE%B9%E5%BD%A2%E6%98%AF%E5%90%A6%E5%90%88%E6%B3%95/&title=如何判断一个多边形是否合法 - Hanson的博客&summary=利用无人机对一片区域进行测绘前，我们会先在地图上框选一个区域，然后再规划飞行的路线，而需要测绘的这片区域往往是一个多边形。这就涉及判断多边形是否合法的问题。"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/logo/128/weibo.png">
+          
+        </a>
+      
+    
+  </div>
+</div>
+
+
+
+        
+      
     </div>
-</div> 
-    <script>
-    var siteMeta = {
-        root: '/',
-        author: 'Hanson Zhang'
+  </section>
+
+
+        
+        
+          <div class="prev-next">
+            
+              <a class='prev' href='/2020/04/15/CoreLocation%E4%B8%AD%E7%9A%84Course%E5%92%8CHeading%E7%AE%80%E6%9E%90/'>
+                <p class='title'><i class="fas fa-chevron-left" aria-hidden="true"></i>CoreLocation 中的 Course 和 Heading 简析</p>
+                <p class='content'>很多地图 App 都会有一个当前定位的标记，该标记可以根据用户手持手机的朝向不同而改变方向。如图：
+
+
+
+如果要实现这个带方向定位的标记点，需要什么数据呢？
+
+
+
+定位数据
+手机朝向数据
+
+定位...</p>
+              </a>
+            
+            
+              <a class='next' href='/2018/08/05/Swift%E7%9A%84%E6%B3%9B%E5%9E%8B%E5%B0%8F%E6%80%BB%E7%BB%93/'>
+                <p class='title'>Swift的泛型小总结<i class="fas fa-chevron-right" aria-hidden="true"></i></p>
+                <p class='content'>本文针对网上一些关于泛型的知识点进行汇总和总结，已在文中标记出参考文章的链接
+
+泛型是程序设计语言的一种特性。允许程序员在强类型程序设计语言中编写代码时定义一些可变部分，那些部分在使用前必须作出...</p>
+              </a>
+            
+          </div>
+        
+      </section>
+    </article>
+  
+
+  
+    <!-- 显示推荐文章和评论 -->
+
+
+
+  
+
+
+  
+
+
+
+
+<!-- 根据页面mathjax变量决定是否加载MathJax数学公式js -->
+
+
+
+  <script>
+    window.subData = {
+      title: '如何判断一个多边形是否合法',
+      tools: true
     }
-</script>
-    <!-- busuanzi  -->
+  </script>
+
+
+</div>
+<aside class='l_side'>
+  
+  
+
+  
     
-    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
     
-    <!-- CNZZ  -->
+
+
+
+  
+
+
+</aside>
+
+
+  
+  <footer class="clearfix">
+    <br><br>
     
+      
+        <br>
+        <div class="social-wrapper">
+          
+            
+              <a href="/atom.xml"
+                class="social fas fa-rss flat-btn"
+                target="_blank"
+                rel="external nofollow noopener noreferrer">
+              </a>
+            
+          
+            
+              <a href="mailto:hansenhs21@live.com"
+                class="social fas fa-envelope flat-btn"
+                target="_blank"
+                rel="external nofollow noopener noreferrer">
+              </a>
+            
+          
+            
+              <a href="https://github.com/zyphs21"
+                class="social fab fa-github flat-btn"
+                target="_blank"
+                rel="external nofollow noopener noreferrer">
+              </a>
+            
+          
+        </div>
+      
+    
+      
+        <div><p>Blog content follows the <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" target="_blank" rel="noopener">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) License</a></p>
+</div>
+      
+    
+      
+        Use
+        <a href="https://volantis.js.org/" target="_blank" class="codename">Volantis</a>
+        as theme, total visits
+          <span id="busuanzi_value_site_pv"><i class="fas fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span>
+          times
+        
+      
+    
+      
+        <div class='copyright'>
+        <p><a href="www.myhanson.com">Copyright © 2017-2020 Hanson</a></p>
+
+        </div>
+      
+    
+  </footer>
+
+<script>setLoadingBarProgress(80);</script>
+
+
+      <script>setLoadingBarProgress(60);</script>
     </div>
-    <!-- async load share.js -->
+    <a class="s-top fas fa-arrow-up fa-fw" href='javascript:void(0)'></a>
+  </div>
+  
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4/dist/jquery.min.js"></script>
+
+
+  <script>
     
-        <script src="/scripts/share.js" async></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->    
+    var SEARCH_SERVICE = "hexo" || "hexo";
+    var ROOT = "/" || "/";
+    if (!ROOT.endsWith('/')) ROOT += '/';
+  </script>
+
+
+  <script async src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-volantis@2/js/instant_page.js" type="module" defer integrity="sha384-OeDn4XE77tdHo8pGtE1apMPmAipjoxUQ++eeJa6EtJCfHlvijigWiJpD7VDPWXV1"></script>
+
+
+
+  
+<script src="https://cdn.jsdelivr.net/npm/node-waves@0.7.6/dist/waves.min.js"></script>
+
+  <script type="text/javascript">
+    $(function() {
+      Waves.attach('.flat-btn', ['waves-button']);
+      Waves.attach('.float-btn', ['waves-button', 'waves-float']);
+      Waves.attach('.float-btn-light', ['waves-button', 'waves-float', 'waves-light']);
+      Waves.attach('.flat-box', ['waves-block']);
+      Waves.attach('.float-box', ['waves-block', 'waves-float']);
+      Waves.attach('.waves-image');
+      Waves.init();
+    });
+  </script>
+
+
+  <script async src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-busuanzi@2.3/js/busuanzi.pure.mini.js"></script>
+
+
+
+  
+  
+  
     
-    </body>
+<script src="https://cdn.jsdelivr.net/npm/jquery-backstretch@2.1.18/jquery.backstretch.min.js"></script>
+
+    <script type="text/javascript">
+      $(function(){
+        var imgs=["https://cdn.jsdelivr.net/gh/xaoxuu/cdn-wallpaper/abstract/41F215B9-261F-48B4-80B5-4E86E165259E.jpeg"];
+        if ('true' == 'true') {
+          function shuffle(arr){
+            /*From countercurrent-time*/
+            var n = arr.length;
+            while(n--) {
+              var index = Math.floor(Math.random() * n);
+              var temp = arr[index];
+              arr[index] = arr[n];
+              arr[n] = temp;
+            }
+          }
+          shuffle(imgs);
+        }
+        if ('.cover') {
+          $('.cover').backstretch(
+            imgs,
+          {
+            duration: "20000",
+            fade: "1500"
+          });
+        } else {
+          $.backstretch(
+            imgs,
+          {
+            duration: "20000",
+            fade: "1500"
+          });
+        }
+      });
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+<script src="/js/app.js"></script>
+
+
+
+  
+<script src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-volantis@2.4/js/search.js"></script>
+
+
+
+  
+<script src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-volantis@2/js/comment_typing.js"></script>
+
+
+
+
+
+
+<!-- 复制 -->
+
+  <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="fas fa-copy"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('fa-copy');
+        $icon.addClass('fa-check-circle');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('fa-check-circle');
+          $icon.addClass('fa-copy');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('fa-copy');
+        $icon.addClass('fa-times-circle');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('fa-times-circle');
+          $icon.addClass('fa-copy');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+
+
+
+
+<!-- fancybox -->
+
+  <script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+<script>
+  let LAZY_LOAD_IMAGE = "";
+  $(".article-entry").find("div.fancybox").find("img").each(function () {
+      var element = document.createElement("a");
+      $(element).attr("data-fancybox", "gallery");
+      $(element).attr("href", $(this).attr("src"));
+      /* 图片采用懒加载处理时,
+       * 一般图片标签内会有个属性名来存放图片的真实地址，比如 data-original,
+       * 那么此处将原本的属性名src替换为对应属性名data-original,
+       * 修改如下
+       */
+       if (LAZY_LOAD_IMAGE) {
+         $(element).attr("href", $(this).attr("data-original"));
+       }
+      $(this).wrap(element);
+  });
+</script>
+
+
+
+
+
+
+  <script>setLoadingBarProgress(100);</script>
+</body>
 </html>
-
-

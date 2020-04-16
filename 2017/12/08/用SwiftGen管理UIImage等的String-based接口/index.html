@@ -1,843 +1,1156 @@
 <!DOCTYPE html>
 <html>
-    <!-- title -->
-
-
-
-
-
-<head>
-    <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" >
-    <meta name="description" content="">
-    <title>用SwiftGen管理UIImage等的String-based接口 · Hanson&#39;s Blog</title>
-    <style type="text/css">
-    @font-face {
-        font-family: 'Oswald-Regular';
-        src: url("/font/Oswald-Regular.ttf");
-    }
-
-    body {
-        margin: 0;
-    }
-
-    header,
-    footer,
-    .back-top,
-    .sidebar,
-    .container,
-    .site-intro-meta,
-    .toc-wrapper {
-        display: none;
-    }
-
-    .site-intro {
-        position: relative;
-        z-index: 3;
-        width: 100%;
-        /* height: 50vh; */
-        overflow: hidden;
-    }
-
-    .site-intro-placeholder {
-        position: absolute;
-        z-index: -2;
-        top: 0;
-        left: 0;
-        width: calc(100% + 300px);
-        height: 100%;
-        background: repeating-linear-gradient(-45deg, #444 0, #444 80px, #333 80px, #333 160px);
-        background-position: center center;
-        transform: translate3d(-226px, 0, 0);
-        animation: gradient-move 2.5s ease-out 0s 1;
-    }
-
-    @keyframes gradient-move {
-        0% {
-            transform: translate3d(-226px, 0, 0);
-        }
-        100% {
-            transform: translate3d(0, 0, 0);
-        }
-    }
-
-</style>
-
-    <link rel="preload" href= /css/style.css?v=20180317 as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <link rel="stylesheet" type="text/css" href= /css/mobile.css?v=20180317 media="(max-width: 980px)"/>
+<head hexo-theme='https://volantis.js.org/#2.6.1'>
+  <meta charset="utf-8">
+  <!-- SEO相关 -->
+  
     
-    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-        
-    <link rel="icon" href= /assets/favicon.ico>
-    <script>
-        (function (w) {
-            "use strict";
-            // rel=preload support test
-            if (!w.loadCSS) {
-                w.loadCSS = function () { };
-            }
-            // define on the loadCSS obj
-            var rp = loadCSS.relpreload = {};
-            // rel=preload feature support test
-            // runs once and returns a function for compat purposes
-            rp.support = (function () {
-                var ret;
-                try {
-                    ret = w.document.createElement("link").relList.supports("preload");
-                } catch (e) {
-                    ret = false;
-                }
-                return function () {
-                    return ret;
-                };
-            })();
+  
+  <!-- 渲染优化 -->
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-            // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
-            // then change that media back to its intended value on load
-            rp.bindMediaToggle = function (link) {
-                // remember existing media attr for ultimate state, or default to 'all'
-                var finalMedia = link.media || "all";
+  <!-- 页面元数据 -->
+  
+    <title>用SwiftGen管理UIImage等的String-based接口 - Hanson的博客</title>
+  
+  
+    <meta name="description" content="如何减少因为拼写错误导致的问题？">
+  
 
-                function enableStylesheet() {
-                    link.media = finalMedia;
-                }
+  <!-- feed -->
+  
 
-                // bind load handlers to enable media
-                if (link.addEventListener) {
-                    link.addEventListener("load", enableStylesheet);
-                } else if (link.attachEvent) {
-                    link.attachEvent("onload", enableStylesheet);
-                }
+  <!-- import meta -->
+  
 
-                // Set rel and non-applicable media type to start an async request
-                // note: timeout allows this to happen async to let rendering continue in IE
-                setTimeout(function () {
-                    link.rel = "stylesheet";
-                    link.media = "only x";
-                });
-                // also enable media after 3 seconds,
-                // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
-                setTimeout(enableStylesheet, 3000);
-            };
-
-            // loop through link elements in DOM
-            rp.poly = function () {
-                // double check this to prevent external calls from running
-                if (rp.support()) {
-                    return;
-                }
-                var links = w.document.getElementsByTagName("link");
-                for (var i = 0; i < links.length; i++) {
-                    var link = links[i];
-                    // qualify links to those with rel=preload and as=style attrs
-                    if (link.rel === "preload" && link.getAttribute("as") === "style" && !link.getAttribute("data-loadcss")) {
-                        // prevent rerunning on link
-                        link.setAttribute("data-loadcss", true);
-                        // bind listeners to toggle media back
-                        rp.bindMediaToggle(link);
-                    }
-                }
-            };
-
-            // if unsupported, run the polyfill
-            if (!rp.support()) {
-                // run once at least
-                rp.poly();
-
-                // rerun poly on an interval until onload
-                var run = w.setInterval(rp.poly, 500);
-                if (w.addEventListener) {
-                    w.addEventListener("load", function () {
-                        rp.poly();
-                        w.clearInterval(run);
-                    });
-                } else if (w.attachEvent) {
-                    w.attachEvent("onload", function () {
-                        rp.poly();
-                        w.clearInterval(run);
-                    });
-                }
-            }
-            // commonjs
-            if (typeof exports !== "undefined") {
-                exports.loadCSS = loadCSS;
-            }
-            else {
-                w.loadCSS = loadCSS;
-            }
-        }(typeof global !== "undefined" ? global : this));
-    </script>
-    <script src="//cdn.staticfile.org/jquery/3.2.1/jquery.min.js" defer></script>
-    <script src="/scripts/main.js" defer></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script>
-    <!-- 百度统计  -->
+  <!-- link -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13/css/all.min.css">
+  
     
-    <script>
-        var _hmt = _hmt || [];
-        (function () {
-        var hm = document.createElement("script");
-        hm.src = "https://hm.baidu.com/hm.js?1d67485965ad28437990f18cffd5cd08";
-        var s = document.getElementsByTagName("script")[0];
-        s.parentNode.insertBefore(hm, s);
-        })();
-    </script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
+
+  
+  
     
-    <!-- 谷歌统计  -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-waves@0.7.6/dist/waves.min.css">
+
+  
+
+  
+
+  
+
+  <!-- import link -->
+  
+
+  
+  
     
-    <script>
-        (function (i, s, o, g, r, a, m) {
-        i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
-        (i[r].q = i[r].q || []).push(arguments)
-        }, i[r].l = 1 * new Date(); a = s.createElement(o),
-        m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
-        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
-        ga('create', 'UA-109245364-1', 'auto');
-        ga('send', 'pageview');
-    </script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
-    
+<link rel="stylesheet" href="/css/style.css">
+
+  
+
+  <script>
+    function setLoadingBarProgress(num) {
+      document.getElementById('loading-bar').style.width=num+"%";
+    }
+  </script>
+
+  
+  
 </head>
 
-    
-        <body class="post-body">
-    
-    
-<!-- hexo-inject:begin --><!-- hexo-inject:end --><header class="header">
-
-    <div class="read-progress"></div>
-    <div class="header-sidebar-menu">&#xe775;</div>
-    <!-- post页的toggle banner  -->
-    
-    <div class="banner">
-            <div class="blog-title">
-                <a href="/" >Hanson&#39;s Blog.</a>
-            </div>
-            <div class="post-title">
-                <a href="#" class="post-name">用SwiftGen管理UIImage等的String-based接口</a>
-            </div>
-    </div>
-    
-    <a class="home-link" href=/>Hanson's Blog.</a>
-</header>
-    <div class="wrapper">
-        <div class="site-intro" style=
-
-
-
-
-
-
-
-
-height:50vh;
-
->
-    
-    <!-- 主页  -->
-    
-    
-    <!-- 404页  -->
-            
-    <div class="site-intro-img" style="background-image: url(/intro/post-bg.jpg)"></div>
-    <div class="site-intro-placeholder"></div>
-    <div class="site-intro-meta">
-        <!-- 标题  -->
-        <h1 class="intro-title">
-            <!-- 主页  -->
-            
-            用SwiftGen管理UIImage等的String-based接口
-            <!-- 404 -->
-            
-        </h1>
-        <!-- 副标题 -->
-        <p class="intro-subtitle">
-            <!-- 主页副标题  -->
-            
-            
-            <!-- 404 -->
-            
-        </p>
-        <!-- 文章页meta -->
-        
-            <!-- 文章页标签  -->
-            
-            <div class="post-intro-meta">
-                <span class="post-intro-calander iconfont-archer">&#xe676;</span>
-                <span class="post-intro-time">2017/12/08</span>
-                
-                <span id="busuanzi_container_page_pv" class="busuanzi-pv">
-                    <span class="iconfont-archer">&#xe602;</span>
-                    <span id="busuanzi_value_page_pv"></span>
-                </span>
-                
-                <span class="shareWrapper">
-                    <span class="iconfont-archer shareIcon">&#xe71d;</span>
-                    <span class="shareText">Share</span>
-                    <ul class="shareList">
-                        <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
-                            <div class="share-qrcode"></div>
-                        </li>
-                        <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
-                        <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
-                        <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
-                        <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
-                    </ul>
-                </span>
-            </div>
-        
-    </div>
-</div>
-        <script>
-  // load webfont-loader async, and add callback function
-  function async(u, c) {
-    var d = document, t = 'script',
-      o = d.createElement(t),
-      s = d.getElementsByTagName(t)[0];
-    o.src = u;
-    if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
-    s.parentNode.insertBefore(o, s);
-  }
+<body>
   
-  // get user agent
-  var browser = {
-    versions: function () {
-      var u = window.navigator.userAgent;
-      return {
-        userAgent: u,
-        trident: u.indexOf('Trident') > -1, //IE内核
-        presto: u.indexOf('Presto') > -1, //opera内核
-        webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
-        gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
-        mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
-        ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
-        android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
-        iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者安卓QQ浏览器
-        iPad: u.indexOf('iPad') > -1, //是否为iPad
-        webApp: u.indexOf('Safari') == -1, //是否为web应用程序，没有头部与底部
-        weixin: u.indexOf('MicroMessenger') == -1, //是否为微信浏览器
-        uc: u.indexOf('UCBrowser') > -1 //是否为android下的UC浏览器
-      };
-    }()
-  }
-  console.log("userAgent:" + browser.versions.userAgent);
+  <div id="loading-bar-wrapper">
+  <div id="loading-bar"></div>
+</div>
+<header class="l_header shadow blur">
+  <div class='container'>
+  <div class='wrapper'>
+    <div class='nav-sub'>
+      <p class="title"></p>
+      <ul class='switcher nav-list-h'>
+        <li><a class="s-comment fas fa-comments fa-fw" target="_self" href='javascript:void(0)'></a></li>
+        
+          <li><a class="s-toc fas fa-list fa-fw" target="_self" href='javascript:void(0)'></a></li>
+        
+      </ul>
+    </div>
+		<div class="nav-main">
+      
+        
+        <a class="title flat-box" target="_self" href='/'>
+          
+          
+          
+            Hanson
+          
+          
+        </a>
+      
 
-  // callback
-  function fontLoaded() {
-    console.log('font loaded');
-    if (document.getElementsByClassName('site-intro-meta')) {
-      document.getElementsByClassName('intro-title')[0].classList.add('intro-fade-in');
-      document.getElementsByClassName('intro-subtitle')[0].classList.add('intro-fade-in');
-      var postIntroTags = document.getElementsByClassName('post-intro-tags')[0],
-        postIntroMeat = document.getElementsByClassName('post-intro-meta')[0];
-      if (postIntroTags) {
-        postIntroTags.classList.add('post-fade-in');
-      }
-      if (postIntroMeat) {
-        postIntroMeat.classList.add('post-fade-in');
-      }
-    }
-  }
+			<div class='menu navigation'>
+				<ul class='nav-list-h'>
+          
+          
+          
+            
+            
+              <li>
+                <a class="flat-box" href=/archives/
+                  
+                  
+                  
+                    id="archives"
+                  >
+                  <i class='fas fa-list-alt fa-fw'></i>所有文章
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="flat-box" href=/categories/
+                  
+                  
+                  
+                    id="categories"
+                  >
+                  <i class='fas fa-laptop-code fa-fw'></i>我的项目
+                </a>
+                
+                  <ul class="list-v">
+                    
+                      
+            
+              <li>
+                <a class="flat-box" 
+                  
+                  
+                  >
+                  开源项目🌟
+                </a>
+                
+                  <ul class="list-v">
+                    
+                      
+            
+              <li>
+                <a class="flat-box" href=https://github.com/zyphs21/HSStockChart
+                  
+                  
+                  
+                    id="https:githubcomzyphs21HSStockChart"
+                  >
+                  HSStockChart - 使用Swift绘制股票走势图
+                </a>
+                
+              </li>
+            
+          
+                    
+                  </ul>
+                
+              </li>
+            
+          
+                    
+                      
+            
+              <li>
+                <a class="flat-box" 
+                  
+                  
+                  >
+                  App Store 作品🍏
+                </a>
+                
+                  <ul class="list-v">
+                    
+                      
+            
+              <li>
+                <a class="flat-box" href=https://apps.apple.com/cn/app/imagegotcha/id1384107130
+                  
+                  
+                  
+                    id="https:appsapplecomcnappimagegotchaid1384107130"
+                  >
+                  ImageGotcha - Safari 抓图神器
+                </a>
+                
+              </li>
+            
+          
+                    
+                      
+            
+              <li>
+                <a class="flat-box" href=https://apps.apple.com/cn/app/livegotcha/id1502021802
+                  
+                  
+                  
+                    id="https:appsapplecomcnapplivegotchaid1502021802"
+                  >
+                  LiveGotcha - LivePhoto 转视频/GIF
+                </a>
+                
+              </li>
+            
+          
+                    
+                      
+            
+              <li>
+                <a class="flat-box" href=https://apps.apple.com/cn/app/hansonsticker/id1158544571
+                  
+                  
+                  
+                    id="https:appsapplecomcnapphansonstickerid1158544571"
+                  >
+                  HansonSticker - iMessage Sticker 表情
+                </a>
+                
+              </li>
+            
+          
+                    
+                  </ul>
+                
+              </li>
+            
+          
+                    
+                      
+            
+              <li>
+                <a class="flat-box" 
+                  
+                  
+                  >
+                  macOS 小工具🔧
+                </a>
+                
+                  <ul class="list-v">
+                    
+                      
+            
+              <li>
+                <a class="flat-box" href=https://github.com/HansonStudio/PathToGo
+                  
+                  
+                  
+                    id="https:githubcomHansonStudioPathToGo"
+                  >
+                  PathToGo - 一键获取文件路径
+                </a>
+                
+              </li>
+            
+          
+                    
+                  </ul>
+                
+              </li>
+            
+          
+                    
+                  </ul>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="flat-box" href=/categories/
+                  
+                  
+                  
+                    id="categories"
+                  >
+                  <i class='fas fa-folder-open fa-fw'></i>分类
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="flat-box" href=/about/
+                  
+                  
+                  
+                    id="about"
+                  >
+                  <i class='fas fa-info-circle fa-fw'></i>关于
+                </a>
+                
+              </li>
+            
+          
+          
+				</ul>
+			</div>
 
-  // UC不支持跨域，所以直接显示
-  function asyncCb(){
-    if (browser.versions.uc) {
-      console.log("UCBrowser");
-      fontLoaded();
-    } else {
-      WebFont.load({
-        custom: {
-          families: ['Oswald-Regular']
-        },
-        loading: function () {  //所有字体开始加载
-          // console.log('loading');
-        },
-        active: function () {  //所有字体已渲染
-          fontLoaded();
-        },
-        inactive: function () { //字体预加载失败，无效字体或浏览器不支持加载
-          console.log('inactive: timeout');
-          fontLoaded();
-        },
-        timeout: 5000 // Set the timeout to two seconds
-      });
-    }
-  }
+      <div class="m_search">
+        <form name="searchform" class="form u-search-form">
+          <i class="icon fas fa-search fa-fw"></i>
+          <input type="text" class="input u-search-input" placeholder="Search..." />
+        </form>
+      </div>
 
-  async("https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js", asyncCb)
-</script>        
-        <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
-        <div class="container container-unloaded">
-            <main class="main post-page">
-    <article class="article-entry">
-        <h1 id="问题现状"><a href="#问题现状" class="headerlink" title="问题现状"></a>问题现状</h1><p>平时我们使用UIImage，UIFont，UIColor会遇到很多String-based的接口方法，比如常用的UIImage：<br><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> testImage = <span class="type">UIImage</span>(named: <span class="string">"test"</span>)</div></pre></td></tr></table></figure></p>
+			<ul class='switcher nav-list-h'>
+				
+					<li><a class="s-search fas fa-search fa-fw" target="_self" href='javascript:void(0)'></a></li>
+				
+				<li>
+          <a class="s-menu fas fa-bars fa-fw" target="_self" href='javascript:void(0)'></a>
+          <ul class="menu-phone list-v navigation white-box">
+            
+              
+            
+              <li>
+                <a class="flat-box" href=/archives/
+                  
+                  
+                  
+                    id="archives"
+                  >
+                  <i class='fas fa-list-alt fa-fw'></i>所有文章
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="flat-box" href=/categories/
+                  
+                  
+                  
+                    id="categories"
+                  >
+                  <i class='fas fa-laptop-code fa-fw'></i>我的项目
+                </a>
+                
+                  <ul class="list-v">
+                    
+                      
+            
+              <li>
+                <a class="flat-box" 
+                  
+                  
+                  >
+                  开源项目🌟
+                </a>
+                
+                  <ul class="list-v">
+                    
+                      
+            
+              <li>
+                <a class="flat-box" href=https://github.com/zyphs21/HSStockChart
+                  
+                  
+                  
+                    id="https:githubcomzyphs21HSStockChart"
+                  >
+                  HSStockChart - 使用Swift绘制股票走势图
+                </a>
+                
+              </li>
+            
+          
+                    
+                  </ul>
+                
+              </li>
+            
+          
+                    
+                      
+            
+              <li>
+                <a class="flat-box" 
+                  
+                  
+                  >
+                  App Store 作品🍏
+                </a>
+                
+                  <ul class="list-v">
+                    
+                      
+            
+              <li>
+                <a class="flat-box" href=https://apps.apple.com/cn/app/imagegotcha/id1384107130
+                  
+                  
+                  
+                    id="https:appsapplecomcnappimagegotchaid1384107130"
+                  >
+                  ImageGotcha - Safari 抓图神器
+                </a>
+                
+              </li>
+            
+          
+                    
+                      
+            
+              <li>
+                <a class="flat-box" href=https://apps.apple.com/cn/app/livegotcha/id1502021802
+                  
+                  
+                  
+                    id="https:appsapplecomcnapplivegotchaid1502021802"
+                  >
+                  LiveGotcha - LivePhoto 转视频/GIF
+                </a>
+                
+              </li>
+            
+          
+                    
+                      
+            
+              <li>
+                <a class="flat-box" href=https://apps.apple.com/cn/app/hansonsticker/id1158544571
+                  
+                  
+                  
+                    id="https:appsapplecomcnapphansonstickerid1158544571"
+                  >
+                  HansonSticker - iMessage Sticker 表情
+                </a>
+                
+              </li>
+            
+          
+                    
+                  </ul>
+                
+              </li>
+            
+          
+                    
+                      
+            
+              <li>
+                <a class="flat-box" 
+                  
+                  
+                  >
+                  macOS 小工具🔧
+                </a>
+                
+                  <ul class="list-v">
+                    
+                      
+            
+              <li>
+                <a class="flat-box" href=https://github.com/HansonStudio/PathToGo
+                  
+                  
+                  
+                    id="https:githubcomHansonStudioPathToGo"
+                  >
+                  PathToGo - 一键获取文件路径
+                </a>
+                
+              </li>
+            
+          
+                    
+                  </ul>
+                
+              </li>
+            
+          
+                    
+                  </ul>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="flat-box" href=/categories/
+                  
+                  
+                  
+                    id="categories"
+                  >
+                  <i class='fas fa-folder-open fa-fw'></i>分类
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="flat-box" href=/about/
+                  
+                  
+                  
+                    id="about"
+                  >
+                  <i class='fas fa-info-circle fa-fw'></i>关于
+                </a>
+                
+              </li>
+            
+          
+            
+          </ul>
+        </li>
+			</ul>
+		</div>
+	</div>
+  </div>
+</header>
+
+<script>setLoadingBarProgress(40);</script>
+
+
+
+  <div class="l_body nocover">
+    <div class='body-wrapper'>
+      
+
+<div class='l_main'>
+  
+
+  
+    <article id="post" class="post white-box shadow article-type-post" itemscope itemprop="blogPost">
+      
+
+
+  <section class='meta'>
+    
+      
+      
+      <div class="meta" id="header-meta">
+        
+          
+  
+    <h1 class="title">
+      <a href="/2017/12/08/%E7%94%A8SwiftGen%E7%AE%A1%E7%90%86UIImage%E7%AD%89%E7%9A%84String-based%E6%8E%A5%E5%8F%A3/">
+        用SwiftGen管理UIImage等的String-based接口
+      </a>
+    </h1>
+  
+
+
+        
+        <div class='new-meta-box'>
+          
+            
+          
+            
+              
+<div class='new-meta-item author'>
+  <a href="http://www.myhanson.com" target="_blank" rel="nofollow noopener">
+    <img src="https://cdn.jsdelivr.net/gh/zyphs21/cdn-assets/avatar/avatar.png">
+    <p>Hanson</p>
+  </a>
+</div>
+
+            
+          
+            
+              
+
+            
+          
+            
+              <div class="new-meta-item date">
+  <a class='notlink'>
+    <i class="fas fa-calendar-alt fa-fw" aria-hidden="true"></i>
+    <p>发布于：Dec 8, 2017</p>
+  </a>
+</div>
+
+            
+          
+            
+              
+
+            
+          
+        </div>
+        
+          <hr>
+        
+      </div>
+    
+  </section>
+
+
+      <section class="article typo">
+        <div class="article-entry" itemprop="articleBody">
+          
+          <h1 id="问题现状"><a href="#问题现状" class="headerlink" title="问题现状"></a>问题现状</h1><p>平时我们使用UIImage，UIFont，UIColor会遇到很多String-based的接口方法，比如常用的UIImage：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> testImage = <span class="type">UIImage</span>(named: <span class="string">"test"</span>)</span><br></pre></td></tr></table></figure>
 <p>对于上面的代码，如果我们把 <code>test</code> 拼写错了，Xcode 并不会给出提示，只有当我们运行的时候才会收到报错，这样维护起来是有一定成本的。</p>
-<a id="more"></a>
-<h1 id="代码解决"><a href="#代码解决" class="headerlink" title="代码解决"></a>代码解决</h1><p>我们可以用类似如下的代码来解决这个问题：<br><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> UIKit.UIImage</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">ImageAssets</span> </span>&#123;</div><div class="line">    <span class="keyword">fileprivate</span> <span class="keyword">var</span> name: <span class="type">String</span></div><div class="line">    <span class="keyword">var</span> image: <span class="type">UIImage</span> &#123;</div><div class="line">        <span class="keyword">let</span> image = <span class="type">UIImage</span>(named: name)</div><div class="line">        <span class="keyword">guard</span> <span class="keyword">let</span> result = image <span class="keyword">else</span> &#123; <span class="built_in">fatalError</span>(<span class="string">"Unable to load image named <span class="subst">\(name)</span>."</span>) &#125;</div><div class="line">        <span class="keyword">return</span> result</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"><span class="class"><span class="keyword">enum</span> <span class="title">Assets</span> </span>&#123;</div><div class="line">    <span class="class"><span class="keyword">enum</span> <span class="title">AppLogo</span> </span>&#123;</div><div class="line">        <span class="keyword">static</span> <span class="keyword">let</span> appLogo = <span class="type">ImageAssets</span>(name: <span class="string">"appLogo"</span>)</div><div class="line">        <span class="keyword">static</span> <span class="keyword">let</span> grayLogo = <span class="type">ImageAssets</span>(name: <span class="string">"gray_logo"</span>)</div><div class="line">    &#125;</div><div class="line">    <span class="class"><span class="keyword">enum</span> <span class="title">Arrow</span> </span>&#123;</div><div class="line">        <span class="keyword">static</span> <span class="keyword">let</span> arrowBlue = <span class="type">ImageAssets</span>(name: <span class="string">"arrow_blue"</span>)</div><div class="line">        <span class="keyword">static</span> <span class="keyword">let</span> arrowBrown = <span class="type">ImageAssets</span>(name: <span class="string">"arrow_brown"</span>)</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// ....</span></div><div class="line">&#125;</div><div class="line"><span class="class"><span class="keyword">extension</span> <span class="title">UIImage</span> </span>&#123;</div><div class="line">    <span class="keyword">convenience</span> <span class="keyword">init</span>!(asset: <span class="type">ImageAssets</span>) &#123;</div><div class="line">        <span class="keyword">self</span>.<span class="keyword">init</span>(named: asset.name)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>利用上面的代码，我们在新建 UIImage 的时候就不需要去想图片的名字了，而且 Xcode 还会有代码提示：<br><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> logo = <span class="type">Asset</span>.<span class="type">AppLogo</span>.appLogo.image</div><div class="line"><span class="keyword">let</span> grayLogo = <span class="type">UIImage</span>(asset: <span class="type">Asset</span>.<span class="type">AppLogo</span>.grayLogo)</div></pre></td></tr></table></figure></p>
-<h1 id="存在问题"><a href="#存在问题" class="headerlink" title="存在问题"></a>存在问题</h1><p>虽然这种方法在调用的时候简单又安全了，但是项目中的图片往往比较多，如果手动编写维护那段代码也是需要不少精力，而且不能保证后续不会添加新的图片，这样每次都要去维护那段代码不免有些反人类。<br>那么现在就要介绍这个开源项目—  <a href="https://github.com/SwiftGen/SwiftGen" target="_blank" rel="external"><code>SwiftGen</code></a>了！</p>
+<h1 id="代码解决"><a href="#代码解决" class="headerlink" title="代码解决"></a>代码解决</h1><p>我们可以用类似如下的代码来解决这个问题：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> UIKit.UIImage</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">ImageAssets</span> </span>&#123;</span><br><span class="line">    <span class="keyword">fileprivate</span> <span class="keyword">var</span> name: <span class="type">String</span></span><br><span class="line">    <span class="keyword">var</span> image: <span class="type">UIImage</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> image = <span class="type">UIImage</span>(named: name)</span><br><span class="line">        <span class="keyword">guard</span> <span class="keyword">let</span> result = image <span class="keyword">else</span> &#123; <span class="built_in">fatalError</span>(<span class="string">"Unable to load image named \(name)."</span>) &#125;</span><br><span class="line">        <span class="keyword">return</span> result</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">Assets</span> </span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">enum</span> <span class="title">AppLogo</span> </span>&#123;</span><br><span class="line">        <span class="keyword">static</span> <span class="keyword">let</span> appLogo = <span class="type">ImageAssets</span>(name: <span class="string">"appLogo"</span>)</span><br><span class="line">        <span class="keyword">static</span> <span class="keyword">let</span> grayLogo = <span class="type">ImageAssets</span>(name: <span class="string">"gray_logo"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="class"><span class="keyword">enum</span> <span class="title">Arrow</span> </span>&#123;</span><br><span class="line">        <span class="keyword">static</span> <span class="keyword">let</span> arrowBlue = <span class="type">ImageAssets</span>(name: <span class="string">"arrow_blue"</span>)</span><br><span class="line">        <span class="keyword">static</span> <span class="keyword">let</span> arrowBrown = <span class="type">ImageAssets</span>(name: <span class="string">"arrow_brown"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// ....</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">UIImage</span> </span>&#123;</span><br><span class="line">    <span class="keyword">convenience</span> <span class="keyword">init</span>!(asset: <span class="type">ImageAssets</span>) &#123;</span><br><span class="line">        <span class="keyword">self</span>.<span class="keyword">init</span>(named: asset.name)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>利用上面的代码，我们在新建 UIImage 的时候就不需要去想图片的名字了，而且 Xcode 还会有代码提示：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> logo = <span class="type">Asset</span>.<span class="type">AppLogo</span>.appLogo.image</span><br><span class="line"><span class="keyword">let</span> grayLogo = <span class="type">UIImage</span>(asset: <span class="type">Asset</span>.<span class="type">AppLogo</span>.grayLogo)</span><br></pre></td></tr></table></figure>
+
+<h1 id="存在问题"><a href="#存在问题" class="headerlink" title="存在问题"></a>存在问题</h1><p>虽然这种方法在调用的时候简单又安全了，但是项目中的图片往往比较多，如果手动编写维护那段代码也是需要不少精力，而且不能保证后续不会添加新的图片，这样每次都要去维护那段代码不免有些反人类。<br>那么现在就要介绍这个开源项目—  <a href="https://github.com/SwiftGen/SwiftGen" target="_blank" rel="noopener"><code>SwiftGen</code></a>了！</p>
 <blockquote>
 <p>SwiftGen is a tool to auto-generate Swift code for resources of your projects, to make them type-safe to use.</p>
 </blockquote>
 <p>利用 SwiftGen 可以帮我们生成这类的代码，但是 SwiftGen 默认生成的代码样式有时候并不是我们想要的，而且默认生成还会有针对 macOS 上的代码，比较好的是 SwiftGen 提供了模板的功能，我们可以按自己的需要来修改模板。</p>
 <h1 id="集成-SwiftGen-在项目中"><a href="#集成-SwiftGen-在项目中" class="headerlink" title="集成 SwiftGen 在项目中"></a>集成 SwiftGen 在项目中</h1><p>SwiftGen 提供了好几种的集成方式，我这里只介绍我自己比较喜欢的方式：就是通过下载它的 Zip 文件解压到项目的目录中，然后通过添加 Run Script 来进行管理。这样可以基本做到不用操心代码。</p>
 <h2 id="1-修改模板"><a href="#1-修改模板" class="headerlink" title="1.修改模板"></a>1.修改模板</h2><ul>
-<li>到 SwiftGen仓库的Release页面下载最新的 <a href="https://github.com/SwiftGen/SwiftGen/releases" target="_blank" rel="external">swiftgen-5.2.1.zip</a></li>
-<li>将解压后的 <code>swiftgen-5.2.1</code> 文件夹放到项目所在的目录下(存放<code>xxx.xcodeproj</code> 的位置)，可以将文件夹的名字改为<code>SwiftGen5</code>简洁一点。</li>
-<li>进入到 <code>SwiftGen5</code> 里的 <code>templates/xcassets</code> 目录下，这里面可以看到有不少模板，我们选择 <code>swift4.stencil</code> 复制一份，命名为 <code>my-swift4.stencil</code> 然后我们就可以在里面修改我们自己想要的模板，我主要是想把 macOS 等其它平台的一些判断代码给删掉:<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Generated using SwiftGen, using my-templete created by Hanson</span></div><div class="line"></div><div class="line">&#123;% <span class="keyword">if</span> catalogs %&#125;</div><div class="line">&#123;% <span class="keyword">set</span> imageAlias %&#125;&#123;&#123;param.imageAliasName|<span class="keyword">default</span>:<span class="string">"Image"</span>&#125;&#125;&#123;% endset %&#125;</div><div class="line"><span class="keyword">import</span> UIKit.UIImage</div><div class="line"></div><div class="line"><span class="keyword">typealias</span> &#123;&#123;imageAlias&#125;&#125; = <span class="type">UIImage</span></div><div class="line"></div><div class="line">&#123;% <span class="keyword">set</span> enumName %&#125;&#123;&#123;param.enumName|<span class="keyword">default</span>:<span class="string">"Asset"</span>&#125;&#125;&#123;% endset %&#125;</div><div class="line">&#123;% <span class="keyword">set</span> imageType %&#125;&#123;&#123;param.imageTypeName|<span class="keyword">default</span>:<span class="string">"ImageAsset"</span>&#125;&#125;&#123;% endset %&#125;</div><div class="line"><span class="meta">@available</span>(*, deprecated, renamed: <span class="string">"&#123;&#123;imageType&#125;&#125;"</span>)</div><div class="line"><span class="keyword">typealias</span> &#123;&#123;enumName&#125;&#125;<span class="type">Type</span> = &#123;&#123;imageType&#125;&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">struct</span> </span>&#123;&#123;imageType&#125;&#125; &#123;</div><div class="line"><span class="keyword">fileprivate</span> <span class="keyword">var</span> name: <span class="type">String</span></div><div class="line"></div><div class="line"><span class="keyword">var</span> image: &#123;&#123;imageAlias&#125;&#125; &#123;</div><div class="line"><span class="keyword">let</span> bundle = <span class="type">Bundle</span>(<span class="keyword">for</span>: <span class="type">BundleToken</span>.<span class="keyword">self</span>)</div><div class="line"><span class="keyword">let</span> image = &#123;&#123;imageAlias&#125;&#125;(named: name, <span class="keyword">in</span>: bundle, compatibleWith: <span class="literal">nil</span>)</div><div class="line"><span class="keyword">guard</span> <span class="keyword">let</span> result = image <span class="keyword">else</span> &#123; <span class="built_in">fatalError</span>(<span class="string">"Unable to load image named <span class="subst">\(name)</span>."</span>) &#125;</div><div class="line"><span class="keyword">return</span> result</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line">&#123;% macro enumBlock assets sp %&#125;</div><div class="line">&#123;&#123;sp&#125;&#125;  &#123;% call casesBlock assets sp %&#125;</div><div class="line">&#123;&#123;sp&#125;&#125;  &#123;% <span class="keyword">if</span> not param.noAllValues %&#125;</div><div class="line">&#123;&#123;sp&#125;&#125;  &#123;% endif %&#125;</div><div class="line">&#123;% endmacro %&#125;</div><div class="line">&#123;% macro casesBlock assets sp %&#125;</div><div class="line">&#123;&#123;sp&#125;&#125;  &#123;% <span class="keyword">for</span> asset <span class="keyword">in</span> assets %&#125;</div><div class="line">&#123;&#123;sp&#125;&#125;  &#123;% <span class="keyword">if</span> asset.type == <span class="string">"color"</span> %&#125;</div><div class="line">&#123;&#123;sp&#125;&#125;  <span class="keyword">static</span> <span class="keyword">let</span> &#123;&#123;asset.name|swiftIdentifier:<span class="string">"pretty"</span>|lowerFirstWord|escapeReservedKeywords&#125;&#125; = &#123;&#123;colorType&#125;&#125;(name: <span class="string">"&#123;&#123;asset.value&#125;&#125;"</span>)</div><div class="line">&#123;&#123;sp&#125;&#125;  &#123;% elif asset.type == <span class="string">"image"</span> %&#125;</div><div class="line">&#123;&#123;sp&#125;&#125;  <span class="keyword">static</span> <span class="keyword">let</span> &#123;&#123;asset.name|swiftIdentifier:<span class="string">"pretty"</span>|lowerFirstWord|escapeReservedKeywords&#125;&#125; = &#123;&#123;imageType&#125;&#125;(name: <span class="string">"&#123;&#123;asset.value&#125;&#125;"</span>)</div><div class="line">&#123;&#123;sp&#125;&#125;  &#123;% elif asset.items %&#125;</div><div class="line">&#123;&#123;sp&#125;&#125;  <span class="class"><span class="keyword">enum</span> </span>&#123;&#123;asset.name|swiftIdentifier:<span class="string">"pretty"</span>|escapeReservedKeywords&#125;&#125; &#123;</div><div class="line">&#123;&#123;sp&#125;&#125;    &#123;% <span class="keyword">set</span> sp2 %&#125;&#123;&#123;sp&#125;&#125;  &#123;% endset %&#125;</div><div class="line">&#123;&#123;sp&#125;&#125;    &#123;% call casesBlock asset.items sp2 %&#125;</div><div class="line">&#123;&#123;sp&#125;&#125;  &#125;</div><div class="line">&#123;&#123;sp&#125;&#125;  &#123;% endif %&#125;</div><div class="line">&#123;&#123;sp&#125;&#125;  &#123;% endfor %&#125;</div><div class="line">&#123;% endmacro %&#125;</div><div class="line">&#123;% macro allValuesBlock assets <span class="built_in">filter</span> <span class="keyword">prefix</span> sp %&#125;</div><div class="line">&#123;&#123;sp&#125;&#125;  &#123;% <span class="keyword">for</span> asset <span class="keyword">in</span> assets %&#125;</div><div class="line">&#123;&#123;sp&#125;&#125;  &#123;% <span class="keyword">if</span> asset.type == <span class="built_in">filter</span> %&#125;</div><div class="line">&#123;&#123;sp&#125;&#125;  &#123;&#123;<span class="keyword">prefix</span>&#125;&#125;&#123;&#123;asset.name|swiftIdentifier:<span class="string">"pretty"</span>|lowerFirstWord|escapeReservedKeywords&#125;&#125;,</div><div class="line">&#123;&#123;sp&#125;&#125;  &#123;% elif asset.items %&#125;</div><div class="line">&#123;&#123;sp&#125;&#125;  &#123;% <span class="keyword">set</span> prefix2 %&#125;&#123;&#123;<span class="keyword">prefix</span>&#125;&#125;&#123;&#123;asset.name|swiftIdentifier:<span class="string">"pretty"</span>|escapeReservedKeywords&#125;&#125;.&#123;% endset %&#125;</div><div class="line">&#123;&#123;sp&#125;&#125;  &#123;% call allValuesBlock asset.items <span class="built_in">filter</span> prefix2 sp %&#125;</div><div class="line">&#123;&#123;sp&#125;&#125;  &#123;% endif %&#125;</div><div class="line">&#123;&#123;sp&#125;&#125;  &#123;% endfor %&#125;</div><div class="line">&#123;% endmacro %&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">enum</span> </span>&#123;&#123;enumName&#125;&#125; &#123;</div><div class="line">&#123;% <span class="keyword">if</span> catalogs.<span class="built_in">count</span> &gt; <span class="number">1</span> %&#125;</div><div class="line">&#123;% <span class="keyword">for</span> catalog <span class="keyword">in</span> catalogs %&#125;</div><div class="line"><span class="class"><span class="keyword">enum</span> </span>&#123;&#123;catalog.name|swiftIdentifier:<span class="string">"pretty"</span>|escapeReservedKeywords&#125;&#125; &#123;</div><div class="line">&#123;% call enumBlock catalog.assets <span class="string">"  "</span> %&#125;</div><div class="line">&#125;</div><div class="line">&#123;% endfor %&#125;</div><div class="line">&#123;% <span class="keyword">else</span> %&#125;</div><div class="line">&#123;% call enumBlock catalogs.first.assets <span class="string">""</span> %&#125;</div><div class="line">&#123;% endif %&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">extension</span> </span>&#123;&#123;imageAlias&#125;&#125; &#123;</div><div class="line"><span class="keyword">convenience</span> <span class="keyword">init</span>!(asset: &#123;&#123;imageType&#125;&#125;) &#123;</div><div class="line"><span class="keyword">let</span> bundle = <span class="type">Bundle</span>(<span class="keyword">for</span>: <span class="type">BundleToken</span>.<span class="keyword">self</span>)</div><div class="line"><span class="keyword">self</span>.<span class="keyword">init</span>(named: asset.name, <span class="keyword">in</span>: bundle, compatibleWith: <span class="literal">nil</span>)</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">BundleToken</span> </span>&#123;&#125;</div><div class="line">&#123;% <span class="keyword">else</span> %&#125;</div><div class="line"><span class="comment">// No assets found</span></div><div class="line">&#123;% endif %&#125;</div></pre></td></tr></table></figure>
+<li><p>到 SwiftGen仓库的Release页面下载最新的 <a href="https://github.com/SwiftGen/SwiftGen/releases" target="_blank" rel="noopener">swiftgen-5.2.1.zip</a></p>
 </li>
-</ul>
-<h2 id="2-建立RunScript"><a href="#2-建立RunScript" class="headerlink" title="2.建立RunScript"></a>2.建立RunScript</h2><ul>
+<li><p>将解压后的 <code>swiftgen-5.2.1</code> 文件夹放到项目所在的目录下(存放<code>xxx.xcodeproj</code> 的位置)，可以将文件夹的名字改为<code>SwiftGen5</code>简洁一点。</p>
+</li>
+<li><p>进入到 <code>SwiftGen5</code> 里的 <code>templates/xcassets</code> 目录下，这里面可以看到有不少模板，我们选择 <code>swift4.stencil</code> 复制一份，命名为 <code>my-swift4.stencil</code> 然后我们就可以在里面修改我们自己想要的模板，我主要是想把 macOS 等其它平台的一些判断代码给删掉:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Generated using SwiftGen, using my-templete created by Hanson</span></span><br><span class="line"></span><br><span class="line">&#123;% <span class="keyword">if</span> catalogs %&#125;</span><br><span class="line">&#123;% <span class="keyword">set</span> imageAlias %&#125;&#123;&#123;param.imageAliasName|<span class="keyword">default</span>:<span class="string">"Image"</span>&#125;&#125;&#123;% endset %&#125;</span><br><span class="line"><span class="keyword">import</span> UIKit.UIImage</span><br><span class="line"></span><br><span class="line"><span class="keyword">typealias</span> &#123;&#123;imageAlias&#125;&#125; = <span class="type">UIImage</span></span><br><span class="line"></span><br><span class="line">&#123;% <span class="keyword">set</span> enumName %&#125;&#123;&#123;param.enumName|<span class="keyword">default</span>:<span class="string">"Asset"</span>&#125;&#125;&#123;% endset %&#125;</span><br><span class="line">&#123;% <span class="keyword">set</span> imageType %&#125;&#123;&#123;param.imageTypeName|<span class="keyword">default</span>:<span class="string">"ImageAsset"</span>&#125;&#125;&#123;% endset %&#125;</span><br><span class="line"><span class="meta">@available</span>(*, deprecated, renamed: <span class="string">"&#123;&#123;imageType&#125;&#125;"</span>)</span><br><span class="line"><span class="keyword">typealias</span> &#123;&#123;enumName&#125;&#125;<span class="type">Type</span> = &#123;&#123;imageType&#125;&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> </span>&#123;&#123;imageType&#125;&#125; &#123;</span><br><span class="line"><span class="keyword">fileprivate</span> <span class="keyword">var</span> name: <span class="type">String</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> image: &#123;&#123;imageAlias&#125;&#125; &#123;</span><br><span class="line"><span class="keyword">let</span> bundle = <span class="type">Bundle</span>(<span class="keyword">for</span>: <span class="type">BundleToken</span>.<span class="keyword">self</span>)</span><br><span class="line"><span class="keyword">let</span> image = &#123;&#123;imageAlias&#125;&#125;(named: name, <span class="keyword">in</span>: bundle, compatibleWith: <span class="literal">nil</span>)</span><br><span class="line"><span class="keyword">guard</span> <span class="keyword">let</span> result = image <span class="keyword">else</span> &#123; <span class="built_in">fatalError</span>(<span class="string">"Unable to load image named \(name)."</span>) &#125;</span><br><span class="line"><span class="keyword">return</span> result</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#123;% macro enumBlock assets sp %&#125;</span><br><span class="line">&#123;&#123;sp&#125;&#125;  &#123;% call casesBlock assets sp %&#125;</span><br><span class="line">&#123;&#123;sp&#125;&#125;  &#123;% <span class="keyword">if</span> not param.noAllValues %&#125;</span><br><span class="line">&#123;&#123;sp&#125;&#125;  &#123;% endif %&#125;</span><br><span class="line">&#123;% endmacro %&#125;</span><br><span class="line">&#123;% macro casesBlock assets sp %&#125;</span><br><span class="line">&#123;&#123;sp&#125;&#125;  &#123;% <span class="keyword">for</span> asset <span class="keyword">in</span> assets %&#125;</span><br><span class="line">&#123;&#123;sp&#125;&#125;  &#123;% <span class="keyword">if</span> asset.type == <span class="string">"color"</span> %&#125;</span><br><span class="line">&#123;&#123;sp&#125;&#125;  <span class="keyword">static</span> <span class="keyword">let</span> &#123;&#123;asset.name|swiftIdentifier:<span class="string">"pretty"</span>|lowerFirstWord|escapeReservedKeywords&#125;&#125; = &#123;&#123;colorType&#125;&#125;(name: <span class="string">"&#123;&#123;asset.value&#125;&#125;"</span>)</span><br><span class="line">&#123;&#123;sp&#125;&#125;  &#123;% elif asset.type == <span class="string">"image"</span> %&#125;</span><br><span class="line">&#123;&#123;sp&#125;&#125;  <span class="keyword">static</span> <span class="keyword">let</span> &#123;&#123;asset.name|swiftIdentifier:<span class="string">"pretty"</span>|lowerFirstWord|escapeReservedKeywords&#125;&#125; = &#123;&#123;imageType&#125;&#125;(name: <span class="string">"&#123;&#123;asset.value&#125;&#125;"</span>)</span><br><span class="line">&#123;&#123;sp&#125;&#125;  &#123;% elif asset.items %&#125;</span><br><span class="line">&#123;&#123;sp&#125;&#125;  <span class="class"><span class="keyword">enum</span> </span>&#123;&#123;asset.name|swiftIdentifier:<span class="string">"pretty"</span>|escapeReservedKeywords&#125;&#125; &#123;</span><br><span class="line">&#123;&#123;sp&#125;&#125;    &#123;% <span class="keyword">set</span> sp2 %&#125;&#123;&#123;sp&#125;&#125;  &#123;% endset %&#125;</span><br><span class="line">&#123;&#123;sp&#125;&#125;    &#123;% call casesBlock asset.items sp2 %&#125;</span><br><span class="line">&#123;&#123;sp&#125;&#125;  &#125;</span><br><span class="line">&#123;&#123;sp&#125;&#125;  &#123;% endif %&#125;</span><br><span class="line">&#123;&#123;sp&#125;&#125;  &#123;% endfor %&#125;</span><br><span class="line">&#123;% endmacro %&#125;</span><br><span class="line">&#123;% macro allValuesBlock assets <span class="built_in">filter</span> <span class="keyword">prefix</span> sp %&#125;</span><br><span class="line">&#123;&#123;sp&#125;&#125;  &#123;% <span class="keyword">for</span> asset <span class="keyword">in</span> assets %&#125;</span><br><span class="line">&#123;&#123;sp&#125;&#125;  &#123;% <span class="keyword">if</span> asset.type == <span class="built_in">filter</span> %&#125;</span><br><span class="line">&#123;&#123;sp&#125;&#125;  &#123;&#123;<span class="keyword">prefix</span>&#125;&#125;&#123;&#123;asset.name|swiftIdentifier:<span class="string">"pretty"</span>|lowerFirstWord|escapeReservedKeywords&#125;&#125;,</span><br><span class="line">&#123;&#123;sp&#125;&#125;  &#123;% elif asset.items %&#125;</span><br><span class="line">&#123;&#123;sp&#125;&#125;  &#123;% <span class="keyword">set</span> prefix2 %&#125;&#123;&#123;<span class="keyword">prefix</span>&#125;&#125;&#123;&#123;asset.name|swiftIdentifier:<span class="string">"pretty"</span>|escapeReservedKeywords&#125;&#125;.&#123;% endset %&#125;</span><br><span class="line">&#123;&#123;sp&#125;&#125;  &#123;% call allValuesBlock asset.items <span class="built_in">filter</span> prefix2 sp %&#125;</span><br><span class="line">&#123;&#123;sp&#125;&#125;  &#123;% endif %&#125;</span><br><span class="line">&#123;&#123;sp&#125;&#125;  &#123;% endfor %&#125;</span><br><span class="line">&#123;% endmacro %&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">enum</span> </span>&#123;&#123;enumName&#125;&#125; &#123;</span><br><span class="line">&#123;% <span class="keyword">if</span> catalogs.<span class="built_in">count</span> &gt; <span class="number">1</span> %&#125;</span><br><span class="line">&#123;% <span class="keyword">for</span> catalog <span class="keyword">in</span> catalogs %&#125;</span><br><span class="line"><span class="class"><span class="keyword">enum</span> </span>&#123;&#123;catalog.name|swiftIdentifier:<span class="string">"pretty"</span>|escapeReservedKeywords&#125;&#125; &#123;</span><br><span class="line">&#123;% call enumBlock catalog.assets <span class="string">"  "</span> %&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#123;% endfor %&#125;</span><br><span class="line">&#123;% <span class="keyword">else</span> %&#125;</span><br><span class="line">&#123;% call enumBlock catalogs.first.assets <span class="string">""</span> %&#125;</span><br><span class="line">&#123;% endif %&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">extension</span> </span>&#123;&#123;imageAlias&#125;&#125; &#123;</span><br><span class="line"><span class="keyword">convenience</span> <span class="keyword">init</span>!(asset: &#123;&#123;imageType&#125;&#125;) &#123;</span><br><span class="line"><span class="keyword">let</span> bundle = <span class="type">Bundle</span>(<span class="keyword">for</span>: <span class="type">BundleToken</span>.<span class="keyword">self</span>)</span><br><span class="line"><span class="keyword">self</span>.<span class="keyword">init</span>(named: asset.name, <span class="keyword">in</span>: bundle, compatibleWith: <span class="literal">nil</span>)</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">BundleToken</span> </span>&#123;&#125;</span><br><span class="line">&#123;% <span class="keyword">else</span> %&#125;</span><br><span class="line"><span class="comment">// No assets found</span></span><br><span class="line">&#123;% endif %&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="2-建立RunScript"><a href="#2-建立RunScript" class="headerlink" title="2.建立RunScript"></a>2.建立RunScript</h2></li>
 <li><p>在<code>Xcode</code>中，进入到项目的<code>Target</code>，选择<code>Build Phases</code>,然后点击左上角的 <code>+</code> 号后点击 <code>New Run Script Phase</code>在新建的RunScript里添加如下内容：</p>
-  <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> <span class="built_in">which</span> <span class="string">"<span class="variable">$PROJECT_DIR</span>"</span>/SwiftGen5/bin/swiftgen &gt;/dev/null;</div><div class="line"><span class="keyword">then</span></div><div class="line"><span class="built_in">set</span> -e</div><div class="line"><span class="string">"<span class="variable">$PROJECT_DIR</span>"</span>/SwiftGen5/bin/swiftgen xcassets -t my-swift4 <span class="string">"<span class="variable">$PROJECT_DIR</span>/swiftGenExample/Assets.xcassets"</span> --output <span class="string">"<span class="variable">$PROJECT_DIR</span>/swiftGenExample/ImageCode/ImageAsset.swift"</span></div><div class="line"><span class="keyword">else</span></div><div class="line"><span class="built_in">echo</span> <span class="string">"##run echo warning: SwiftGen not installed, download it from https://github.com/SwiftGen/SwiftGen"</span></div><div class="line"><span class="keyword">fi</span></div></pre></td></tr></table></figure>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> <span class="built_in">which</span> <span class="string">"<span class="variable">$PROJECT_DIR</span>"</span>/SwiftGen5/bin/swiftgen &gt;/dev/null;</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line"><span class="built_in">set</span> -e</span><br><span class="line"><span class="string">"<span class="variable">$PROJECT_DIR</span>"</span>/SwiftGen5/bin/swiftgen xcassets -t my-swift4 <span class="string">"<span class="variable">$PROJECT_DIR</span>/swiftGenExample/Assets.xcassets"</span> --output <span class="string">"<span class="variable">$PROJECT_DIR</span>/swiftGenExample/ImageCode/ImageAsset.swift"</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"##run echo warning: SwiftGen not installed, download it from https://github.com/SwiftGen/SwiftGen"</span></span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
 <p>  这段 <code>Run Script</code> 作用就是利用 SwiftGen 生成代码后写入到 <code>ImageAsset.swift</code> 文件中。</p>
 </li>
 <li><p>Build 一下project，我们就可以在 <code>/swiftGenExample/ImageCode/</code> 目录下看到 <code>ImageAsset.swift</code>，此时该文件还没有被项目索引，所以把它拖进项目Xcode对应的目录下就行了，之后即使我们添加了新的图片或者删掉旧的图片，只要每次Build一下项目，代码就会自动更新了。</p>
 </li>
 </ul>
-<p>下面是生成的 <code>ImageAsset.swift</code> 的代码：<br><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// ImageAsset.swift</span></div><div class="line"><span class="comment">// Generated using SwiftGen, using my-templete created by Hanson</span></div><div class="line"></div><div class="line"><span class="keyword">import</span> UIKit.UIImage</div><div class="line"></div><div class="line"><span class="keyword">typealias</span> <span class="type">Image</span> = <span class="type">UIImage</span></div><div class="line"></div><div class="line"><span class="meta">@available</span>(*, deprecated, renamed: <span class="string">"ImageAsset"</span>)</div><div class="line"><span class="keyword">typealias</span> <span class="type">AssetType</span> = <span class="type">ImageAsset</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">ImageAsset</span> </span>&#123;</div><div class="line">    <span class="keyword">fileprivate</span> <span class="keyword">var</span> name: <span class="type">String</span></div><div class="line"></div><div class="line">    <span class="keyword">var</span> image: <span class="type">Image</span> &#123;</div><div class="line">        <span class="keyword">let</span> bundle = <span class="type">Bundle</span>(<span class="keyword">for</span>: <span class="type">BundleToken</span>.<span class="keyword">self</span>)</div><div class="line">        <span class="keyword">let</span> image = <span class="type">Image</span>(named: name, <span class="keyword">in</span>: bundle, compatibleWith: <span class="literal">nil</span>)</div><div class="line">        <span class="keyword">guard</span> <span class="keyword">let</span> result = image <span class="keyword">else</span> &#123; <span class="built_in">fatalError</span>(<span class="string">"Unable to load image named <span class="subst">\(name)</span>."</span>) &#125;</div><div class="line">        <span class="keyword">return</span> result</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">enum</span> <span class="title">Asset</span> </span>&#123;</div><div class="line">    <span class="keyword">static</span> <span class="keyword">let</span> arrowBlue = <span class="type">ImageAsset</span>(name: <span class="string">"arrow_blue"</span>)</div><div class="line">    <span class="keyword">static</span> <span class="keyword">let</span> arrowBrown = <span class="type">ImageAsset</span>(name: <span class="string">"arrow_brown"</span>)</div><div class="line">    <span class="keyword">static</span> <span class="keyword">let</span> iconLeftBack = <span class="type">ImageAsset</span>(name: <span class="string">"icon_left_back"</span>)</div><div class="line">    <span class="keyword">static</span> <span class="keyword">let</span> startLogo = <span class="type">ImageAsset</span>(name: <span class="string">"start_logo"</span>)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">extension</span> <span class="title">Image</span> </span>&#123;</div><div class="line">    <span class="keyword">convenience</span> <span class="keyword">init</span>!(asset: <span class="type">ImageAsset</span>) &#123;</div><div class="line">    <span class="keyword">let</span> bundle = <span class="type">Bundle</span>(<span class="keyword">for</span>: <span class="type">BundleToken</span>.<span class="keyword">self</span>)</div><div class="line">    <span class="keyword">self</span>.<span class="keyword">init</span>(named: asset.name, <span class="keyword">in</span>: bundle, compatibleWith: <span class="literal">nil</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">BundleToken</span> </span>&#123;&#125;</div></pre></td></tr></table></figure></p>
+<p>下面是生成的 <code>ImageAsset.swift</code> 的代码：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ImageAsset.swift</span></span><br><span class="line"><span class="comment">// Generated using SwiftGen, using my-templete created by Hanson</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> UIKit.UIImage</span><br><span class="line"></span><br><span class="line"><span class="keyword">typealias</span> <span class="type">Image</span> = <span class="type">UIImage</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@available</span>(*, deprecated, renamed: <span class="string">"ImageAsset"</span>)</span><br><span class="line"><span class="keyword">typealias</span> <span class="type">AssetType</span> = <span class="type">ImageAsset</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">ImageAsset</span> </span>&#123;</span><br><span class="line">    <span class="keyword">fileprivate</span> <span class="keyword">var</span> name: <span class="type">String</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> image: <span class="type">Image</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> bundle = <span class="type">Bundle</span>(<span class="keyword">for</span>: <span class="type">BundleToken</span>.<span class="keyword">self</span>)</span><br><span class="line">        <span class="keyword">let</span> image = <span class="type">Image</span>(named: name, <span class="keyword">in</span>: bundle, compatibleWith: <span class="literal">nil</span>)</span><br><span class="line">        <span class="keyword">guard</span> <span class="keyword">let</span> result = image <span class="keyword">else</span> &#123; <span class="built_in">fatalError</span>(<span class="string">"Unable to load image named \(name)."</span>) &#125;</span><br><span class="line">        <span class="keyword">return</span> result</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">Asset</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">let</span> arrowBlue = <span class="type">ImageAsset</span>(name: <span class="string">"arrow_blue"</span>)</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">let</span> arrowBrown = <span class="type">ImageAsset</span>(name: <span class="string">"arrow_brown"</span>)</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">let</span> iconLeftBack = <span class="type">ImageAsset</span>(name: <span class="string">"icon_left_back"</span>)</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">let</span> startLogo = <span class="type">ImageAsset</span>(name: <span class="string">"start_logo"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">Image</span> </span>&#123;</span><br><span class="line">    <span class="keyword">convenience</span> <span class="keyword">init</span>!(asset: <span class="type">ImageAsset</span>) &#123;</span><br><span class="line">    <span class="keyword">let</span> bundle = <span class="type">Bundle</span>(<span class="keyword">for</span>: <span class="type">BundleToken</span>.<span class="keyword">self</span>)</span><br><span class="line">    <span class="keyword">self</span>.<span class="keyword">init</span>(named: asset.name, <span class="keyword">in</span>: bundle, compatibleWith: <span class="literal">nil</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">BundleToken</span> </span>&#123;&#125;</span><br></pre></td></tr></table></figure>
 <h1 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h1><p>这里只是利用了 <code>SwiftGen</code> 对于 <code>Image</code> 的部分。它还有其它的关于 <code>String</code> ，<code>StroyBoard</code>，<code>Font</code>等等的代码生成。原理基本相同，靠大家按需研究啦。</p>
 <blockquote>
-<p>到我的博客阅读：<a href="http://www.myhanson.com/2017/12/08/%E7%94%A8SwiftGen%E7%AE%A1%E7%90%86UIImage%E7%AD%89%E7%9A%84String-based%E6%8E%A5%E5%8F%A3/#more" target="_blank" rel="external">myhanson.com</a><br>本文Demo：<a href="https://github.com/zyphs21/SwiftGenExample" target="_blank" rel="external">SwiftGenExample</a></p>
+<p>到我的博客阅读：<a href="http://www.myhanson.com/2017/12/08/%E7%94%A8SwiftGen%E7%AE%A1%E7%90%86UIImage%E7%AD%89%E7%9A%84String-based%E6%8E%A5%E5%8F%A3/#more" target="_blank" rel="noopener">myhanson.com</a><br>本文Demo：<a href="https://github.com/zyphs21/SwiftGenExample" target="_blank" rel="noopener">SwiftGenExample</a></p>
 </blockquote>
 
-    </article>
-    <!-- 前后页  -->
-    <ul class="post-paginator">
-        <li class="next">
+          
+            <br>
             
-                <div class="nextSlogan">Next Post</div>
-                <a href= "/2018/03/02/PathToGo诞生记/" title= PathToGo诞生记 >
-                    <div class="nextTitle">PathToGo诞生记</div>
-                </a>
-            
-        </li>
-        <li class="previous">
-            
-                <div class="prevSlogan">Previous Post</div>
-                <a href= "/2017/12/08/Swift 实现启动屏动画/" title= Swift 实现启动屏动画 >
-                    <div class="prevTitle">Swift 实现启动屏动画</div>
-                </a>
-            
-        </li>
-    </ul>
-    <!-- 评论插件 -->
-    <!-- 来必力City版安装代码 -->
-
-<!-- City版安装代码已完成 -->
+              
+  
     
-    <div id="disqus_thread"></div>
-    <script>
-        /**
-    *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
-    *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
-        
-        var disqus_config = function () {
-        this.page.url = "http://myhanson.com/2017/12/08/用SwiftGen管理UIImage等的String-based接口/";  // Replace PAGE_URL with your page's canonical URL variable
-        this.page.identifier = "用SwiftGen管理UIImage等的String-based接口"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
-        };
-        
-        (function () { // DON'T EDIT BELOW THIS LINE
-            var d = document, s = d.createElement('script');
-            s.src = 'https://HansonBlog.disqus.com/embed.js';
-            s.setAttribute('data-timestamp', +new Date());
-            (d.head || d.body).appendChild(s);
-        })();
-
-    </script>
-    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-
-    
-    <!--PC版-->
-
-    <!--PC版-->
-
-
-    
-    <!-- 评论 -->
-</main>
-            <!-- profile -->
-            
-        </div>
-        <footer class="footer footer-unloaded">
-    <!-- social  -->
-    
-    <div class="social">
-        
-    
-        
-            
-                <a href="mailto:hansenhs21@live.com" class="iconfont-archer email" title=email ></a>
-            
-        
-    
-        
-            
-                <a href="//github.com/zyphs21" class="iconfont-archer github" target="_blank" title=github></a>
-            
-        
-    
-        
-            
-                <span class="iconfont-archer wechat" title=wechat>
-                  
-                  <img class="profile-qr" src="/assets/qr.png" />
-                </span>
-            
-        
-    
-        
-    
-        
-            
-                <a href="//weibo.com/1775951885/profile?rightmod=1&wvr=6&mod=personinfo" class="iconfont-archer weibo" target="_blank" title=weibo></a>
-            
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-            
-                <a href="/atom.xml" class="iconfont-archer rss" target="_blank" title=rss></a>
-            
-        
-    
-
-    </div>
-    
-    <!-- powered by Hexo  -->
-    <div class="copyright">
-        <span id="hexo-power">Powered by <a href="https://hexo.io/" target="_blank">Hexo</a></span><span class="iconfont-archer power">&#xe635;</span><span id="theme-info">theme <a href="https://github.com/fi3ework/hexo-theme-archer" target="_blank">Archer</a></span>
-    </div>
-    <!-- 不蒜子  -->
-    
-    <div class="busuanzi-container">
-        <span id="busuanzi_container_site_pv">PV: <span id="busuanzi_value_site_pv"></span>
-        </span>
-    </div>
-    
-</footer>
-    </div>
-    <!-- toc -->
-    
-    <div class="toc-wrapper" style=
     
 
 
 
+  
+
+  
+    
+    
 
 
 
+  
 
-top:50vh;
+  
+    
+    
 
-    >
-        <div class="toc-catalog">
-            <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
-        </div>
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#问题现状"><span class="toc-number">1.</span> <span class="toc-text">问题现状</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#代码解决"><span class="toc-number">2.</span> <span class="toc-text">代码解决</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#存在问题"><span class="toc-number">3.</span> <span class="toc-text">存在问题</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#集成-SwiftGen-在项目中"><span class="toc-number">4.</span> <span class="toc-text">集成 SwiftGen 在项目中</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-修改模板"><span class="toc-number">4.1.</span> <span class="toc-text">1.修改模板</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-建立RunScript"><span class="toc-number">4.2.</span> <span class="toc-text">2.建立RunScript</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#结语"><span class="toc-number">5.</span> <span class="toc-text">结语</span></a></li></ol>
-    </div>
+<section class="widget copyright  ">
+  <div class='content'>
+    
+      <blockquote>
+        
+          
+            <p>博客内容遵循 署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0) 协议</p>
+
+          
+        
+          
+            <p>本文永久链接是：<a href=http://myhanson.com/2017/12/08/%E7%94%A8SwiftGen%E7%AE%A1%E7%90%86UIImage%E7%AD%89%E7%9A%84String-based%E6%8E%A5%E5%8F%A3/>http://myhanson.com/2017/12/08/%E7%94%A8SwiftGen%E7%AE%A1%E7%90%86UIImage%E7%AD%89%E7%9A%84String-based%E6%8E%A5%E5%8F%A3/</a></p>
+          
+        
+      </blockquote>
     
-    <div class="back-top iconfont-archer">&#xe639;</div>
-    <div class="sidebar sidebar-hide">
-    <ul class="sidebar-tabs sidebar-tabs-active-0">
-        <li class="sidebar-tab-archives"><span class="iconfont-archer">&#xe67d;</span><span class="tab-name">Archive</span></li>
-        <li class="sidebar-tab-tags"><span class="iconfont-archer">&#xe61b;</span><span class="tab-name">Tag</span></li>
-        <li class="sidebar-tab-categories"><span class="iconfont-archer">&#xe666;</span><span class="tab-name">Cate</span></li>
-    </ul>
-    <div class="sidebar-content sidebar-content-show-archive">
-          <div class="sidebar-panel-archives">
-    <!-- 在ejs中将archive按照时间排序 -->
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    <div class="total-archive"> Total : 12 </div>
-    
-    <div class="post-archive">
-    
-    
-    
-    
-    <div class="archive-year"> 2019 </div>
-    <ul class="year-list">
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">02/17</span><a class="archive-post-title" href= "/2019/02/17/如何判断一个多边形是否合法/" >如何判断一个多边形是否合法</a>
-        </li>
-    
-    
-    
-    
-    
-        </ul>
-    
-    <div class="archive-year"> 2018 </div>
-    <ul class="year-list">
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">08/05</span><a class="archive-post-title" href= "/2018/08/05/Swift的泛型小总结/" >Swift的泛型小总结</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">07/17</span><a class="archive-post-title" href= "/2018/07/17/在Swift扩展里添加"存储属性"/" >在Swift扩展里添加"存储属性"</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">05/18</span><a class="archive-post-title" href= "/2018/05/18/上架个小工具-ImageGotcha/" >上架个小工具-ImageGotcha</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">03/28</span><a class="archive-post-title" href= "/2018/03/28/使用SVN建立和发布私有CocoaPods库/" >使用SVN建立和发布私有CocoaPods库</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">03/14</span><a class="archive-post-title" href= "/2018/03/14/通过RunScript给iOS项目自增版本号(Versioin和Build)/" >通过RunScript给iOS项目自增版本号(Versioin和Build)</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">03/02</span><a class="archive-post-title" href= "/2018/03/02/PathToGo诞生记/" >PathToGo诞生记</a>
-        </li>
-    
-    
-    
-    
-    
-        </ul>
-    
-    <div class="archive-year"> 2017 </div>
-    <ul class="year-list">
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">12/08</span><a class="archive-post-title" href= "/2017/12/08/用SwiftGen管理UIImage等的String-based接口/" >用SwiftGen管理UIImage等的String-based接口</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">12/08</span><a class="archive-post-title" href= "/2017/12/08/Swift 实现启动屏动画/" >Swift 实现启动屏动画</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">11/28</span><a class="archive-post-title" href= "/2017/11/28/记一次失败的 Swift 元组数组实践/" >记一次失败的 Swift 元组数组实践</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">05/09</span><a class="archive-post-title" href= "/2017/05/09/自定义 UISegmentedControl 样式/" >自定义 UISegmentedControl 样式</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">05/03</span><a class="archive-post-title" href= "/2017/05/03/HSStockChart介绍/" >HSStockChart介绍</a>
-        </li>
-    
-    </div>
   </div>
-        <div class="sidebar-panel-tags">
-    <div class="sidebar-tags-name">
+</section>
+
+  
+
+  
     
-    </div>
-    <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
-    <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
-    缺失模块。<br/>
-    1、请确保node版本大于6.2<br/>
-    2、在博客根目录（注意不是archer根目录）执行以下命令：<br/>
-    <span style="color: #f75357; font-size: 1rem; line-height: 2rem;">npm i hexo-generator-json-content --save</span><br/>
-    3、在根目录_config.yml里添加配置：
-    <pre style="color: #787878; font-size: 0.6rem;">
-jsonContent:
-  meta: false
-  pages: false
-  posts:
-    title: true
-    date: true
-    path: true
-    text: false
-    raw: false
-    content: false
-    slug: false
-    updated: false
-    comments: false
-    link: false
-    permalink: false
-    excerpt: false
-    categories: true
-    tags: true</pre>
-    </div> 
-    <div class="sidebar-tags-list"></div>
-</div>
-        <div class="sidebar-panel-categories">
-    <div class="sidebar-categories-name">
     
-    </div>
-    <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
-    <div class="sidebar-categories-list"></div>
+
+<section class="widget qrcode  desktop mobile">
+  
+
+  <div class='content article-entry'>
+    
+      
+        <div class='fancybox'><img src='https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/qrcode/wiki_volantis.png'
+        
+          height='64px'
+        ></div>
+      
+    
+      
+        <div class='fancybox'><img src='https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/qrcode/wiki_volantis.png'
+        
+          height='64px'
+        ></div>
+      
+    
+  </div>
+</section>
+
+  
+
+
+            
+          
+        </div>
+        
+          
+
+
+  <section class='meta' id="footer-meta">
+    <div class='new-meta-box'>
+      
+        
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2020-04-16T14:20:41+08:00">
+  <a class='notlink'>
+    <i class="fas fa-edit fa-fw" aria-hidden="true"></i>
+    <p>更新于：Apr 16, 2020</p>
+  </a>
 </div>
+
+        
+      
+        
+          
+
+        
+      
+        
+          
+
+        
+      
+        
+          
+  <div class="new-meta-item share -mob-share-list">
+  <div class="-mob-share-list share-body">
+    
+      
+        <a class="-mob-share-qq" title="" rel="external nofollow noopener noreferrer"
+          
+          href="http://connect.qq.com/widget/shareqq/index.html?url=http://myhanson.com/2017/12/08/%E7%94%A8SwiftGen%E7%AE%A1%E7%90%86UIImage%E7%AD%89%E7%9A%84String-based%E6%8E%A5%E5%8F%A3/&title=用SwiftGen管理UIImage等的String-based接口 - Hanson的博客&summary="
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/logo/128/qq.png">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-qzone" title="" rel="external nofollow noopener noreferrer"
+          
+          href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://myhanson.com/2017/12/08/%E7%94%A8SwiftGen%E7%AE%A1%E7%90%86UIImage%E7%AD%89%E7%9A%84String-based%E6%8E%A5%E5%8F%A3/&title=用SwiftGen管理UIImage等的String-based接口 - Hanson的博客&summary="
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/logo/128/qzone.png">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-weibo" title="" rel="external nofollow noopener noreferrer"
+          
+          href="http://service.weibo.com/share/share.php?url=http://myhanson.com/2017/12/08/%E7%94%A8SwiftGen%E7%AE%A1%E7%90%86UIImage%E7%AD%89%E7%9A%84String-based%E6%8E%A5%E5%8F%A3/&title=用SwiftGen管理UIImage等的String-based接口 - Hanson的博客&summary="
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/logo/128/weibo.png">
+          
+        </a>
+      
+    
+  </div>
+</div>
+
+
+
+        
+      
     </div>
-</div> 
-    <script>
-    var siteMeta = {
-        root: '/',
-        author: 'Hanson Zhang'
+  </section>
+
+
+        
+        
+          <div class="prev-next">
+            
+              <a class='prev' href='/2018/03/02/PathToGo%E8%AF%9E%E7%94%9F%E8%AE%B0/'>
+                <p class='title'><i class="fas fa-chevron-left" aria-hidden="true"></i>PathToGo诞生记</p>
+                <p class='content'>不知道大家在使用 Mac 的时候有没有这样的需求:
+
+经常需要获取当前文件或者文件夹的路径，并且复制到粘贴板。
+
+对于我来说经常有这种需要，然后我就从网上再结合自己的经验，找了好几种方法：
+
+
+...</p>
+              </a>
+            
+            
+              <a class='next' href='/2017/12/08/Swift%20%E5%AE%9E%E7%8E%B0%E5%90%AF%E5%8A%A8%E5%B1%8F%E5%8A%A8%E7%94%BB/'>
+                <p class='title'>Swift 实现启动屏动画<i class="fas fa-chevron-right" aria-hidden="true"></i></p>
+                <p class='content'>
+Github: SplashAnimate
+
+
+
+准备工作：首先我们需要确定作为宣传的图片的宽高比，这个一般是与 UI 确定的。一般启动屏展示会有上下两部分，上面是宣传图片，下面是 App 的...</p>
+              </a>
+            
+          </div>
+        
+      </section>
+    </article>
+  
+
+  
+    <!-- 显示推荐文章和评论 -->
+
+
+
+  
+
+
+  
+
+
+
+
+<!-- 根据页面mathjax变量决定是否加载MathJax数学公式js -->
+
+
+
+  <script>
+    window.subData = {
+      title: '用SwiftGen管理UIImage等的String-based接口',
+      tools: true
     }
-</script>
-    <!-- busuanzi  -->
+  </script>
+
+
+</div>
+<aside class='l_side'>
+  
+  
+
+  
     
-    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
     
-    <!-- CNZZ  -->
+
+
+  <section class="widget toc-wrapper shadow desktop mobile">
     
+  <header>
+    
+      <i class="fas fa-list fa-fw" aria-hidden="true"></i><span class='name'>本文目录</span>
+    
+  </header>
+
+
+    <div class='content'>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-修改模板"><span class="toc-text">1.修改模板</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-建立RunScript"><span class="toc-text">2.建立RunScript</span></a></li></ol>
     </div>
-    <!-- async load share.js -->
+  </section>
+
+
+  
+
+
+</aside>
+
+
+  
+  <footer class="clearfix">
+    <br><br>
     
-        <script src="/scripts/share.js" async></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->    
+      
+        <br>
+        <div class="social-wrapper">
+          
+            
+              <a href="/atom.xml"
+                class="social fas fa-rss flat-btn"
+                target="_blank"
+                rel="external nofollow noopener noreferrer">
+              </a>
+            
+          
+            
+              <a href="mailto:hansenhs21@live.com"
+                class="social fas fa-envelope flat-btn"
+                target="_blank"
+                rel="external nofollow noopener noreferrer">
+              </a>
+            
+          
+            
+              <a href="https://github.com/zyphs21"
+                class="social fab fa-github flat-btn"
+                target="_blank"
+                rel="external nofollow noopener noreferrer">
+              </a>
+            
+          
+        </div>
+      
     
-    </body>
+      
+        <div><p>Blog content follows the <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" target="_blank" rel="noopener">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) License</a></p>
+</div>
+      
+    
+      
+        Use
+        <a href="https://volantis.js.org/" target="_blank" class="codename">Volantis</a>
+        as theme, total visits
+          <span id="busuanzi_value_site_pv"><i class="fas fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span>
+          times
+        
+      
+    
+      
+        <div class='copyright'>
+        <p><a href="www.myhanson.com">Copyright © 2017-2020 Hanson</a></p>
+
+        </div>
+      
+    
+  </footer>
+
+<script>setLoadingBarProgress(80);</script>
+
+
+      <script>setLoadingBarProgress(60);</script>
+    </div>
+    <a class="s-top fas fa-arrow-up fa-fw" href='javascript:void(0)'></a>
+  </div>
+  
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4/dist/jquery.min.js"></script>
+
+
+  <script>
+    
+    var SEARCH_SERVICE = "hexo" || "hexo";
+    var ROOT = "/" || "/";
+    if (!ROOT.endsWith('/')) ROOT += '/';
+  </script>
+
+
+  <script async src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-volantis@2/js/instant_page.js" type="module" defer integrity="sha384-OeDn4XE77tdHo8pGtE1apMPmAipjoxUQ++eeJa6EtJCfHlvijigWiJpD7VDPWXV1"></script>
+
+
+
+  
+<script src="https://cdn.jsdelivr.net/npm/node-waves@0.7.6/dist/waves.min.js"></script>
+
+  <script type="text/javascript">
+    $(function() {
+      Waves.attach('.flat-btn', ['waves-button']);
+      Waves.attach('.float-btn', ['waves-button', 'waves-float']);
+      Waves.attach('.float-btn-light', ['waves-button', 'waves-float', 'waves-light']);
+      Waves.attach('.flat-box', ['waves-block']);
+      Waves.attach('.float-box', ['waves-block', 'waves-float']);
+      Waves.attach('.waves-image');
+      Waves.init();
+    });
+  </script>
+
+
+  <script async src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-busuanzi@2.3/js/busuanzi.pure.mini.js"></script>
+
+
+
+  
+  
+  
+    
+<script src="https://cdn.jsdelivr.net/npm/jquery-backstretch@2.1.18/jquery.backstretch.min.js"></script>
+
+    <script type="text/javascript">
+      $(function(){
+        var imgs=["https://cdn.jsdelivr.net/gh/xaoxuu/cdn-wallpaper/abstract/41F215B9-261F-48B4-80B5-4E86E165259E.jpeg"];
+        if ('true' == 'true') {
+          function shuffle(arr){
+            /*From countercurrent-time*/
+            var n = arr.length;
+            while(n--) {
+              var index = Math.floor(Math.random() * n);
+              var temp = arr[index];
+              arr[index] = arr[n];
+              arr[n] = temp;
+            }
+          }
+          shuffle(imgs);
+        }
+        if ('.cover') {
+          $('.cover').backstretch(
+            imgs,
+          {
+            duration: "20000",
+            fade: "1500"
+          });
+        } else {
+          $.backstretch(
+            imgs,
+          {
+            duration: "20000",
+            fade: "1500"
+          });
+        }
+      });
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+<script src="/js/app.js"></script>
+
+
+
+  
+<script src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-volantis@2.4/js/search.js"></script>
+
+
+
+  
+<script src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-volantis@2/js/comment_typing.js"></script>
+
+
+
+
+
+
+<!-- 复制 -->
+
+  <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="fas fa-copy"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('fa-copy');
+        $icon.addClass('fa-check-circle');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('fa-check-circle');
+          $icon.addClass('fa-copy');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('fa-copy');
+        $icon.addClass('fa-times-circle');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('fa-times-circle');
+          $icon.addClass('fa-copy');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+
+
+
+
+<!-- fancybox -->
+
+  <script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+<script>
+  let LAZY_LOAD_IMAGE = "";
+  $(".article-entry").find("div.fancybox").find("img").each(function () {
+      var element = document.createElement("a");
+      $(element).attr("data-fancybox", "gallery");
+      $(element).attr("href", $(this).attr("src"));
+      /* 图片采用懒加载处理时,
+       * 一般图片标签内会有个属性名来存放图片的真实地址，比如 data-original,
+       * 那么此处将原本的属性名src替换为对应属性名data-original,
+       * 修改如下
+       */
+       if (LAZY_LOAD_IMAGE) {
+         $(element).attr("href", $(this).attr("data-original"));
+       }
+      $(this).wrap(element);
+  });
+</script>
+
+
+
+
+
+
+  <script>setLoadingBarProgress(100);</script>
+</body>
 </html>
-
-

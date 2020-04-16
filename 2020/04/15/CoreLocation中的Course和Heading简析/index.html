@@ -16,10 +16,14 @@
 
   <!-- 页面元数据 -->
   
-    <title>[404] - Hanson的博客</title>
+    <title>CoreLocation 中的 Course 和 Heading 简析 - Hanson的博客</title>
   
   
-    <meta name="description" content="May the Force be with you :&#41;">
+    <meta name="description" content="很多地图 App 都会有一个当前定位的标记，该标记可以根据用户手持手机的朝向不同而改变方向。如图：
+
+
+
+如果要实现这个带方向定位的标记点，需要什么数据呢？">
   
 
   <!-- feed -->
@@ -538,11 +542,11 @@
     <div class='body-wrapper'>
       
 
-<div class='l_main no_sidebar'>
+<div class='l_main'>
   
 
   
-    <article id="404" class="post white-box shadow article-type-404" itemscope itemprop="blogPost">
+    <article id="post" class="post white-box shadow article-type-post" itemscope itemprop="blogPost">
       
 
 
@@ -555,8 +559,8 @@
           
   
     <h1 class="title">
-      <a href="/404.html">
-        [404]
+      <a href="/2020/04/15/CoreLocation%E4%B8%AD%E7%9A%84Course%E5%92%8CHeading%E7%AE%80%E6%9E%90/">
+        CoreLocation 中的 Course 和 Heading 简析
       </a>
     </h1>
   
@@ -587,7 +591,7 @@
               <div class="new-meta-item date">
   <a class='notlink'>
     <i class="fas fa-calendar-alt fa-fw" aria-hidden="true"></i>
-    <p>发布于：Nov 23, 2019</p>
+    <p>发布于：Apr 15, 2020</p>
   </a>
 </div>
 
@@ -610,10 +614,221 @@
       <section class="article typo">
         <div class="article-entry" itemprop="articleBody">
           
+          <p>很多地图 App 都会有一个当前定位的标记，该标记可以根据用户手持手机的朝向不同而改变方向。如图：</p>
+<img src="https://imgkr.cn-bj.ufileos.com/6a305cfc-4d8e-4f17-ad25-d40534e29aec.png" width = "80" height = "80" alt="带方向的定位标记" align=center />
+
+
+<p>如果要实现这个带方向定位的标记点，需要什么数据呢？</p>
+<a id="more"></a>
+
+<ul>
+<li>定位数据</li>
+<li>手机朝向数据</li>
+</ul>
+<p>定位数据获取很简单，调用 <code>CLLocationManager</code> 的 <code>startUpdatingLocation()</code> 方法，然后在 <code>didUpdateLocations</code> 的回调方法中可以得到的 <code>CLLocation</code> 属性值。</p>
+<p><code>CLLocation</code> 对象中，除了有我们需要的 coordinate 位置数据外，还有一个 <code>course</code> 属性。</p>
+<p>这个 <code>course</code> 属性是不是我们需要的手机朝向数据呢？</p>
+<blockquote>
+<p>course:<br>The direction in which the device is traveling, measured in degrees and relative to due north.</p>
+</blockquote>
+<blockquote>
+<p>Course values are measured in degrees starting at due north and continue clockwise around the compass. Thus, north is 0 degrees, east is 90 degrees, south is 180 degrees, and so on. Course values may not be available on all devices. A negative value indicates that the course information is invalid.</p>
+</blockquote>
+<p>从文档的解释来看，它是一个相对于地理北极以顺时针方向的角度数据，手机朝着正北方是 0 度，朝着东边是 90度，依次类推。</p>
+<p>看起来是我们想要的值。但是从实际测试(真机室内测试)结果看，<strong>这个值一直是返回 -1 。（负数代表此值当前不可用）</strong></p>
+<p>排除使用方式的不对，我们从文档 <a href="https://developer.apple.com/documentation/corelocation/getting_heading_and_course_information" target="_blank" rel="noopener">Getting Heading and Course Information</a> 发现，我们要获取的其实是 <code>heading</code>  的数据。</p>
+<p>通过调用 CLLocationManager 中的 </p>
+<pre><code>startUpdatingHeading()</code></pre><p>然后在 <code>locationManager(_:didUpdateHeading:)</code> 的回调方法中就可以获取到 heading 的数据了。</p>
+<h2 id="Course-和-Heading"><a href="#Course-和-Heading" class="headerlink" title="Course 和 Heading"></a>Course 和 Heading</h2><p>从字面意思上我们可以将它们区分为 <code>航向</code> 和 <code>朝向</code></p>
+<p><code>Course(航向)信息</code> 反映的是设备移动的速度和方向，并且仅在具有GPS硬件条件的设备上可用。</p>
+<p>注意不要将 <code>Course(航向)</code> 与 <code>Heading(朝向)</code> 混淆。Course(航向) 反映的是设备移动时的方向，是<strong>从GPS信息中获取到，它与设备的物理方向无关</strong>。</p>
+<p>而 <code>Heading(朝向)信息</code> 则是通过计算手机上传感器的值而获取到的相对于地理北极的角度信息。</p>
+<h3 id="Course"><a href="#Course" class="headerlink" title="Course"></a>Course</h3><p>Course 常常是用在进行导航的情况下。比如平时我们开车进行导航的时候，有时候车子转弯过快，会发现导航上的朝向并没有及时更新到正确的方向，要过一会才会更新，这就是因为 GPS 信息没有及时更新过来，故 Course 信息也就无法有足够的数据支持它更新。</p>
+<h3 id="Heading"><a href="#Heading" class="headerlink" title="Heading"></a>Heading</h3><p>Heading 是与物理设备有关的值，所以我们在获取 Heading 信息的时候，注意要配置 CLLocationManager 的 <code>headingOrientation</code> 属性。</p>
+<p>headingOrientation 默认值是 <code>portrait</code> ，即我们平时正面拿着手机。而当我们正面横着拿手机的时候，需要将 <code>headingOrientation</code> 属性根据实际情况改成 <code>landscapeLeft</code> 或者 <code>landscapeRight</code>，这样系统才能通过手机的持有方位计算正确的 <code>Heading</code> 值，不然 Heading 就一直是默认以 portrait 的形式计算得到。</p>
+
           
+            <br>
+            
+              
+  
+    
+    
+
+
+
+  
+
+  
+    
+    
+
+
+
+  
+
+  
+    
+    
+
+<section class="widget copyright  ">
+  <div class='content'>
+    
+      <blockquote>
+        
+          
+            <p>博客内容遵循 署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0) 协议</p>
+
+          
+        
+          
+            <p>本文永久链接是：<a href=http://myhanson.com/2020/04/15/CoreLocation%E4%B8%AD%E7%9A%84Course%E5%92%8CHeading%E7%AE%80%E6%9E%90/>http://myhanson.com/2020/04/15/CoreLocation%E4%B8%AD%E7%9A%84Course%E5%92%8CHeading%E7%AE%80%E6%9E%90/</a></p>
+          
+        
+      </blockquote>
+    
+  </div>
+</section>
+
+  
+
+  
+    
+    
+
+<section class="widget qrcode  desktop mobile">
+  
+
+  <div class='content article-entry'>
+    
+      
+        <div class='fancybox'><img src='https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/qrcode/wiki_volantis.png'
+        
+          height='64px'
+        ></div>
+      
+    
+      
+        <div class='fancybox'><img src='https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/qrcode/wiki_volantis.png'
+        
+          height='64px'
+        ></div>
+      
+    
+  </div>
+</section>
+
+  
+
+
+            
           
         </div>
         
+          
+
+
+  <section class='meta' id="footer-meta">
+    <div class='new-meta-box'>
+      
+        
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2020-04-16T11:26:28+08:00">
+  <a class='notlink'>
+    <i class="fas fa-edit fa-fw" aria-hidden="true"></i>
+    <p>更新于：Apr 16, 2020</p>
+  </a>
+</div>
+
+        
+      
+        
+          
+
+        
+      
+        
+          
+
+        
+      
+        
+          
+  <div class="new-meta-item share -mob-share-list">
+  <div class="-mob-share-list share-body">
+    
+      
+        <a class="-mob-share-qq" title="" rel="external nofollow noopener noreferrer"
+          
+          href="http://connect.qq.com/widget/shareqq/index.html?url=http://myhanson.com/2020/04/15/CoreLocation%E4%B8%AD%E7%9A%84Course%E5%92%8CHeading%E7%AE%80%E6%9E%90/&title=CoreLocation 中的 Course 和 Heading 简析 - Hanson的博客&summary=很多地图 App 都会有一个当前定位的标记，该标记可以根据用户手持手机的朝向不同而改变方向。如图：
+
+
+
+如果要实现这个带方向定位的标记点，需要什么数据呢？"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/logo/128/qq.png">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-qzone" title="" rel="external nofollow noopener noreferrer"
+          
+          href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://myhanson.com/2020/04/15/CoreLocation%E4%B8%AD%E7%9A%84Course%E5%92%8CHeading%E7%AE%80%E6%9E%90/&title=CoreLocation 中的 Course 和 Heading 简析 - Hanson的博客&summary=很多地图 App 都会有一个当前定位的标记，该标记可以根据用户手持手机的朝向不同而改变方向。如图：
+
+
+
+如果要实现这个带方向定位的标记点，需要什么数据呢？"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/logo/128/qzone.png">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-weibo" title="" rel="external nofollow noopener noreferrer"
+          
+          href="http://service.weibo.com/share/share.php?url=http://myhanson.com/2020/04/15/CoreLocation%E4%B8%AD%E7%9A%84Course%E5%92%8CHeading%E7%AE%80%E6%9E%90/&title=CoreLocation 中的 Course 和 Heading 简析 - Hanson的博客&summary=很多地图 App 都会有一个当前定位的标记，该标记可以根据用户手持手机的朝向不同而改变方向。如图：
+
+
+
+如果要实现这个带方向定位的标记点，需要什么数据呢？"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/logo/128/weibo.png">
+          
+        </a>
+      
+    
+  </div>
+</div>
+
+
+
+        
+      
+    </div>
+  </section>
+
+
+        
+        
+          <div class="prev-next">
+            
+            
+              <a class='next' href='/2019/02/17/%E5%A6%82%E4%BD%95%E5%88%A4%E6%96%AD%E4%B8%80%E4%B8%AA%E5%A4%9A%E8%BE%B9%E5%BD%A2%E6%98%AF%E5%90%A6%E5%90%88%E6%B3%95/'>
+                <p class='title'>如何判断一个多边形是否合法<i class="fas fa-chevron-right" aria-hidden="true"></i></p>
+                <p class='content'>利用无人机对一片区域进行测绘前，我们会先在地图上框选一个区域，然后再规划飞行的路线，而需要测绘的这片区域往往是一个多边形。这就涉及判断多边形是否合法的问题。
+
+
+首先我们要确定一个标准：怎么样才...</p>
+              </a>
+            
+          </div>
         
       </section>
     </article>
@@ -636,8 +851,44 @@
 
 
 
+  <script>
+    window.subData = {
+      title: 'CoreLocation 中的 Course 和 Heading 简析',
+      tools: true
+    }
+  </script>
+
 
 </div>
+<aside class='l_side'>
+  
+  
+
+  
+    
+    
+
+
+  <section class="widget toc-wrapper shadow desktop mobile">
+    
+  <header>
+    
+      <i class="fas fa-list fa-fw" aria-hidden="true"></i><span class='name'>本文目录</span>
+    
+  </header>
+
+
+    <div class='content'>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Course-和-Heading"><span class="toc-text">Course 和 Heading</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Course"><span class="toc-text">Course</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Heading"><span class="toc-text">Heading</span></a></li></ol></li></ol>
+    </div>
+  </section>
+
+
+  
+
+
+</aside>
+
 
   
   <footer class="clearfix">
