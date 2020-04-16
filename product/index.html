@@ -16,11 +16,8 @@
 
   <!-- 页面元数据 -->
   
-    <title>记一次失败的 Swift 元组数组实践 - Hanson的博客</title>
+    <title>我的项目 - Hanson的博客</title>
   
-  
-    <meta name="description" content="想建立一个元组的数组，来简单存放构建 TabViewController 的信息首先我的做法是
-1234567let homeTab = (vc: VYHomeViewController(), title: "Home", image: "home_gray", selectedImage: "home_blu...">
   
 
   <!-- feed -->
@@ -71,15 +68,13 @@
   <div id="loading-bar-wrapper">
   <div id="loading-bar"></div>
 </div>
-<header class="l_header shadow blur">
+<header class="l_header no_sidebar shadow blur">
   <div class='container'>
   <div class='wrapper'>
     <div class='nav-sub'>
       <p class="title"></p>
       <ul class='switcher nav-list-h'>
         <li><a class="s-comment fas fa-comments fa-fw" target="_self" href='javascript:void(0)'></a></li>
-        
-          <li><a class="s-toc fas fa-list fa-fw" target="_self" href='javascript:void(0)'></a></li>
         
       </ul>
     </div>
@@ -539,11 +534,11 @@
     <div class='body-wrapper'>
       
 
-<div class='l_main'>
+<div class='l_main no_sidebar'>
   
 
   
-    <article id="post" class="post white-box shadow article-type-post" itemscope itemprop="blogPost">
+    <article id="page" class="post white-box shadow article-type-page" itemscope itemprop="blogPost">
       
 
 
@@ -553,55 +548,9 @@
       
       <div class="meta" id="header-meta">
         
-          
-  
-    <h1 class="title">
-      <a href="/2017/11/28/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%A4%B1%E8%B4%A5%E7%9A%84%20Swift%20%E5%85%83%E7%BB%84%E6%95%B0%E7%BB%84%E5%AE%9E%E8%B7%B5/">
-        记一次失败的 Swift 元组数组实践
-      </a>
-    </h1>
-  
-
-
-        
         <div class='new-meta-box'>
           
-            
-          
-            
-              
-<div class='new-meta-item author'>
-  <a href="http://www.myhanson.com" target="_blank" rel="nofollow noopener">
-    <img src="https://cdn.jsdelivr.net/gh/zyphs21/cdn-assets/avatar/avatar.png">
-    <p>Hanson</p>
-  </a>
-</div>
-
-            
-          
-            
-              
-
-            
-          
-            
-              <div class="new-meta-item date">
-  <a class='notlink'>
-    <i class="fas fa-calendar-alt fa-fw" aria-hidden="true"></i>
-    <p>发布于：Nov 28, 2017</p>
-  </a>
-</div>
-
-            
-          
-            
-              
-
-            
-          
         </div>
-        
-          <hr>
         
       </div>
     
@@ -611,94 +560,21 @@
       <section class="article typo">
         <div class="article-entry" itemprop="articleBody">
           
-          <p>想建立一个元组的数组，来简单存放构建 TabViewController 的信息首先我的做法是</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> homeTab = (vc: <span class="type">VYHomeViewController</span>(), title: <span class="string">"Home"</span>, image: <span class="string">"home_gray"</span>, selectedImage: <span class="string">"home_blue"</span>)</span><br><span class="line"><span class="keyword">let</span> infoTab = (vc: <span class="type">VYInformationViewController</span>(), title: <span class="string">"Info"</span>, image: <span class="string">"home_gray"</span>, selectedImage: <span class="string">"home_blue"</span>)</span><br><span class="line"><span class="keyword">let</span> marketTab = (vc: <span class="type">VYMarketViewController</span>(), title: <span class="string">"Market"</span>, image: <span class="string">"home_gray"</span>, selectedImage: <span class="string">"home_blue"</span>)</span><br><span class="line"><span class="keyword">let</span> userTab = (vc: <span class="type">VYUserCenterViewController</span>(), title: <span class="string">"Me"</span>, image: <span class="string">"home_gray"</span>, selectedImage: <span class="string">"home_blue"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 下面报错：Heterogeneous collection literal could only be inferred to '[Any]'; add explicit type annotation if this is intentional</span></span><br><span class="line"><span class="keyword">let</span> data = [homeTab, infoTab, marketTab, userTab]</span><br></pre></td></tr></table></figure>
-<p>但是会报错，Xcode 的修改提示是后面添加  <code>as [Any]</code></p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> data = [selfSelectedTab, infoTab, marketTab, userTab] <span class="keyword">as</span> [<span class="type">Any</span>]</span><br></pre></td></tr></table></figure>
-<p>但是这样做已经不是原来的做一个元组数组的初衷了。无法在遍历数组的时候使用命名元组来获取信息</p>
-<a id="more"></a>
+          <h2 id="开源项目🌟"><a href="#开源项目🌟" class="headerlink" title="开源项目🌟"></a>开源项目🌟</h2><ul>
+<li><a href="https://github.com/zyphs21/HSStockChart" target="_blank" rel="noopener">HSStockChart</a> - 使用Swift绘制股票走势图</li>
+</ul>
+<h2 id="App-Store-作品🍏"><a href="#App-Store-作品🍏" class="headerlink" title="App Store 作品🍏"></a>App Store 作品🍏</h2><ul>
+<li><p><a href="https://apps.apple.com/cn/app/imagegotcha/id1384107130" target="_blank" rel="noopener">ImageGotcha</a> - Safari 抓图神器</p>
+</li>
+<li><p><a href="https://apps.apple.com/cn/app/livegotcha/id1502021802" target="_blank" rel="noopener">LiveGotcha</a> - LivePhoto 转视频/GIF</p>
+</li>
+<li><p><a href="https://apps.apple.com/cn/app/hansonsticker/id1158544571" target="_blank" rel="noopener">HansonSticker</a> - iMessage Sticker 表情</p>
+</li>
+</ul>
+<h2 id="macOS-小工具🔧"><a href="#macOS-小工具🔧" class="headerlink" title="macOS 小工具🔧"></a>macOS 小工具🔧</h2><ul>
+<li><a href="https://github.com/HansonStudio/PathToGo" target="_blank" rel="noopener">PathToGo</a> - 一键获取文件路径</li>
+</ul>
 
-<p>接着我用 <code>typealias</code> 的方法改成如下：</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typealias</span> <span class="type">TabInfo</span> = (vc: <span class="type">UIViewController</span>, title: <span class="type">String</span>, image: <span class="type">String</span>, selectedImage: <span class="type">String</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> tabInfo: [<span class="type">TabInfo</span>] = [<span class="type">TabInfo</span>]()</span><br><span class="line"><span class="keyword">let</span> homeTab = (vc: <span class="type">VYHomeViewController</span>(), title: <span class="string">"Home"</span>, image: <span class="string">"home_gray"</span>, selectedImage: <span class="string">"home_blue"</span>)</span><br><span class="line"><span class="keyword">let</span> infoTab = (vc: <span class="type">VYHomeViewController</span>(), title: <span class="string">"Info"</span>, image: <span class="string">"home_gray"</span>, selectedImage: <span class="string">"home_blue"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 下面报错：Cannot express tuple conversion '(vc: VYInformationViewController, title: String, image: String, selectedImage: String)' to '(vc: UIViewController, title: String, image: String, selectedImage: String)'</span></span><br><span class="line">tabInfo.append(homeTab)</span><br></pre></td></tr></table></figure>
-<p>给数组添加元素的时候报错，因为元组不支持类型转换，<code>VYHomeViewController</code> 虽然继承 <code>UIViewController</code>，但是元组看来它们不是同一类型。</p>
-<p>最后还是放弃了用元组数组的方法：</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> homeTab = (vc: <span class="type">VYHomePageViewController</span>(), title: <span class="type">Home</span>, image: <span class="string">"new_home_gray"</span>, selectedImage: <span class="string">"new_home_blue"</span>)</span><br><span class="line"><span class="keyword">let</span> infoTab = (vc: <span class="type">VYInformationViewController</span>(), title: <span class="type">Info</span>, image: <span class="string">"msg_gray"</span>, selectedImage: <span class="string">"msg_blue"</span>)</span><br><span class="line"><span class="keyword">let</span> marketTab = (vc: <span class="type">VYMarketViewController</span>(), title: <span class="type">Market</span>, image: <span class="string">"hangqing_gray"</span>, selectedImage: <span class="string">"hangqing_blue"</span>)</span><br><span class="line"><span class="keyword">let</span> userTab = (vc: <span class="type">VYUserCenterViewController</span>(), title: <span class="type">Me</span>, image: <span class="string">"mine_gray"</span>, selectedImage: <span class="string">"mine_blue"</span>)</span><br><span class="line"></span><br><span class="line">addViewController(homeTab.vc, title: homeTab.title, image: homeTab.image, selectedIamge: homeTab.selectedImage)</span><br><span class="line">addViewController(infoTab.vc, title: infoTab.title, image: infoTab.image, selectedIamge: infoTab.selectedImage)</span><br><span class="line">addViewController(marketTab.vc, title: marketTab.title, image: marketTab.image, selectedIamge: marketTab.selectedImage)</span><br><span class="line">addViewController(userTab.vc, title: userTab.title, image: userTab.image, selectedIamge: userTab.selectedImage)</span><br></pre></td></tr></table></figure>
-
-          
-            <br>
-            
-              
-  
-    
-    
-
-
-
-  
-
-  
-    
-    
-
-
-
-  
-
-  
-    
-    
-
-<section class="widget copyright  ">
-  <div class='content'>
-    
-      <blockquote>
-        
-          
-            <p>博客内容遵循 署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0) 协议</p>
-
-          
-        
-          
-            <p>本文永久链接是：<a href=http://myhanson.com/2017/11/28/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%A4%B1%E8%B4%A5%E7%9A%84%20Swift%20%E5%85%83%E7%BB%84%E6%95%B0%E7%BB%84%E5%AE%9E%E8%B7%B5/>http://myhanson.com/2017/11/28/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%A4%B1%E8%B4%A5%E7%9A%84%20Swift%20%E5%85%83%E7%BB%84%E6%95%B0%E7%BB%84%E5%AE%9E%E8%B7%B5/</a></p>
-          
-        
-      </blockquote>
-    
-  </div>
-</section>
-
-  
-
-  
-    
-    
-
-<section class="widget qrcode  desktop mobile">
-  
-
-  <div class='content article-entry'>
-    
-      
-        <div class='fancybox'><img src='https://cdn.jsdelivr.net/gh/zyphs21/cdn-assets/qrcode/HansonTalk.png'
-        
-          height='64px'
-        ></div>
-      
-    
-      
-        <div class='fancybox'><img src='https://cdn.jsdelivr.net/gh/zyphs21/cdn-assets/qrcode/iOSTypist.jpg'
-        
-          height='64px'
-        ></div>
-      
-    
-  </div>
-</section>
-
-  
-
-
-            
           
         </div>
         
@@ -708,112 +584,11 @@
   <section class='meta' id="footer-meta">
     <div class='new-meta-box'>
       
-        
-          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2017-11-28T16:24:40+08:00">
-  <a class='notlink'>
-    <i class="fas fa-edit fa-fw" aria-hidden="true"></i>
-    <p>更新于：Nov 28, 2017</p>
-  </a>
-</div>
-
-        
-      
-        
-          
-
-        
-      
-        
-          
-
-        
-      
-        
-          
-  <div class="new-meta-item share -mob-share-list">
-  <div class="-mob-share-list share-body">
-    
-      
-        <a class="-mob-share-qq" title="" rel="external nofollow noopener noreferrer"
-          
-          href="http://connect.qq.com/widget/shareqq/index.html?url=http://myhanson.com/2017/11/28/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%A4%B1%E8%B4%A5%E7%9A%84%20Swift%20%E5%85%83%E7%BB%84%E6%95%B0%E7%BB%84%E5%AE%9E%E8%B7%B5/&title=记一次失败的 Swift 元组数组实践 - Hanson的博客&summary=想建立一个元组的数组，来简单存放构建 TabViewController 的信息首先我的做法是
-1234567let homeTab = (vc: VYHomeViewController(), title: "Home", image: "home_gray", selectedImage: "home_blue")let infoTab = (vc: VYInformationViewController(), title: "Info", image: "home_gray", selectedImage: "home_blue")let marketTab = (vc: VYMarketViewController(), title: "Market", image: "home_gray", selectedImage: "home_blue")let userTab = (vc: VYUserCenterViewController(), title: "Me", image: "home_gray", selectedImage: "home_blue")// 下面报错：Heterogeneous collection literal could only be inferred to '[Any]'; add explicit type annotation if this is intentionallet data = [homeTab, infoTab, marketTab, userTab]
-但是会报错，Xcode 的修改提示是后面添加  as [Any]
-1let data = [selfSelectedTab, infoTab, marketTab, userTab] as [Any]
-但是这样做已经不是原来的做一个元组数组的初衷了。无法在遍历数组的时候使用命名元组来获取信息"
-          
-          >
-          
-            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/logo/128/qq.png">
-          
-        </a>
-      
-    
-      
-        <a class="-mob-share-qzone" title="" rel="external nofollow noopener noreferrer"
-          
-          href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://myhanson.com/2017/11/28/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%A4%B1%E8%B4%A5%E7%9A%84%20Swift%20%E5%85%83%E7%BB%84%E6%95%B0%E7%BB%84%E5%AE%9E%E8%B7%B5/&title=记一次失败的 Swift 元组数组实践 - Hanson的博客&summary=想建立一个元组的数组，来简单存放构建 TabViewController 的信息首先我的做法是
-1234567let homeTab = (vc: VYHomeViewController(), title: "Home", image: "home_gray", selectedImage: "home_blue")let infoTab = (vc: VYInformationViewController(), title: "Info", image: "home_gray", selectedImage: "home_blue")let marketTab = (vc: VYMarketViewController(), title: "Market", image: "home_gray", selectedImage: "home_blue")let userTab = (vc: VYUserCenterViewController(), title: "Me", image: "home_gray", selectedImage: "home_blue")// 下面报错：Heterogeneous collection literal could only be inferred to '[Any]'; add explicit type annotation if this is intentionallet data = [homeTab, infoTab, marketTab, userTab]
-但是会报错，Xcode 的修改提示是后面添加  as [Any]
-1let data = [selfSelectedTab, infoTab, marketTab, userTab] as [Any]
-但是这样做已经不是原来的做一个元组数组的初衷了。无法在遍历数组的时候使用命名元组来获取信息"
-          
-          >
-          
-            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/logo/128/qzone.png">
-          
-        </a>
-      
-    
-      
-        <a class="-mob-share-weibo" title="" rel="external nofollow noopener noreferrer"
-          
-          href="http://service.weibo.com/share/share.php?url=http://myhanson.com/2017/11/28/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%A4%B1%E8%B4%A5%E7%9A%84%20Swift%20%E5%85%83%E7%BB%84%E6%95%B0%E7%BB%84%E5%AE%9E%E8%B7%B5/&title=记一次失败的 Swift 元组数组实践 - Hanson的博客&summary=想建立一个元组的数组，来简单存放构建 TabViewController 的信息首先我的做法是
-1234567let homeTab = (vc: VYHomeViewController(), title: "Home", image: "home_gray", selectedImage: "home_blue")let infoTab = (vc: VYInformationViewController(), title: "Info", image: "home_gray", selectedImage: "home_blue")let marketTab = (vc: VYMarketViewController(), title: "Market", image: "home_gray", selectedImage: "home_blue")let userTab = (vc: VYUserCenterViewController(), title: "Me", image: "home_gray", selectedImage: "home_blue")// 下面报错：Heterogeneous collection literal could only be inferred to '[Any]'; add explicit type annotation if this is intentionallet data = [homeTab, infoTab, marketTab, userTab]
-但是会报错，Xcode 的修改提示是后面添加  as [Any]
-1let data = [selfSelectedTab, infoTab, marketTab, userTab] as [Any]
-但是这样做已经不是原来的做一个元组数组的初衷了。无法在遍历数组的时候使用命名元组来获取信息"
-          
-          >
-          
-            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/logo/128/weibo.png">
-          
-        </a>
-      
-    
-  </div>
-</div>
-
-
-
-        
-      
     </div>
   </section>
 
 
         
-        
-          <div class="prev-next">
-            
-              <a class='prev' href='/2017/12/08/Swift%20%E5%AE%9E%E7%8E%B0%E5%90%AF%E5%8A%A8%E5%B1%8F%E5%8A%A8%E7%94%BB/'>
-                <p class='title'><i class="fas fa-chevron-left" aria-hidden="true"></i>Swift 实现启动屏动画</p>
-                <p class='content'>
-Github: SplashAnimate
-
-
-
-准备工作：首先我们需要确定作为宣传的图片的宽高比，这个一般是与 UI 确定的。一般启动屏展示会有上下两部分，上面是宣传图片，下面是 App 的...</p>
-              </a>
-            
-            
-              <a class='next' href='/2017/05/09/%E8%87%AA%E5%AE%9A%E4%B9%89%20UISegmentedControl%20%E6%A0%B7%E5%BC%8F/'>
-                <p class='title'>自定义 UISegmentedControl 样式<i class="fas fa-chevron-right" aria-hidden="true"></i></p>
-                <p class='content'>系统的 UISegmentedControl 是个挺方便的控件，这里来讲讲在 Swift3 下自定义 UISegmentedControl 的样式，包括修改底色，边框颜色等等。
-要了解 UISe...</p>
-              </a>
-            
-          </div>
         
       </section>
     </article>
@@ -836,27 +611,10 @@ Github: SplashAnimate
 
 
 
-  <script>
-    window.subData = {
-      title: '记一次失败的 Swift 元组数组实践',
-      tools: true
-    }
-  </script>
-
 
 </div>
 <aside class='l_side'>
   
-  
-
-  
-    
-    
-
-
-
-  
-
 
 </aside>
 
