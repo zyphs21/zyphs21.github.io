@@ -582,6 +582,14 @@ Github: SplashAnimate
           
             
               
+  
+  <div class='new-meta-item category'>
+    <a href='/categories/iOS%E5%BC%80%E5%8F%91/' rel="nofollow">
+      <i class="fas fa-folder-open fa-fw" aria-hidden="true"></i>
+      <p>iOS开发</p>
+    </a>
+  </div>
+
 
             
           
@@ -617,9 +625,9 @@ Github: SplashAnimate
 </blockquote>
 <a id="more"></a>
 
-<h1 id="准备工作："><a href="#准备工作：" class="headerlink" title="准备工作："></a>准备工作：</h1><p>首先我们需要确定作为宣传的图片的宽高比，这个一般是与 UI 确定的。一般启动屏展示会有上下两部分，上面是宣传图片，下面是 App 的 Logo。</p>
-<h1 id="实现基本思路："><a href="#实现基本思路：" class="headerlink" title="实现基本思路："></a>实现基本思路：</h1><p>在 LaunchScreen 结束后，在 AppDelegate 中将 rootViewController 指向展示广告用的 AdViewController，在AdViewController 中设置一段时间后自己销毁，并提供回调方法在 AppDelegate 中将 rootViewController 指向 App 真正的首页。</p>
-<h1 id="实现细节："><a href="#实现细节：" class="headerlink" title="实现细节："></a>实现细节：</h1><p>新建一个 AdViewController 用于放置广告宣传等展示.注意有一个回调方法。</p>
+<h2 id="准备工作："><a href="#准备工作：" class="headerlink" title="准备工作："></a>准备工作：</h2><p>首先我们需要确定作为宣传的图片的宽高比，这个一般是与 UI 确定的。一般启动屏展示会有上下两部分，上面是宣传图片，下面是 App 的 Logo。</p>
+<h2 id="实现基本思路："><a href="#实现基本思路：" class="headerlink" title="实现基本思路："></a>实现基本思路：</h2><p>在 LaunchScreen 结束后，在 AppDelegate 中将 rootViewController 指向展示广告用的 AdViewController，在AdViewController 中设置一段时间后自己销毁，并提供回调方法在 AppDelegate 中将 rootViewController 指向 App 真正的首页。</p>
+<h2 id="实现细节："><a href="#实现细节：" class="headerlink" title="实现细节："></a>实现细节：</h2><p>新建一个 AdViewController 用于放置广告宣传等展示.注意有一个回调方法。</p>
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AdViewController</span>: <span class="title">UIViewController</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 用于 AdViewController 销毁后的回调</span></span><br><span class="line">    <span class="keyword">var</span> completion: (() -&gt; <span class="type">Void</span>)?</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> adImage: <span class="type">UIImage?</span></span><br><span class="line">    <span class="keyword">var</span> adView: <span class="type">UIImageView?</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">viewDidLoad</span><span class="params">()</span></span> &#123;</span><br><span class="line">        <span class="comment">// ....</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>在 ViewDidLoad 方法中配置广告图,同时判断 iPhoneX的特殊情况</p>
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">viewDidLoad</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">super</span>.viewDidLoad()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> adViewHeight = (<span class="number">1040</span> / <span class="number">720</span>) * screenWidth</span><br><span class="line">    <span class="keyword">var</span> imageName = <span class="string">"start_page"</span></span><br><span class="line">    <span class="keyword">if</span> <span class="type">UIDevice</span>.isiPhoneX() &#123;</span><br><span class="line">        adViewHeight = (<span class="number">1920</span> / <span class="number">1124</span>) * screenWidth</span><br><span class="line">        imageName = <span class="string">"start_page_x"</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    adView = <span class="type">UIImageView</span>(frame: <span class="type">CGRect</span>(x: <span class="number">0</span>, y: <span class="number">0</span>, width: screenWidth, height: adViewHeight))</span><br><span class="line">    adView?.image = <span class="type">UIImage</span>(named: imageName)</span><br><span class="line">    adView?.contentMode = .scaleAspectFill</span><br><span class="line">    <span class="keyword">self</span>.view.addSubview(adView!)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> bottomHolderView = <span class="type">UIView</span>(frame: <span class="type">CGRect</span>(x: <span class="number">0</span>, y: screenHeight-<span class="number">120</span>, width: screenWidth, height: <span class="number">120</span>))</span><br><span class="line">    <span class="keyword">self</span>.view.addSubview(bottomHolderView)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> logo = <span class="type">UIImageView</span>(frame: <span class="type">CGRect</span>(x: (screenWidth-<span class="number">120</span>)/<span class="number">2</span>, y: (<span class="number">120</span>-<span class="number">50</span>)/<span class="number">2</span>, width: <span class="number">120</span>, height: <span class="number">50</span>))</span><br><span class="line">    logo.image = <span class="type">UIImage</span>(named: <span class="string">"start_logo"</span>)</span><br><span class="line">    bottomHolderView.addSubview(logo)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> time: <span class="type">TimeInterval</span> = <span class="number">1.0</span></span><br><span class="line">    <span class="type">DispatchQueue</span>.main.asyncAfter(deadline: <span class="type">DispatchTime</span>.now() + time) &#123;</span><br><span class="line">        <span class="keyword">self</span>.dismissAdView()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -696,7 +704,7 @@ Github: SplashAnimate
   <div class='content article-entry'>
     
       
-        <div class='fancybox'><img src='https://cdn.jsdelivr.net/gh/zyphs21/cdn-assets/qrcode/HansonTalk.png'
+        <div class='fancybox'><img src='https://cdn.jsdelivr.net/gh/zyphs21/cdn-assets/qrcode/HansonTalk.jpg'
         
           height='64px'
         ></div>
@@ -726,10 +734,10 @@ Github: SplashAnimate
     <div class='new-meta-box'>
       
         
-          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2020-04-16T14:15:49+08:00">
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2020-04-17T09:11:26+08:00">
   <a class='notlink'>
     <i class="fas fa-edit fa-fw" aria-hidden="true"></i>
-    <p>更新于：Apr 16, 2020</p>
+    <p>更新于：Apr 17, 2020</p>
   </a>
 </div>
 
@@ -871,7 +879,7 @@ Github: SplashAnimate
 
 
     <div class='content'>
-      
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#准备工作："><span class="toc-text">准备工作：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实现基本思路："><span class="toc-text">实现基本思路：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实现细节："><span class="toc-text">实现细节：</span></a></li></ol>
     </div>
   </section>
 

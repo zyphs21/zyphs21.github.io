@@ -580,6 +580,14 @@
           
             
               
+  
+  <div class='new-meta-item category'>
+    <a href='/categories/iOS%E5%BC%80%E5%8F%91/' rel="nofollow">
+      <i class="fas fa-folder-open fa-fw" aria-hidden="true"></i>
+      <p>iOS开发</p>
+    </a>
+  </div>
+
 
             
           
@@ -610,15 +618,15 @@
       <section class="article typo">
         <div class="article-entry" itemprop="articleBody">
           
-          <h1 id="需求分析"><a href="#需求分析" class="headerlink" title="需求分析"></a>需求分析</h1><ul>
+          <h2 id="需求分析"><a href="#需求分析" class="headerlink" title="需求分析"></a>需求分析</h2><ul>
 <li>在打包应用之后，需要自增 <strong>Version 的最后一位</strong> 和 <strong>Build</strong> 的值。<br><img src="https://user-gold-cdn.xitu.io/2018/3/14/162201d291ebc6c1?w=690&h=136&f=png&s=11268" alt=""></li>
 <li>只在 Archive(Release) 的时候触发该自增。</li>
 </ul>
-<h1 id="添加-RunScript"><a href="#添加-RunScript" class="headerlink" title="添加 RunScript"></a>添加 RunScript</h1><p>在 <code>项目Target</code> -&gt; <code>Build Phases</code> -&gt; <code>点击+号</code> -&gt; <code>New Run Script Phase</code></p>
+<h2 id="添加-RunScript"><a href="#添加-RunScript" class="headerlink" title="添加 RunScript"></a>添加 RunScript</h2><p>在 <code>项目Target</code> -&gt; <code>Build Phases</code> -&gt; <code>点击+号</code> -&gt; <code>New Run Script Phase</code></p>
 <p>然后添加如下内容：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> [ <span class="variable">$CONFIGURATION</span> == Release ]; <span class="keyword">then</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"当前为 Release Configuration,开始自增 Build"</span></span><br><span class="line">plist=<span class="variable">$&#123;INFOPLIST_FILE&#125;</span></span><br><span class="line">buildnum=$(/usr/libexec/PlistBuddy -c <span class="string">"Print CFBundleVersion"</span> <span class="string">"<span class="variable">$&#123;plist&#125;</span>"</span>)</span><br><span class="line"><span class="keyword">if</span> [[ <span class="string">"<span class="variable">$&#123;buildnum&#125;</span>"</span> == <span class="string">""</span> ]]; <span class="keyword">then</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"Error：在Plist文件里没有 Build 值"</span></span><br><span class="line"><span class="built_in">exit</span> 2</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line">buildnum=$(expr <span class="variable">$buildnum</span> + 1)</span><br><span class="line">/usr/libexec/PlistBuddy -c <span class="string">"Set CFBundleVersion <span class="variable">$buildnum</span>"</span> <span class="string">"<span class="variable">$&#123;plist&#125;</span>"</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"开始自增 Version 最后一位"</span></span><br><span class="line">versionNum=$(/usr/libexec/PlistBuddy -c <span class="string">"Print CFBundleShortVersionString"</span> <span class="string">"<span class="variable">$&#123;plist&#125;</span>"</span>)</span><br><span class="line">thirdPartVersonNum=`<span class="built_in">echo</span> <span class="variable">$versionNum</span> | awk -F <span class="string">"."</span> <span class="string">'&#123;print $3&#125;'</span>`</span><br><span class="line">thirdPartVersonNum=$((<span class="variable">$thirdPartVersonNum</span> + 1))</span><br><span class="line">newVersionStr=`<span class="built_in">echo</span> <span class="variable">$versionNum</span> | awk -F <span class="string">"."</span> <span class="string">'&#123;print $1 "." $2 ".'</span><span class="variable">$thirdPartVersonNum</span><span class="string">'" &#125;'</span>`</span><br><span class="line">/usr/libexec/PlistBuddy -c <span class="string">"Set CFBundleShortVersionString <span class="variable">$newVersionStr</span>"</span> <span class="string">"<span class="variable">$&#123;plist&#125;</span>"</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$CONFIGURATION</span> <span class="string">"当前不为 Release Configuration"</span></span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
 
-<h1 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h1><p>因为我的版本号是<code>xx.xx.xx</code>这样的形式，所以我以 <code>.</code> 拆分版本号后，取出第三个值来增加，最后再拼接回来。</p>
+<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>因为我的版本号是<code>xx.xx.xx</code>这样的形式，所以我以 <code>.</code> 拆分版本号后，取出第三个值来增加，最后再拼接回来。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">versionNum&#x3D;$(&#x2F;usr&#x2F;libexec&#x2F;PlistBuddy -c &quot;Print CFBundleShortVersionString&quot; &quot;$&#123;plist&#125;&quot;)</span><br><span class="line"># 这里取出第三个值</span><br><span class="line">thirdPartVersonNum&#x3D;&#96;echo $versionNum | awk -F &quot;.&quot; &#39;&#123;print $3&#125;&#39;&#96;</span><br></pre></td></tr></table></figure>
 
           
@@ -676,7 +684,7 @@
   <div class='content article-entry'>
     
       
-        <div class='fancybox'><img src='https://cdn.jsdelivr.net/gh/zyphs21/cdn-assets/qrcode/HansonTalk.png'
+        <div class='fancybox'><img src='https://cdn.jsdelivr.net/gh/zyphs21/cdn-assets/qrcode/HansonTalk.jpg'
         
           height='64px'
         ></div>
@@ -706,10 +714,10 @@
     <div class='new-meta-box'>
       
         
-          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2020-04-16T14:18:00+08:00">
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2020-04-17T09:13:07+08:00">
   <a class='notlink'>
     <i class="fas fa-edit fa-fw" aria-hidden="true"></i>
-    <p>更新于：Apr 16, 2020</p>
+    <p>更新于：Apr 17, 2020</p>
   </a>
 </div>
 
@@ -856,7 +864,7 @@ tags：发布的版本
 
 
     <div class='content'>
-      
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#需求分析"><span class="toc-text">需求分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#添加-RunScript"><span class="toc-text">添加 RunScript</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#注意"><span class="toc-text">注意</span></a></li></ol>
     </div>
   </section>
 

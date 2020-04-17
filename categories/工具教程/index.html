@@ -5,6 +5,8 @@
   <!-- SEO相关 -->
   
     
+      <meta name="robots" content="noindex,follow">
+    
   
   <!-- 渲染优化 -->
   <meta name="renderer" content="webkit">
@@ -16,11 +18,8 @@
 
   <!-- 页面元数据 -->
   
-    <title>HSStockChart介绍 - Hanson的博客</title>
+    <title>Category: 工具教程 - Hanson的博客</title>
   
-  
-    <meta name="description" content="HSStockChart 是一个绘制股票分时图、K 线图的库。支持流畅的回弹拖动，长按十字线，捏合放大缩小等功能，主要使用了 CAShapeLayer 来绘图，相比使用 Core Graphics 和重写 drawRect 的方法更高效，占用内存更小。GitHub 地址：HSStockChart  
-">
   
 
   <!-- feed -->
@@ -539,12 +538,25 @@
     <div class='body-wrapper'>
       
 
+
 <div class='l_main'>
   
-
-  
-    <article id="post" class="post white-box shadow article-type-post" itemscope itemprop="blogPost">
+    
       
+  <section class="post-list ">
+    
+      
+        
+          
+        
+      
+    
+    
+      
+        
+          <div class='post-wrapper'>
+            <article class="post white-box shadow reveal ">
+  
 
 
   <section class='meta'>
@@ -554,13 +566,11 @@
       <div class="meta" id="header-meta">
         
           
-  
-    <h1 class="title">
-      <a href="/2017/05/03/HSStockChart%E4%BB%8B%E7%BB%8D/">
-        HSStockChart介绍
-      </a>
-    </h1>
-  
+  <h2 class="title">
+    <a href="/2018/03/28/%E4%BD%BF%E7%94%A8SVN%E5%BB%BA%E7%AB%8B%E5%92%8C%E5%8F%91%E5%B8%83%E7%A7%81%E6%9C%89CocoaPods%E5%BA%93/">
+      使用SVN建立和发布私有CocoaPods库
+    </a>
+  </h2>
 
 
         
@@ -583,9 +593,9 @@
               
   
   <div class='new-meta-item category'>
-    <a href='/categories/%E5%BC%80%E6%BA%90-%E4%BA%A7%E5%93%81/' rel="nofollow">
+    <a href='/categories/%E5%B7%A5%E5%85%B7%E6%95%99%E7%A8%8B/' rel="nofollow">
       <i class="fas fa-folder-open fa-fw" aria-hidden="true"></i>
-      <p>开源/产品</p>
+      <p>工具教程</p>
     </a>
   </div>
 
@@ -596,9 +606,14 @@
               <div class="new-meta-item date">
   <a class='notlink'>
     <i class="fas fa-calendar-alt fa-fw" aria-hidden="true"></i>
-    <p>发布于：May 3, 2017</p>
+    <p>发布于：Mar 28, 2018</p>
   </a>
 </div>
+
+            
+          
+            
+              
 
             
           
@@ -616,275 +631,154 @@
   </section>
 
 
-      <section class="article typo">
-        <div class="article-entry" itemprop="articleBody">
-          
-          <p>HSStockChart 是一个绘制股票分时图、K 线图的库。支持流畅的回弹拖动，长按十字线，捏合放大缩小等功能，主要使用了 CAShapeLayer 来绘图，相比使用 Core Graphics 和重写 drawRect 的方法更高效，占用内存更小。<br><a href="https://github.com/zyphs21/HSStockChart" target="_blank" rel="noopener">GitHub 地址：HSStockChart</a>  </p>
-<p><img src="http://upload-images.jianshu.io/upload_images/757687-92b2069869929ccd.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
-<a id="more"></a>
-
-<h2 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h2><ul>
-<li><input checked="" disabled="" type="checkbox"> 支持绘制分时图，五日分时图，K 线图，MA 线指标，交易量柱等。</li>
-<li><input checked="" disabled="" type="checkbox"> 支持横屏查看。</li>
-<li><input checked="" disabled="" type="checkbox"> K 线图利用 <code>UIScrollView</code> 达到流畅的滑动查看效果。</li>
-<li><input checked="" disabled="" type="checkbox"> 使用 <code>CAShapeLayer</code> 绘图，内存占用更小，效率更高。</li>
-</ul>
-<h2 id="版本需求"><a href="#版本需求" class="headerlink" title="版本需求"></a>版本需求</h2><ul>
-<li>iOS 8.0+</li>
-<li>Swift 3</li>
-</ul>
-<h2 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h2><ol>
-<li><p>之前绘图的方法是重写 <code>drawRect</code> 方法，在方法里获取 <code>CGContext</code> 然后利用Core Graphics 来进行绘图，调用 <code>setNeedsDisplay</code> 来刷新。但是这种方法有个问题是：</p>
-<blockquote>
-<p>一旦你实现了 CALayerDelegate 协议中的 -drawLayer:inContext: 方法或者 UIView 中的 -drawRect: 方法（其实就是前者的包装方法），图层就创建了一个绘制上下文，这个上下文需要的内存可从这个公式得出：图层宽x图层高x4字节，宽高的单位均为像素。对于一个在 Retina iPad 上的全屏图层来说，这个内存量就是 2048x1526x4字节，相当于12MB内存，图层每次重绘的时候都需要重新抹掉内存然后重新分配。【摘自 iOS Core Animation- Advanced Techniques 中文译本 高效绘图一章】</p>
-</blockquote>
-<p>因为我要达到流畅滑动查看的效果，所以在 <code>UIScrollView</code> 上添加了一个 <code>UIView</code> 这个 View 的宽度会依据当前展示数据的多少而变化，结合 <code>UIScrollView</code> 的 <code>ContentSize</code> 就能达到很好的滑动效果。</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/757687-36a3d278fd71fc4a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
-<p>如果我用之前重写 <code>drawRect</code> 的方法，那么这个 View 会根据数据量的变大而变大，从而导致绘图内存急剧上升，数据量大的时候会崩溃。基于此，我采用了 <code>CAShapeLayer</code> 的方式绘图，此方式的特点如下：</p>
-<blockquote>
-<p>CAShapeLayer 是一个通过矢量图形而不是 bitmap 来绘制的图层子类。你指定诸如颜色和线宽等属性，用 CGPath 来定义想要绘制的图形，最后就自动渲染出来了。当然，你也可以用 Core Graphics 直接向原始的内容中绘制一个路径，相比之下，使用 CAShapeLayer 有以下一些优点:</p>
-<ul>
-<li>渲染快速。CAShapeLayer 使用了硬件加速，绘制同一图形会比用 Core Graphics 快很多。</li>
-<li>高效使用内存。一个 CAShapeLayer 不需要像普通 CALayer 一样创建一个寄宿图形，所以无论有多大，都不会占用太多的内存。 </li>
-<li>不会被图层边界剪裁掉，一个 CAShapeLayer 可以在边界之外绘制。你的图层路径不会像在使用 Core Graphics 的普通 CALayer 一样被剪裁掉。</li>
-<li>不会出现像素化。当你给 CAShapeLayer 做3D变换时，它不像一个有寄宿图的普通图层一样变得像素化</li>
-</ul>
-</blockquote>
-<p>最终在真机上测试(注意是在真机上测试)两种方式的结果如图，内存大大降低并且稳定在13M左右</p>
-<p> <img src="http://upload-images.jianshu.io/upload_images/757687-a773aeda8ac7ff01.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
-</li>
-<li><p>自定义 CAShapeLayer，重写 action(forKey event: String) 方法。目的是 关闭 CAShapeLayer 的隐式动画，避免滑动时候或者十字线出现时有残影的现象(实际上是因为 Layer 的 position 属性变化而产生的隐式动画)</p>
-</li>
-</ol>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">HSCAShapeLayer</span>: <span class="title">CAShapeLayer</span> </span>&#123;</span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">action</span><span class="params">(forKey event: String)</span></span> -&gt; <span class="type">CAAction?</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="License"><a href="#License" class="headerlink" title="License"></a>License</h2><p>Released under MIT License.</p>
-
-          
-            <br>
-            
-              
-  
-    
-    
-
-
-
-  
-
-  
-    
-    
-
-
-
-  
-
-  
-    
-    
-
-<section class="widget copyright  ">
-  <div class='content'>
-    
-      <blockquote>
-        
-          
-            <p>博客内容遵循 署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0) 协议</p>
-
-          
-        
-          
-            <p>本文永久链接是：<a href=http://myhanson.com/2017/05/03/HSStockChart%E4%BB%8B%E7%BB%8D/>http://myhanson.com/2017/05/03/HSStockChart%E4%BB%8B%E7%BB%8D/</a></p>
-          
-        
-      </blockquote>
-    
-  </div>
-</section>
-
-  
-
-  
-    
-    
-
-<section class="widget qrcode  desktop mobile">
-  
-
-  <div class='content article-entry'>
-    
+  <section class="article typo">
+    <div class="article-entry" itemprop="articleBody">
       
-        <div class='fancybox'><img src='https://cdn.jsdelivr.net/gh/zyphs21/cdn-assets/qrcode/HansonTalk.jpg'
-        
-          height='64px'
-        ></div>
-      
-    
-      
-        <div class='fancybox'><img src='https://cdn.jsdelivr.net/gh/zyphs21/cdn-assets/qrcode/iOSTypist.jpg'
-        
-          height='64px'
-        ></div>
-      
-    
-  </div>
-</section>
-
-  
-
-
-            
-          
-        </div>
-        
-          
-
-
-  <section class='meta' id="footer-meta">
-    <div class='new-meta-box'>
-      
-        
-          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2020-04-17T09:16:56+08:00">
-  <a class='notlink'>
-    <i class="fas fa-edit fa-fw" aria-hidden="true"></i>
-    <p>更新于：Apr 17, 2020</p>
-  </a>
-</div>
-
-        
-      
-        
-          
-
-        
-      
-        
-          
-
-        
-      
-        
-          
-  <div class="new-meta-item share -mob-share-list">
-  <div class="-mob-share-list share-body">
-    
-      
-        <a class="-mob-share-qq" title="" rel="external nofollow noopener noreferrer"
-          
-          href="http://connect.qq.com/widget/shareqq/index.html?url=http://myhanson.com/2017/05/03/HSStockChart%E4%BB%8B%E7%BB%8D/&title=HSStockChart介绍 - Hanson的博客&summary=HSStockChart 是一个绘制股票分时图、K 线图的库。支持流畅的回弹拖动，长按十字线，捏合放大缩小等功能，主要使用了 CAShapeLayer 来绘图，相比使用 Core Graphics 和重写 drawRect 的方法更高效，占用内存更小。GitHub 地址：HSStockChart  
-"
-          
-          >
-          
-            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/logo/128/qq.png">
-          
-        </a>
-      
-    
-      
-        <a class="-mob-share-qzone" title="" rel="external nofollow noopener noreferrer"
-          
-          href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://myhanson.com/2017/05/03/HSStockChart%E4%BB%8B%E7%BB%8D/&title=HSStockChart介绍 - Hanson的博客&summary=HSStockChart 是一个绘制股票分时图、K 线图的库。支持流畅的回弹拖动，长按十字线，捏合放大缩小等功能，主要使用了 CAShapeLayer 来绘图，相比使用 Core Graphics 和重写 drawRect 的方法更高效，占用内存更小。GitHub 地址：HSStockChart  
-"
-          
-          >
-          
-            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/logo/128/qzone.png">
-          
-        </a>
-      
-    
-      
-        <a class="-mob-share-weibo" title="" rel="external nofollow noopener noreferrer"
-          
-          href="http://service.weibo.com/share/share.php?url=http://myhanson.com/2017/05/03/HSStockChart%E4%BB%8B%E7%BB%8D/&title=HSStockChart介绍 - Hanson的博客&summary=HSStockChart 是一个绘制股票分时图、K 线图的库。支持流畅的回弹拖动，长按十字线，捏合放大缩小等功能，主要使用了 CAShapeLayer 来绘图，相比使用 Core Graphics 和重写 drawRect 的方法更高效，占用内存更小。GitHub 地址：HSStockChart  
-"
-          
-          >
-          
-            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/logo/128/weibo.png">
-          
-        </a>
-      
-    
-  </div>
-</div>
-
-
-
-        
+        <p>现在应该没有人用 SVN 了吧</p>
       
     </div>
+    
+      
+        <div class="button readmore">
+          <a href="/2018/03/28/%E4%BD%BF%E7%94%A8SVN%E5%BB%BA%E7%AB%8B%E5%92%8C%E5%8F%91%E5%B8%83%E7%A7%81%E6%9C%89CocoaPods%E5%BA%93/">
+            Read More <i class="fas fa-chevron-right"></i>
+          </a>
+        </div>
+      
+    
   </section>
+</article>
 
-
-        
-        
-          <div class="prev-next">
-            
-              <a class='prev' href='/2017/05/09/%E8%87%AA%E5%AE%9A%E4%B9%89%20UISegmentedControl%20%E6%A0%B7%E5%BC%8F/'>
-                <p class='title'><i class="fas fa-chevron-left" aria-hidden="true"></i>自定义 UISegmentedControl 样式</p>
-                <p class='content'>系统的 UISegmentedControl 是个挺方便的控件，这里来讲讲在 Swift3 下自定义 UISegmentedControl 的样式，包括修改底色，边框颜色等等。
-要了解 UISe...</p>
-              </a>
-            
-            
           </div>
         
-      </section>
-    </article>
+      
+    
+  </section>
   
-
-  
-    <!-- 显示推荐文章和评论 -->
-
-
-
-  
-
+    
+    <!-- 根据主题中的设置决定是否在archive中针对摘要部分的MathJax公式加载mathjax.js文件 -->
+    
+    
 
   
 
 
-
-
-<!-- 根据页面mathjax变量决定是否加载MathJax数学公式js -->
-
-
-
-  <script>
-    window.subData = {
-      title: 'HSStockChart介绍',
-      tools: true
-    }
-  </script>
-
+    
+  
 
 </div>
 <aside class='l_side'>
   
   
+    
+    
+
+<section class="widget blogger shadow desktop mobile">
+  <div class='content'>
+    
+      
+        <a class='avatar flat-box' href='/about/'>
+          <img no-lazy src='https://cdn.jsdelivr.net/gh/zyphs21/cdn-assets/avatar/avatar.png'/>
+        </a>
+      
+    
+    
+      <div class='text'>
+        
+          <h2>Hanson</h2>
+        
+        
+        
+      </div>
+    
+    
+      <div class="social-wrapper">
+        
+          
+            <a href="/atom.xml"
+              class="social fas fa-rss flat-btn"
+              target="_blank"
+              rel="external nofollow noopener noreferrer">
+            </a>
+          
+        
+          
+            <a href="mailto:hansenhs21@live.com"
+              class="social fas fa-envelope flat-btn"
+              target="_blank"
+              rel="external nofollow noopener noreferrer">
+            </a>
+          
+        
+          
+            <a href="https://github.com/zyphs21"
+              class="social fab fa-github flat-btn"
+              target="_blank"
+              rel="external nofollow noopener noreferrer">
+            </a>
+          
+        
+      </div>
+    
+  </div>
+</section>
+
+  
 
   
     
     
+  
 
-
-  <section class="widget toc-wrapper shadow desktop mobile">
+  <section class="widget category shadow desktop">
     
   <header>
     
-      <i class="fas fa-list fa-fw" aria-hidden="true"></i><span class='name'>本文目录</span>
+      <a href='/blog/categories/'><i class="fas fa-folder-open fa-fw" aria-hidden="true"></i><span class='name'>文章分类</span></a>
     
   </header>
 
 
     <div class='content'>
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#功能"><span class="toc-text">功能</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#版本需求"><span class="toc-text">版本需求</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#说明"><span class="toc-text">说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#License"><span class="toc-text">License</span></a></li></ol>
+      <ul class="entry navigation">
+        
+          <li><a class="flat-box"
+            title="/categories/Swift/" href="/categories/Swift/"
+            id="categoriesSwift"
+            ><div class='name'>Swift</div><div class='badge'>(3)</div></a></li>
+        
+          <li><a class="flat-box"
+            title="/categories/iOS%E5%BC%80%E5%8F%91/" href="/categories/iOS%E5%BC%80%E5%8F%91/"
+            id="categoriesiOSE5BC80E58F91"
+            ><div class='name'>iOS开发</div><div class='badge'>(5)</div></a></li>
+        
+          <li><a class="flat-box"
+            title="/categories/%E5%B7%A5%E5%85%B7%E6%95%99%E7%A8%8B/" href="/categories/%E5%B7%A5%E5%85%B7%E6%95%99%E7%A8%8B/"
+            id="categoriesE5B7A5E585B7E69599E7A88B"
+            ><div class='name'>工具教程</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box"
+            title="/categories/%E5%BC%80%E6%BA%90-%E4%BA%A7%E5%93%81/" href="/categories/%E5%BC%80%E6%BA%90-%E4%BA%A7%E5%93%81/"
+            id="categoriesE5BC80E6BA90-E4BAA7E59381"
+            ><div class='name'>开源/产品</div><div class='badge'>(3)</div></a></li>
+        
+          <li><a class="flat-box"
+            title="/categories/%E7%AE%97%E6%B3%95%E5%AE%9E%E8%B7%B5/" href="/categories/%E7%AE%97%E6%B3%95%E5%AE%9E%E8%B7%B5/"
+            id="categoriesE7AE97E6B395E5AE9EE8B7B5"
+            ><div class='name'>算法实践</div><div class='badge'>(1)</div></a></li>
+        
+      </ul>
     </div>
   </section>
 
+
+  
+
+  
+    
+    
+
+  
 
   
 

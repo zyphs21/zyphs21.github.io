@@ -580,6 +580,14 @@
           
             
               
+  
+  <div class='new-meta-item category'>
+    <a href='/categories/%E5%B7%A5%E5%85%B7%E6%95%99%E7%A8%8B/' rel="nofollow">
+      <i class="fas fa-folder-open fa-fw" aria-hidden="true"></i>
+      <p>工具教程</p>
+    </a>
+  </div>
+
 
             
           
@@ -610,14 +618,14 @@
       <section class="article typo">
         <div class="article-entry" itemprop="articleBody">
           
-          <h1 id="SVN-项目结构"><a href="#SVN-项目结构" class="headerlink" title="SVN 项目结构"></a>SVN 项目结构</h1><p>首先，一般 SVN 项目有如下的结构：</p>
+          <h2 id="SVN-项目结构"><a href="#SVN-项目结构" class="headerlink" title="SVN 项目结构"></a>SVN 项目结构</h2><p>首先，一般 SVN 项目有如下的结构：</p>
 <ul>
 <li>trunk：项目主干</li>
 <li>branches：开发或者 Bug 分支</li>
 <li>tags：发布的版本</li>
 </ul>
 <p>比如说我们已经写好了一个 CocoaPods 的库，它的名字是 xxxKit，那么它应该在看起来是这样的：<br><img src="" alt=""></p>
-<h1 id="建立-CocoaPods-库"><a href="#建立-CocoaPods-库" class="headerlink" title="建立 CocoaPods 库"></a>建立 CocoaPods 库</h1><p>我们在 trunk 的目录下执行 </p>
+<h2 id="建立-CocoaPods-库"><a href="#建立-CocoaPods-库" class="headerlink" title="建立 CocoaPods 库"></a>建立 CocoaPods 库</h2><p>我们在 trunk 的目录下执行 </p>
 <p><code>pod lib create xxxKit</code></p>
 <p>按照提示输入后，在该目录下就会利用 CocoaPods 的模板生成了一个项目。我们主要关注<code>xxxKit.podspec</code> 这个文件。</p>
 <p>修改 <code>xxxKit.podspec</code>，比如：   </p>
@@ -625,7 +633,7 @@
 
 <p>主要注意是指定 source 那里，路径填的是 SVN 仓库的地址，并加上 tag。</p>
 <p><code>s.source = { :svn =&gt; &quot;http://xxxx/xxxKit/&quot;, :tag =&gt; s.version.to_s }</code></p>
-<h1 id="打-tags-发布一个版本"><a href="#打-tags-发布一个版本" class="headerlink" title="打 tags 发布一个版本"></a>打 tags 发布一个版本</h1><p>这里以 <code>Cornerstone</code> 这个 Mac 端的 SVN 工具来说明。</p>
+<h2 id="打-tags-发布一个版本"><a href="#打-tags-发布一个版本" class="headerlink" title="打 tags 发布一个版本"></a>打 tags 发布一个版本</h2><p>这里以 <code>Cornerstone</code> 这个 Mac 端的 SVN 工具来说明。</p>
 <ol>
 <li><p>去到远程库里进行打 tags，注意只有在远程库操作才能打 tag。</p>
 <p> <img src="" alt=""></p>
@@ -635,7 +643,7 @@
 </li>
 </ol>
 <p>之后只要有开发到了新的版本了，按照这样先打 tag。</p>
-<h1 id="使用私有库"><a href="#使用私有库" class="headerlink" title="使用私有库"></a>使用私有库</h1><p>去到需要使用该库的项目里，在 Podfile 里指定该版本：</p>
+<h2 id="使用私有库"><a href="#使用私有库" class="headerlink" title="使用私有库"></a>使用私有库</h2><p>去到需要使用该库的项目里，在 Podfile 里指定该版本：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pod &#39;xxxKit&#39;, :svn &#x3D;&gt; &#39;http:&#x2F;&#x2F;xxxx&#x2F;xxxKit&#x2F;&#39;, :tag &#x3D;&gt; &#39;0.1.1&#39;</span><br></pre></td></tr></table></figure>
 
 <p>然后执行 <code>pod install</code></p>
@@ -695,7 +703,7 @@
   <div class='content article-entry'>
     
       
-        <div class='fancybox'><img src='https://cdn.jsdelivr.net/gh/zyphs21/cdn-assets/qrcode/HansonTalk.png'
+        <div class='fancybox'><img src='https://cdn.jsdelivr.net/gh/zyphs21/cdn-assets/qrcode/HansonTalk.jpg'
         
           height='64px'
         ></div>
@@ -725,10 +733,10 @@
     <div class='new-meta-box'>
       
         
-          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2020-04-16T14:24:44+08:00">
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2020-04-17T09:12:35+08:00">
   <a class='notlink'>
     <i class="fas fa-edit fa-fw" aria-hidden="true"></i>
-    <p>更新于：Apr 16, 2020</p>
+    <p>更新于：Apr 17, 2020</p>
   </a>
 </div>
 
@@ -866,7 +874,7 @@
 
 
     <div class='content'>
-      
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#SVN-项目结构"><span class="toc-text">SVN 项目结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#建立-CocoaPods-库"><span class="toc-text">建立 CocoaPods 库</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#打-tags-发布一个版本"><span class="toc-text">打 tags 发布一个版本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用私有库"><span class="toc-text">使用私有库</span></a></li></ol>
     </div>
   </section>
 
