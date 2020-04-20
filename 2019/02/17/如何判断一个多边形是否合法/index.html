@@ -644,6 +644,25 @@
 <p>综上，我们可以得出：<br>A =  $\vec{P_1P_2} \times \vec{P_1Q_1} $<br>B = $\vec{P_1P_2} \times \vec{P_1Q_2} $<br>C = $\vec{Q_1Q_2} \times \vec{Q_1P_1} $<br>D = $\vec{Q_1Q_2} \times \vec{Q_1P_2} $<br>当 A * B &lt; 0 &amp;&amp; C * D &lt; 0 的时候，两条线段规范相交。<br>至于向量的叉积如何运算，这里就不细写了，给出一张计算草稿给大家过目一下：<br><img src="https://cdn.jsdelivr.net/gh/zyphs21/cdn-assets/photo/judgePolygonValid/calcraft.png" alt=""><br>根据计算草稿的内容，我们就很容易通过代码来实现了：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">private func isIntersect(line1: (CGPoint, CGPoint), line2: (CGPoint, CGPoint)) -&gt; Bool &#123;</span><br><span class="line">        let p1 &#x3D; line1.0</span><br><span class="line">        let p2 &#x3D; line1.1</span><br><span class="line">        let q1 &#x3D; line2.0</span><br><span class="line">        let q2 &#x3D; line2.1</span><br><span class="line"></span><br><span class="line">        let a1 &#x3D; (p2.x - p1.x) * (q1.y - p1.y) - (q1.x - p1.x) * (p2.y - p1.y)</span><br><span class="line">        let a2 &#x3D; (p2.x - p1.x) * (q2.y - p1.y) - (q2.x - p1.x) * (p2.y - p1.y)</span><br><span class="line">        </span><br><span class="line">        let b1 &#x3D; (q2.x - q1.x) * (p1.y - q1.y) - (p1.x - q1.x) * (q2.y - q1.y)</span><br><span class="line">        let b2 &#x3D; (q2.x - q1.x) * (p2.y - q1.y) - (p2.x - q1.x) * (q2.y - q1.y)</span><br><span class="line">        </span><br><span class="line">        if a1 * a2 &lt; 0 &amp;&amp; b1 * b2 &lt; 0 &#123;</span><br><span class="line">            return true</span><br><span class="line">        &#125;</span><br><span class="line">        return false</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>由于笔者能力有限，文中如有错误还请各位读者不吝赐教。</p>
+<br>
+<br>
+<details open>
+<summary><strong>欢迎关注我的公众号</strong></summary>
+
+<table>
+<thead>
+<tr>
+<th align="center">HansonTalk</th>
+<th align="center">iOSTypist</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><img src="https://cdn.jsdelivr.net/gh/zyphs21/cdn-assets/qrcode/HansonTalk.jpg" alt="HansonTalk" align=center /></td>
+<td align="center"><img src="https://cdn.jsdelivr.net/gh/zyphs21/cdn-assets/qrcode/iOSTypist.jpg" alt="iOSTypist" align=center /></td>
+</tr>
+</tbody></table>
+</details>
+
 
           
             <br>
@@ -730,7 +749,7 @@
     <div class='new-meta-box'>
       
         
-          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2020-04-17T09:12:57+08:00">
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2020-04-17T18:26:10+08:00">
   <a class='notlink'>
     <i class="fas fa-edit fa-fw" aria-hidden="true"></i>
     <p>更新于：Apr 17, 2020</p>
@@ -805,20 +824,10 @@
         
           <div class="prev-next">
             
-              <a class='prev' href='/2020/04/15/CoreLocation%E4%B8%AD%E7%9A%84Course%E5%92%8CHeading%E7%AE%80%E6%9E%90/'>
-                <p class='title'><i class="fas fa-chevron-left" aria-hidden="true"></i>CoreLocation 中的 Course 和 Heading 简析</p>
-                <p class='content'>很多地图 App 都会有一个当前定位的标记，该标记可以根据用户手持手机的朝向不同而改变方向。如图：
-
-
-
-如果要实现这个带方向定位的标记点，需要什么数据呢？
-
-
-
-定位数据
-手机朝向数据
-
-定位...</p>
+              <a class='prev' href='/2019/05/05/%E8%AE%A1%E7%AE%97%E4%B8%80%E4%B8%AA%E5%A4%9A%E8%BE%B9%E5%BD%A2%E7%9A%84%E9%87%8D%E5%BF%83%E7%82%B9%E5%9D%90%E6%A0%87/'>
+                <p class='title'><i class="fas fa-chevron-left" aria-hidden="true"></i>计算一个多边形的重心点坐标</p>
+                <p class='content'>背景介绍与问题分析在之前的《如何判断一个多边形是否合法》 一文中有提到，用无人机规划飞行路线前，往往需要框选一个多边形的区域。
+而在地图控件上显示这个多边形区域时，往往会遇到这样一个需求：需要把...</p>
               </a>
             
             
@@ -934,16 +943,16 @@ window.MathJax = {
       
     
       
-        <div><p>Blog content follows the <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" target="_blank" rel="noopener">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) License</a></p>
+        <div><p>博客内容遵循 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0) 协议</a></p>
 </div>
       
     
       
-        Use
+        本站使用
         <a href="https://volantis.js.org/" target="_blank" class="codename">Volantis</a>
-        as theme, total visits
+        作为主题，总访问量为
           <span id="busuanzi_value_site_pv"><i class="fas fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span>
-          times
+          次
         
       
     

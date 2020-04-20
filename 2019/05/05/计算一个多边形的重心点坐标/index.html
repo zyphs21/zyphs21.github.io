@@ -16,12 +16,10 @@
 
   <!-- 页面元数据 -->
   
-    <title>Swift 实现启动屏动画 - Hanson的博客</title>
+    <title>计算一个多边形的重心点坐标 - Hanson的博客</title>
   
   
-    <meta name="description" content="
-Github: SplashAnimate
-">
+    <meta name="description" content="多边形分凹多边形和凸多边形，如何求出一个多边形的重心坐标呢？">
   
 
   <!-- feed -->
@@ -557,8 +555,8 @@ Github: SplashAnimate
           
   
     <h1 class="title">
-      <a href="/2017/12/08/Swift%20%E5%AE%9E%E7%8E%B0%E5%90%AF%E5%8A%A8%E5%B1%8F%E5%8A%A8%E7%94%BB/">
-        Swift 实现启动屏动画
+      <a href="/2019/05/05/%E8%AE%A1%E7%AE%97%E4%B8%80%E4%B8%AA%E5%A4%9A%E8%BE%B9%E5%BD%A2%E7%9A%84%E9%87%8D%E5%BF%83%E7%82%B9%E5%9D%90%E6%A0%87/">
+        计算一个多边形的重心点坐标
       </a>
     </h1>
   
@@ -584,9 +582,9 @@ Github: SplashAnimate
               
   
   <div class='new-meta-item category'>
-    <a href='/categories/iOS%E5%BC%80%E5%8F%91/' rel="nofollow">
+    <a href='/categories/%E7%AE%97%E6%B3%95%E5%AE%9E%E8%B7%B5/' rel="nofollow">
       <i class="fas fa-folder-open fa-fw" aria-hidden="true"></i>
-      <p>iOS开发</p>
+      <p>算法实践</p>
     </a>
   </div>
 
@@ -597,7 +595,7 @@ Github: SplashAnimate
               <div class="new-meta-item date">
   <a class='notlink'>
     <i class="fas fa-calendar-alt fa-fw" aria-hidden="true"></i>
-    <p>发布于：Dec 8, 2017</p>
+    <p>发布于：May 5, 2019</p>
   </a>
 </div>
 
@@ -620,34 +618,63 @@ Github: SplashAnimate
       <section class="article typo">
         <div class="article-entry" itemprop="articleBody">
           
-          <blockquote>
-<p>Github: <a href="https://github.com/zyphs21/SplashAnimate" target="_blank" rel="noopener">SplashAnimate</a></p>
+          <h2 id="背景介绍与问题分析"><a href="#背景介绍与问题分析" class="headerlink" title="背景介绍与问题分析"></a>背景介绍与问题分析</h2><p>在之前的《如何判断一个多边形是否合法》 一文中有提到，用无人机规划飞行路线前，往往需要框选一个多边形的区域。</p>
+<p>而在地图控件上显示这个多边形区域时，往往会遇到这样一个需求：需要把所要测绘的多边形区域移动到地图中心。</p>
+<p>实现这个需求的基本思路就是：获取到多边形区域的重心点坐标，然后利用地图控件的 <code>setCenter</code>方法，就可以把地图的显示中心移动到多边形区域重心了。那么问题来了，如何求出一个多边形的重心点坐标呢？</p>
+<blockquote>
+<p>这里所说的重心，也常常叫几何中心</p>
 </blockquote>
-<a id="more"></a>
+<p>这里首先给出一个公式:</p>
+<p>平面多边形 $X$ 可以被剖分为 n个有限的简单图形 $X_1,X_2,….X_n$，这些简单图形的重心点为 $C_1$，面积为 $A_1$，那么这个平面多边形的重心点坐标为 $(C_x,C_y)$<br>$$C_x = \frac{\sum C_{i_x} A_i}{\sum A_i}, C_y = \frac{\sum C_{i_y} A_i}{\sum A_i}$$</p>
+<blockquote>
+<p>公式参考: <a href="https://en.wikipedia.org/wiki/Centroid#Centroid_of_polygon" target="_blank" rel="noopener">维基百科</a></p>
+</blockquote>
+<p>一般来说我们可以给多边形进行三角剖分，而 $\sum{A_i}$ 即为多边形的总面积，那么这个公式可以理解为：</p>
+<p>多边形重心横坐标 = 多边形剖分的每一个三角形重心的横坐标 * 该三角形的面积之和 / 多边形总面积</p>
+<p>多边形重心纵坐标 = 多边形剖分的每一个三角形重心的纵坐标 * 该三角形的面积之和 / 多边形总面积</p>
+<p>所以这里就把问题拆分成了三个小问题：</p>
+<ul>
+<li>求每个剖分出来的三角形的重心。</li>
+<li>求每个剖分出来的三角形的面积。</li>
+<li>求多边形的面积。</li>
+</ul>
+<h2 id="算法解析"><a href="#算法解析" class="headerlink" title="算法解析"></a>算法解析</h2><h3 id="1-求三角形的重心"><a href="#1-求三角形的重心" class="headerlink" title="1. 求三角形的重心"></a>1. 求三角形的重心</h3><p><img src="https://user-gold-cdn.xitu.io/2019/4/30/16a6cfc2430378e5?w=495&h=359&f=png&s=6343" alt="三角形重心"><br>三角形的重心：三条中线的交点。其中重心到其中一个顶点的距离是重心到该顶点对边中点的距离的2倍。<br />即：GC = 2 * GP，也就是说重心坐标在 CP 线段上距离 AB 的中点 P 的 1/3 处。<br>假设 A,B,C 三点的坐标为：<br>$$A:(x_1,y_1),B:(x_2,y_2),C:(x_3,y_3)$$</p>
+<p>那么通过简单坐标计算，可以得出其重心坐标为 $(x,y)$<br>$$x = \frac{(x_1+x_2+x_3)}{3} , y = \frac{(y_1+y_2+y_3)}{3}$$</p>
+<h3 id="2-求三角形面积"><a href="#2-求三角形面积" class="headerlink" title="2. 求三角形面积"></a>2. 求三角形面积</h3><p>计算三角形的面积，我们这里利用 <code>向量积</code>来计算，我们知道平面中的两个向量的叉乘的模等于以这两个向量为边的平行四边形的面积，那么以这个两个向量为边的三角形，则是这个平行四边形的面积的一半。</p>
+<blockquote>
+<p>参考：<a href="https://zh.wikipedia.org/wiki/%E5%8F%89%E7%A7%AF" target="_blank" rel="noopener">向量叉积</a></p>
+</blockquote>
+<p><img src="https://user-gold-cdn.xitu.io/2019/4/30/16a6cfc2411ec119?w=426&h=271&f=png&s=3768" alt=""></p>
+<p>如上图，已知平面上两点 $A:(x_1,y_1),B(x_2,y_2)$ ，以 A，B和坐标原点 $P(0,0)$ 构成的三角形的面积 S 为：<br>$$S=\frac{\vec{PB}\times\vec{PA}}{2} = \frac{x_2y_1 - x_1y_2 }{2}$$</p>
+<p>这里给出运算草稿：<br><img src="https://user-gold-cdn.xitu.io/2019/4/30/16a6cfc2446ff8cb?w=845&h=215&f=png&s=225564" alt=""></p>
+<p>为什么这里我们会以原点作为第三个点构成三角形呢？其实是跟接下来求多边形面积是有关联的。</p>
+<h3 id="3-求多边形的面积"><a href="#3-求多边形的面积" class="headerlink" title="3. 求多边形的面积"></a>3. 求多边形的面积</h3><p>我们在上面给出的求平面多边形重心的公式中有说到，一般我们会把多边形剖分为多个三角形。<br>那么这个剖分点 P 我们可以设在哪里呢？这里先给出结论：这个剖分点可以设置在多边形的内部，也可以设置到外部。</p>
+<p><img src="https://user-gold-cdn.xitu.io/2019/4/30/16a6cfc2424f444d?w=493&h=243&f=png&s=7753" alt=""></p>
+<p>为什么这个剖分点可以设置到外部呢？我们可以通过简单的三角形情况来推广到多边形的情况。<br>对于三角形ABC，我们把剖分点设置在其外部 P 的一点上<br><img src="https://user-gold-cdn.xitu.io/2019/4/30/16a6cfc24423917c?w=381&h=260&f=png&s=5277" alt=""></p>
+<p>如果大家还记得 <a href="https://juejin.im/post/5cc7eea351882512fa03a481" target="_blank" rel="noopener">《如何判断一个多边形是否合法》</a> 一文中有讲过向量叉积是有正负之分的，并且根据上面所说的计算三角形面积，那么以 P 为剖分点，通过向量积可以得出这个三角形的面积 A 为：<br>$$A = \frac{1}{2}(\vec{PB} \times \vec{PC} + \vec{PC} \times \vec{PA} + \vec{PA} \times \vec{PB})$$</p>
+<p>因为 向量PB 在 向量PA 的顺时针方向，所以 $\vec{PA} \times \vec{PB}$ 的结果是负数的。那么上面的面积计算公式其实就可以理解为：</p>
+<p>三角形ABC的面积 = 三角形PBC面积 + 三角形PCA面积 - 三角形PAB面积</p>
+<p>假设这四个点的坐标为：$P(x_0,y_0), A(x_1,y_1), B(x_2,y_2), C(x_3,y_3)$，通过上面的公式进行计算，具体的演算过程我就不给出了，这里直接给出计算结果：<br>$$A = x_1y_2-x_2y_1+x_2y_3-x_3y_2+x_3y_1-x_1y_3$$</p>
+<p>我们可以发现，计算结果中没有 $x_0,y_0$ 的项，因为它们在计算过程中给消去了，数学就是这么奇妙！所以我们可以得出一个结论，多边形的面积结果与这个剖分点的位置是无关的。那么为了计算方便，我们当然选择把这个 P 点设置到原点上啦。</p>
+<p>那么只要我们知道多边形的每一个顶点，通过原点进行剖分成多个三角形，然后通过向量的叉乘求出每个三角的面积，最后相加，就可以求出多边形的面积了。</p>
+<h2 id="示例代码及解析"><a href="#示例代码及解析" class="headerlink" title="示例代码及解析"></a>示例代码及解析</h2><p>好了，说到这里，我们已经找到所有满足最开始的计算多边形重心点坐标的所有计算元素了。是时候上代码了，这里构建一个函数<code>calculatePolygonGravityCenter(coordinates: [CLLocationCoordinate2D])</code>，这个函数传入的参数是多边形在地图上的坐标点数组。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">calculatePolygonGravityCenter</span><span class="params">(coordinates: [CLLocationCoordinate2D])</span></span> -&gt; <span class="type">CLLocationCoordinate2D</span> &#123;</span><br><span class="line">    <span class="keyword">var</span> area = <span class="number">0.0</span> <span class="comment">// 多边形面积</span></span><br><span class="line">    <span class="keyword">var</span> gravityLat = <span class="number">0.0</span> <span class="comment">// 重心点 latitude</span></span><br><span class="line">    <span class="keyword">var</span> gravityLng = <span class="number">0.0</span> <span class="comment">// 重心点 longitude</span></span><br><span class="line">    <span class="keyword">for</span> (index, coordinate) <span class="keyword">in</span> coordinates.enumerated() &#123;</span><br><span class="line">          <span class="comment">// 1</span></span><br><span class="line">        <span class="keyword">let</span> lat = coordinate.latitude</span><br><span class="line">        <span class="keyword">let</span> lng = coordinate.longitude</span><br><span class="line">        <span class="keyword">let</span> nextLat = coordinates[(index + <span class="number">1</span>) % coordinates.<span class="built_in">count</span>].latitude</span><br><span class="line">        <span class="keyword">let</span> nextLng = coordinates[(index + <span class="number">1</span>) % coordinates.<span class="built_in">count</span>].longitude</span><br><span class="line">          <span class="comment">// 2</span></span><br><span class="line">        <span class="keyword">let</span> tempArea = (nextLat * lng - nextLng * lat) / <span class="number">2.0</span></span><br><span class="line">          <span class="comment">// 3</span></span><br><span class="line">        area += tempArea</span><br><span class="line">          <span class="comment">// 4</span></span><br><span class="line">        gravityLat += tempArea * (lat + nextLat) / <span class="number">3</span></span><br><span class="line">        gravityLng += tempArea * (lng + nextLng) / <span class="number">3</span></span><br><span class="line">    &#125;</span><br><span class="line">      <span class="comment">// 5</span></span><br><span class="line">    gravityLat = gravityLat / area</span><br><span class="line">    gravityLng = gravityLng / area</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="type">CLLocationCoordinate2D</span>(latitude: gravityLat, longitude: gravityLng)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h2 id="准备工作："><a href="#准备工作：" class="headerlink" title="准备工作："></a>准备工作：</h2><p>首先我们需要确定作为宣传的图片的宽高比，这个一般是与 UI 确定的。一般启动屏展示会有上下两部分，上面是宣传图片，下面是 App 的 Logo。</p>
-<h2 id="实现基本思路："><a href="#实现基本思路：" class="headerlink" title="实现基本思路："></a>实现基本思路：</h2><p>在 LaunchScreen 结束后，在 AppDelegate 中将 rootViewController 指向展示广告用的 AdViewController，在AdViewController 中设置一段时间后自己销毁，并提供回调方法在 AppDelegate 中将 rootViewController 指向 App 真正的首页。</p>
-<h2 id="实现细节："><a href="#实现细节：" class="headerlink" title="实现细节："></a>实现细节：</h2><p>新建一个 AdViewController 用于放置广告宣传等展示.注意有一个回调方法。</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AdViewController</span>: <span class="title">UIViewController</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 用于 AdViewController 销毁后的回调</span></span><br><span class="line">    <span class="keyword">var</span> completion: (() -&gt; <span class="type">Void</span>)?</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> adImage: <span class="type">UIImage?</span></span><br><span class="line">    <span class="keyword">var</span> adView: <span class="type">UIImageView?</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">viewDidLoad</span><span class="params">()</span></span> &#123;</span><br><span class="line">        <span class="comment">// ....</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>在 ViewDidLoad 方法中配置广告图,同时判断 iPhoneX的特殊情况</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">viewDidLoad</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">super</span>.viewDidLoad()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> adViewHeight = (<span class="number">1040</span> / <span class="number">720</span>) * screenWidth</span><br><span class="line">    <span class="keyword">var</span> imageName = <span class="string">"start_page"</span></span><br><span class="line">    <span class="keyword">if</span> <span class="type">UIDevice</span>.isiPhoneX() &#123;</span><br><span class="line">        adViewHeight = (<span class="number">1920</span> / <span class="number">1124</span>) * screenWidth</span><br><span class="line">        imageName = <span class="string">"start_page_x"</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    adView = <span class="type">UIImageView</span>(frame: <span class="type">CGRect</span>(x: <span class="number">0</span>, y: <span class="number">0</span>, width: screenWidth, height: adViewHeight))</span><br><span class="line">    adView?.image = <span class="type">UIImage</span>(named: imageName)</span><br><span class="line">    adView?.contentMode = .scaleAspectFill</span><br><span class="line">    <span class="keyword">self</span>.view.addSubview(adView!)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> bottomHolderView = <span class="type">UIView</span>(frame: <span class="type">CGRect</span>(x: <span class="number">0</span>, y: screenHeight-<span class="number">120</span>, width: screenWidth, height: <span class="number">120</span>))</span><br><span class="line">    <span class="keyword">self</span>.view.addSubview(bottomHolderView)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> logo = <span class="type">UIImageView</span>(frame: <span class="type">CGRect</span>(x: (screenWidth-<span class="number">120</span>)/<span class="number">2</span>, y: (<span class="number">120</span>-<span class="number">50</span>)/<span class="number">2</span>, width: <span class="number">120</span>, height: <span class="number">50</span>))</span><br><span class="line">    logo.image = <span class="type">UIImage</span>(named: <span class="string">"start_logo"</span>)</span><br><span class="line">    bottomHolderView.addSubview(logo)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> time: <span class="type">TimeInterval</span> = <span class="number">1.0</span></span><br><span class="line">    <span class="type">DispatchQueue</span>.main.asyncAfter(deadline: <span class="type">DispatchTime</span>.now() + time) &#123;</span><br><span class="line">        <span class="keyword">self</span>.dismissAdView()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>上面代码中有几个注意的:</p>
-<p>因为图片要撑满屏幕的宽度，所以宽度是固定的，根据图片的高宽比，算出图片实际应有的高度，这样图片可以在各个尺寸的 iPhone 中才不会因为拉伸而变形。但是因为 iPhoneX 特殊的宽高比，所以还是要为它特定一张图片，不然即使图片在 iPhoneX 上不变形，图片所占的高度会太小，或者顶部被刘海遮挡内容而不美观。</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> adViewHeight = (<span class="number">1040</span> / <span class="number">720</span>) * screenWidth</span><br><span class="line"><span class="keyword">var</span> imageName = <span class="string">"start_page"</span></span><br><span class="line"><span class="keyword">if</span> <span class="type">UIDevice</span>.isiPhoneX() &#123;</span><br><span class="line">    adViewHeight = (<span class="number">1920</span> / <span class="number">1124</span>) * screenWidth</span><br><span class="line">    imageName = <span class="string">"start_page_x"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>上面判断是否为 iPhoneX 我是在 UIDevice 里扩展了一个方法：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">extension UIDevice &#123;</span><br><span class="line">    public static func isiPhoneX() -&gt; Bool &#123;</span><br><span class="line">        if UIScreen.main.bounds.height &#x3D;&#x3D; 812 &#123;</span><br><span class="line">            return true</span><br><span class="line">        &#125;</span><br><span class="line">        return false</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>还有注意在执行销毁时调用回调方法</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> time: <span class="type">TimeInterval</span> = <span class="number">1.0</span></span><br><span class="line"><span class="type">DispatchQueue</span>.main.asyncAfter(deadline: <span class="type">DispatchTime</span>.now() + time) &#123;</span><br><span class="line">    <span class="keyword">self</span>.dismissAdView()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>在 AppDelegate 中 didFinishLaunchingWithOptions 方法中调用下面的 setUpWindowAndRootView() 来管理页面展示</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">AppDelegate</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">setUpWindowAndRootView</span><span class="params">()</span></span> &#123;</span><br><span class="line">        window = <span class="type">UIWindow</span>(frame: <span class="type">UIScreen</span>.main.bounds)</span><br><span class="line">        window!.backgroundColor = <span class="type">UIColor</span>.white</span><br><span class="line">        window!.makeKeyAndVisible()</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> adVC = <span class="type">AdViewController</span>()</span><br><span class="line">        adVC.completion = &#123;</span><br><span class="line">            <span class="keyword">let</span> vc = <span class="type">ViewController</span>()</span><br><span class="line">            vc.adView = adVC.view</span><br><span class="line">            <span class="keyword">self</span>.window!.rootViewController = vc</span><br><span class="line">        &#125;</span><br><span class="line">        window!.rootViewController = adVC</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>注意在 AdViewController 销毁的回调方法中，将 AdViewController 的 view 传给真正的首页，让首页来执行动画</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">adVC.completion = &#123;</span><br><span class="line">    <span class="keyword">let</span> vc = <span class="type">ViewController</span>()</span><br><span class="line">    <span class="comment">// 将 AdViewController 的 view 传给真正的首页，让首页来执行动画</span></span><br><span class="line">    vc.adView = adVC.view</span><br><span class="line">    <span class="keyword">self</span>.window!.rootViewController = vc</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>在首页 ViewController 里我们有如下方法来执行 AdViewController 的销毁动画，这里配置的动画是常见的扩大渐变消失</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> advertiseView: <span class="type">UIView?</span></span><br><span class="line"><span class="keyword">var</span> adView: <span class="type">UIView?</span> &#123;</span><br><span class="line">    <span class="keyword">didSet</span> &#123;</span><br><span class="line">        advertiseView = adView!</span><br><span class="line">        advertiseView?.frame = <span class="keyword">self</span>.view.bounds</span><br><span class="line">        <span class="keyword">self</span>.view.addSubview(advertiseView!)</span><br><span class="line">        <span class="type">UIView</span>.animate(withDuration: <span class="number">1.5</span>, animations: &#123; [<span class="keyword">weak</span> <span class="keyword">self</span>] <span class="keyword">in</span></span><br><span class="line">            <span class="keyword">self</span>?.advertiseView?.transform = <span class="type">CGAffineTransform</span>(scaleX: <span class="number">1.2</span>, y: <span class="number">1.2</span>)</span><br><span class="line">            <span class="keyword">self</span>?.advertiseView?.alpha = <span class="number">0</span></span><br><span class="line">        &#125;) &#123; [<span class="keyword">weak</span> <span class="keyword">self</span>] (isFinish) <span class="keyword">in</span></span><br><span class="line">            <span class="keyword">self</span>?.advertiseView?.removeFromSuperview()</span><br><span class="line">            <span class="keyword">self</span>?.advertiseView = <span class="literal">nil</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>至此，一个简单的启动屏动画就完成了。</p>
+<p>对应上面代码的注释：</p>
+<ol>
+<li>拿到多边形上连续两个点的坐标，我们可以把 latitude 看做横坐标，longitude 是纵坐标。</li>
+<li>利用向量叉乘计算这两个点与原点组成的三角形的面积。</li>
+<li>所有面积之和得出多边形的面积，就是求公式 $C_x = \frac{\sum C_{i_x} A_i}{\sum A_i}$ 中的 $\sum A_i$。</li>
+<li><code>(lat + nextLat) / 3</code> 是以这两个点和原点组成的三角形的重心横坐标，这样的累加<code>gravityLat += tempArea * (lat + nextLat) / 3</code> 其实是求公式 $C_x = \frac{\sum C_{i_x} A_i}{\sum A_i}$ 中的 $\sum C_{i_x} A_i$ 的值。</li>
+<li>到这一步就简单了，直接套用公式 $C_x = \frac{\sum C_{i_x} A_i}{\sum A_i}$。</li>
+</ol>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ol>
+<li><a href="https://en.wikipedia.org/wiki/Centroid#Centroid_of_polygon" target="_blank" rel="noopener">维基百科-Centroid</a></li>
+<li><a href="https://zh.wikipedia.org/wiki/%E5%8F%89%E7%A7%AF" target="_blank" rel="noopener">维基百科-叉积</a></li>
+<li><a href="http://www.cnblogs.com/xiexinxinlove/p/3708147.html" target="_blank" rel="noopener">cnblogs-用向量积（叉积）计算三角形的面积和多边形面积</a></li>
+<li><a href="https://www.zhihu.com/question/22902370" target="_blank" rel="noopener">知乎-两个向量的叉乘为什么是面积</a></li>
+<li><a href="https://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CFJD&dbname=CJFDLAST2018&filename=SXTB200210014&v=MDk4NThSOGVYMUx1eFlTN0RoMVQzcVRyV00xRnJDVVJMT2ZZK1Z2RmlIblZydk9OalhmYkxHNEh0UE5yNDlFWUk=" target="_blank" rel="noopener">中国知网-任意多边形匀面重心的计算方法</a></li>
+</ol>
 
           
             <br>
@@ -684,7 +711,7 @@ Github: SplashAnimate
           
         
           
-            <p>本文永久链接是：<a href=http://myhanson.com/2017/12/08/Swift%20%E5%AE%9E%E7%8E%B0%E5%90%AF%E5%8A%A8%E5%B1%8F%E5%8A%A8%E7%94%BB/>http://myhanson.com/2017/12/08/Swift%20%E5%AE%9E%E7%8E%B0%E5%90%AF%E5%8A%A8%E5%B1%8F%E5%8A%A8%E7%94%BB/</a></p>
+            <p>本文永久链接是：<a href=http://myhanson.com/2019/05/05/%E8%AE%A1%E7%AE%97%E4%B8%80%E4%B8%AA%E5%A4%9A%E8%BE%B9%E5%BD%A2%E7%9A%84%E9%87%8D%E5%BF%83%E7%82%B9%E5%9D%90%E6%A0%87/>http://myhanson.com/2019/05/05/%E8%AE%A1%E7%AE%97%E4%B8%80%E4%B8%AA%E5%A4%9A%E8%BE%B9%E5%BD%A2%E7%9A%84%E9%87%8D%E5%BF%83%E7%82%B9%E5%9D%90%E6%A0%87/</a></p>
           
         
       </blockquote>
@@ -734,7 +761,7 @@ Github: SplashAnimate
     <div class='new-meta-box'>
       
         
-          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2020-04-17T09:11:26+08:00">
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2020-04-17T17:48:50+08:00">
   <a class='notlink'>
     <i class="fas fa-edit fa-fw" aria-hidden="true"></i>
     <p>更新于：Apr 17, 2020</p>
@@ -761,9 +788,7 @@ Github: SplashAnimate
       
         <a class="-mob-share-qq" title="" rel="external nofollow noopener noreferrer"
           
-          href="http://connect.qq.com/widget/shareqq/index.html?url=http://myhanson.com/2017/12/08/Swift%20%E5%AE%9E%E7%8E%B0%E5%90%AF%E5%8A%A8%E5%B1%8F%E5%8A%A8%E7%94%BB/&title=Swift 实现启动屏动画 - Hanson的博客&summary=
-Github: SplashAnimate
-"
+          href="http://connect.qq.com/widget/shareqq/index.html?url=http://myhanson.com/2019/05/05/%E8%AE%A1%E7%AE%97%E4%B8%80%E4%B8%AA%E5%A4%9A%E8%BE%B9%E5%BD%A2%E7%9A%84%E9%87%8D%E5%BF%83%E7%82%B9%E5%9D%90%E6%A0%87/&title=计算一个多边形的重心点坐标 - Hanson的博客&summary="
           
           >
           
@@ -775,9 +800,7 @@ Github: SplashAnimate
       
         <a class="-mob-share-qzone" title="" rel="external nofollow noopener noreferrer"
           
-          href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://myhanson.com/2017/12/08/Swift%20%E5%AE%9E%E7%8E%B0%E5%90%AF%E5%8A%A8%E5%B1%8F%E5%8A%A8%E7%94%BB/&title=Swift 实现启动屏动画 - Hanson的博客&summary=
-Github: SplashAnimate
-"
+          href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://myhanson.com/2019/05/05/%E8%AE%A1%E7%AE%97%E4%B8%80%E4%B8%AA%E5%A4%9A%E8%BE%B9%E5%BD%A2%E7%9A%84%E9%87%8D%E5%BF%83%E7%82%B9%E5%9D%90%E6%A0%87/&title=计算一个多边形的重心点坐标 - Hanson的博客&summary="
           
           >
           
@@ -789,9 +812,7 @@ Github: SplashAnimate
       
         <a class="-mob-share-weibo" title="" rel="external nofollow noopener noreferrer"
           
-          href="http://service.weibo.com/share/share.php?url=http://myhanson.com/2017/12/08/Swift%20%E5%AE%9E%E7%8E%B0%E5%90%AF%E5%8A%A8%E5%B1%8F%E5%8A%A8%E7%94%BB/&title=Swift 实现启动屏动画 - Hanson的博客&summary=
-Github: SplashAnimate
-"
+          href="http://service.weibo.com/share/share.php?url=http://myhanson.com/2019/05/05/%E8%AE%A1%E7%AE%97%E4%B8%80%E4%B8%AA%E5%A4%9A%E8%BE%B9%E5%BD%A2%E7%9A%84%E9%87%8D%E5%BF%83%E7%82%B9%E5%9D%90%E6%A0%87/&title=计算一个多边形的重心点坐标 - Hanson的博客&summary="
           
           >
           
@@ -815,17 +836,29 @@ Github: SplashAnimate
         
           <div class="prev-next">
             
-              <a class='prev' href='/2017/12/08/%E7%94%A8SwiftGen%E7%AE%A1%E7%90%86UIImage%E7%AD%89%E7%9A%84String-based%E6%8E%A5%E5%8F%A3/'>
-                <p class='title'><i class="fas fa-chevron-left" aria-hidden="true"></i>用SwiftGen管理UIImage等的String-based接口</p>
-                <p class='content'>问题现状平时我们使用UIImage，UIFont，UIColor会遇到很多String-based的接口方法，比如常用的UIImage：
-1let testImage = UIImage(nam...</p>
+              <a class='prev' href='/2020/04/15/CoreLocation%E4%B8%AD%E7%9A%84Course%E5%92%8CHeading%E7%AE%80%E6%9E%90/'>
+                <p class='title'><i class="fas fa-chevron-left" aria-hidden="true"></i>CoreLocation 中的 Course 和 Heading 简析</p>
+                <p class='content'>很多地图 App 都会有一个当前定位的标记，该标记可以根据用户手持手机的朝向不同而改变方向。如图：
+
+
+
+如果要实现这个带方向定位的标记点，需要什么数据呢？
+
+
+
+定位数据
+手机朝向数据
+
+定位...</p>
               </a>
             
             
-              <a class='next' href='/2017/11/28/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%A4%B1%E8%B4%A5%E7%9A%84%20Swift%20%E5%85%83%E7%BB%84%E6%95%B0%E7%BB%84%E5%AE%9E%E8%B7%B5/'>
-                <p class='title'>记一次失败的 Swift 元组数组实践<i class="fas fa-chevron-right" aria-hidden="true"></i></p>
-                <p class='content'>想建立一个元组的数组，来简单存放构建 TabViewController 的信息首先我的做法是
-1234567let homeTab = (vc: VYHomeViewController(),...</p>
+              <a class='next' href='/2019/02/17/%E5%A6%82%E4%BD%95%E5%88%A4%E6%96%AD%E4%B8%80%E4%B8%AA%E5%A4%9A%E8%BE%B9%E5%BD%A2%E6%98%AF%E5%90%A6%E5%90%88%E6%B3%95/'>
+                <p class='title'>如何判断一个多边形是否合法<i class="fas fa-chevron-right" aria-hidden="true"></i></p>
+                <p class='content'>利用无人机对一片区域进行测绘前，我们会先在地图上框选一个区域，然后再规划飞行的路线，而需要测绘的这片区域往往是一个多边形。这就涉及判断多边形是否合法的问题。
+
+
+首先我们要确定一个标准：怎么样才...</p>
               </a>
             
           </div>
@@ -849,11 +882,32 @@ Github: SplashAnimate
 
 <!-- 根据页面mathjax变量决定是否加载MathJax数学公式js -->
 
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+    displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+    processEscapes: true,
+    tags: "ams",
+    macros: {
+      href: "{}"
+    }
+  },
+  options: {
+    ignoreHtmlClass: "tex2jax_ignore|dno",
+    skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+  }
+};
+</script>
+
+
 
 
   <script>
     window.subData = {
-      title: 'Swift 实现启动屏动画',
+      title: '计算一个多边形的重心点坐标',
       tools: true
     }
   </script>
@@ -879,7 +933,7 @@ Github: SplashAnimate
 
 
     <div class='content'>
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#准备工作："><span class="toc-text">准备工作：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实现基本思路："><span class="toc-text">实现基本思路：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实现细节："><span class="toc-text">实现细节：</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#背景介绍与问题分析"><span class="toc-text">背景介绍与问题分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#算法解析"><span class="toc-text">算法解析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-求三角形的重心"><span class="toc-text">1. 求三角形的重心</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-求三角形面积"><span class="toc-text">2. 求三角形面积</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-求多边形的面积"><span class="toc-text">3. 求多边形的面积</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#示例代码及解析"><span class="toc-text">示例代码及解析</span></a></li></ol>
     </div>
   </section>
 
