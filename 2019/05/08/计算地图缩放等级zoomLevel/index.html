@@ -16,11 +16,10 @@
 
   <!-- 页面元数据 -->
   
-    <title>HSStockChart介绍 - Hanson的博客</title>
+    <title>计算地图缩放等级 zoomLevel - Hanson的博客</title>
   
   
-    <meta name="description" content="HSStockChart 是一个绘制股票分时图、K 线图的库。支持流畅的回弹拖动，长按十字线，捏合放大缩小等功能，主要使用了 CAShapeLayer 来绘图，相比使用 Core Graphics 和重写 drawRect 的方法更高效，占用内存更小。GitHub 地址：HSStockChart  
-">
+    <meta name="description" content="在一些第三方的地图 SDK 中，往往会有 `zoomLevel` 这样一个属性，常用于设置地图的缩放等级。 但是在 iOS 自带的地图控件 `MKMapView` 是没有这样一个属性的。取而代之的是利用 `MKCoordinateRegion` 和 `MKCoordinateSpan` 来配置地图显示的中心和区域缩放的大小。那么我们如何计算其 zoomLevel 呢？">
   
 
   <!-- feed -->
@@ -280,8 +279,8 @@
           
   
     <h1 class="title">
-      <a href="/2017/05/03/HSStockChart%E4%BB%8B%E7%BB%8D/">
-        HSStockChart介绍
+      <a href="/2019/05/08/%E8%AE%A1%E7%AE%97%E5%9C%B0%E5%9B%BE%E7%BC%A9%E6%94%BE%E7%AD%89%E7%BA%A7zoomLevel/">
+        计算地图缩放等级 zoomLevel
       </a>
     </h1>
   
@@ -307,9 +306,9 @@
               
   
   <div class='new-meta-item category'>
-    <a href='/categories/%E5%BC%80%E6%BA%90-%E4%BA%A7%E5%93%81/' rel="nofollow">
+    <a href='/categories/%E7%AE%97%E6%B3%95%E5%AE%9E%E8%B7%B5/' rel="nofollow">
       <i class="fas fa-folder-open fa-fw" aria-hidden="true"></i>
-      <p>开源/产品</p>
+      <p>算法实践</p>
     </a>
   </div>
 
@@ -320,7 +319,7 @@
               <div class="new-meta-item date">
   <a class='notlink'>
     <i class="fas fa-calendar-alt fa-fw" aria-hidden="true"></i>
-    <p>发布于：May 3, 2017</p>
+    <p>发布于：May 8, 2019</p>
   </a>
 </div>
 
@@ -343,46 +342,67 @@
       <section class="article typo">
         <div class="article-entry" itemprop="articleBody">
           
-          <p>HSStockChart 是一个绘制股票分时图、K 线图的库。支持流畅的回弹拖动，长按十字线，捏合放大缩小等功能，主要使用了 CAShapeLayer 来绘图，相比使用 Core Graphics 和重写 drawRect 的方法更高效，占用内存更小。<br><a href="https://github.com/zyphs21/HSStockChart" target="_blank" rel="noopener">GitHub 地址：HSStockChart</a>  </p>
-<p><img src="http://upload-images.jianshu.io/upload_images/757687-92b2069869929ccd.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
-<a id="more"></a>
+          <h2 id="背景及问题分析"><a href="#背景及问题分析" class="headerlink" title="背景及问题分析"></a>背景及问题分析</h2><p>在一些第三方的地图 SDK 中，往往会有 <code>zoomLevel</code> 这样一个属性，常用于设置地图的缩放等级。</p>
+<p>但是在 iOS 自带的地图控件 <code>MKMapView</code> 是没有这样一个属性的。取而代之的是利用 <code>MKCoordinateRegion</code> 和 <code>MKCoordinateSpan</code> 来配置地图显示的中心和区域缩放的大小。</p>
+<h3 id="MKCoordinateRegion-和-MKCoordinateSpan"><a href="#MKCoordinateRegion-和-MKCoordinateSpan" class="headerlink" title="MKCoordinateRegion 和 MKCoordinateSpan"></a>MKCoordinateRegion 和 MKCoordinateSpan</h3><p>我们先来看看 <code>MKCoordinateRegion</code> 和 <code>MKCoordinateSpan</code> 的这两个初始化方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">MKCoordinateRegion(center: CLLocationCoordinate2D, span: MKCoordinateSpan)</span><br><span class="line">MKCoordinateSpan(latitudeDelta: CLLocationDegrees, longitudeDelta: CLLocationDegrees)</span><br></pre></td></tr></table></figure>
 
-<h2 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h2><ul>
-<li><input checked="" disabled="" type="checkbox"> 支持绘制分时图，五日分时图，K 线图，MA 线指标，交易量柱等。</li>
-<li><input checked="" disabled="" type="checkbox"> 支持横屏查看。</li>
-<li><input checked="" disabled="" type="checkbox"> K 线图利用 <code>UIScrollView</code> 达到流畅的滑动查看效果。</li>
-<li><input checked="" disabled="" type="checkbox"> 使用 <code>CAShapeLayer</code> 绘图，内存占用更小，效率更高。</li>
-</ul>
-<h2 id="版本需求"><a href="#版本需求" class="headerlink" title="版本需求"></a>版本需求</h2><ul>
-<li>iOS 8.0+</li>
-<li>Swift 3</li>
-</ul>
-<h2 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h2><ol>
-<li><p>之前绘图的方法是重写 <code>drawRect</code> 方法，在方法里获取 <code>CGContext</code> 然后利用Core Graphics 来进行绘图，调用 <code>setNeedsDisplay</code> 来刷新。但是这种方法有个问题是：</p>
-<blockquote>
-<p>一旦你实现了 CALayerDelegate 协议中的 -drawLayer:inContext: 方法或者 UIView 中的 -drawRect: 方法（其实就是前者的包装方法），图层就创建了一个绘制上下文，这个上下文需要的内存可从这个公式得出：图层宽x图层高x4字节，宽高的单位均为像素。对于一个在 Retina iPad 上的全屏图层来说，这个内存量就是 2048x1526x4字节，相当于12MB内存，图层每次重绘的时候都需要重新抹掉内存然后重新分配。【摘自 iOS Core Animation- Advanced Techniques 中文译本 高效绘图一章】</p>
-</blockquote>
-<p>因为我要达到流畅滑动查看的效果，所以在 <code>UIScrollView</code> 上添加了一个 <code>UIView</code> 这个 View 的宽度会依据当前展示数据的多少而变化，结合 <code>UIScrollView</code> 的 <code>ContentSize</code> 就能达到很好的滑动效果。</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/757687-36a3d278fd71fc4a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
-<p>如果我用之前重写 <code>drawRect</code> 的方法，那么这个 View 会根据数据量的变大而变大，从而导致绘图内存急剧上升，数据量大的时候会崩溃。基于此，我采用了 <code>CAShapeLayer</code> 的方式绘图，此方式的特点如下：</p>
-<blockquote>
-<p>CAShapeLayer 是一个通过矢量图形而不是 bitmap 来绘制的图层子类。你指定诸如颜色和线宽等属性，用 CGPath 来定义想要绘制的图形，最后就自动渲染出来了。当然，你也可以用 Core Graphics 直接向原始的内容中绘制一个路径，相比之下，使用 CAShapeLayer 有以下一些优点:</p>
+<p>结合 <a href="https://developer.apple.com/documentation/mapkit/mkcoordinatespan" target="_blank" rel="noopener">文档</a> ，我们可以将 <code>MKCoordinateRegion</code> 理解为地图上一块方形区域， <code>center</code> 是这块方形区域的中心地理坐标，而 <code>MKCoordinateSpan</code> 是这块区域的 <strong>经纬度范围</strong>，那么它的两个参数的取值范围是：</p>
 <ul>
-<li>渲染快速。CAShapeLayer 使用了硬件加速，绘制同一图形会比用 Core Graphics 快很多。</li>
-<li>高效使用内存。一个 CAShapeLayer 不需要像普通 CALayer 一样创建一个寄宿图形，所以无论有多大，都不会占用太多的内存。 </li>
-<li>不会被图层边界剪裁掉，一个 CAShapeLayer 可以在边界之外绘制。你的图层路径不会像在使用 Core Graphics 的普通 CALayer 一样被剪裁掉。</li>
-<li>不会出现像素化。当你给 CAShapeLayer 做3D变换时，它不像一个有寄宿图的普通图层一样变得像素化</li>
+<li>latitudeDelta：[0, 180]</li>
+<li>longitudeDelta: [0, 360]</li>
 </ul>
-</blockquote>
-<p>最终在真机上测试(注意是在真机上测试)两种方式的结果如图，内存大大降低并且稳定在13M左右</p>
-<p> <img src="http://upload-images.jianshu.io/upload_images/757687-a773aeda8ac7ff01.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
-</li>
-<li><p>自定义 CAShapeLayer，重写 action(forKey event: String) 方法。目的是 关闭 CAShapeLayer 的隐式动画，避免滑动时候或者十字线出现时有残影的现象(实际上是因为 Layer 的 position 属性变化而产生的隐式动画)</p>
-</li>
-</ol>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">HSCAShapeLayer</span>: <span class="title">CAShapeLayer</span> </span>&#123;</span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">action</span><span class="params">(forKey event: String)</span></span> -&gt; <span class="type">CAAction?</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<img src="https://cdn.jsdelivr.net/gh/zyphs21/cdn-assets/photo/zoomlevel/lnglatDelta.jpg" width = "450" height = "320" alt="" align=center />
 
-<h2 id="License"><a href="#License" class="headerlink" title="License"></a>License</h2><p>Released under MIT License.</p>
+<h2 id="Tiled-web-map"><a href="#Tiled-web-map" class="headerlink" title="Tiled web map"></a>Tiled web map</h2><p>了解了 <code>MKCoordinateRegion</code> 和 <code>MKCoordinateSpan</code> 后，我们该如何利用它们来计算出 <code>zoomLevel</code> 呢？这里我们需要先了解一下 <a href="https://en.wikipedia.org/wiki/Tiled_web_map" target="_blank" rel="noopener">Tiled web map</a> 这个概念。<code>Tiled web map</code> 的设计初衷是为了能在网络上更好的传输和展示地图，其中最早应用起来的是 <code>Google Maps</code>， 然后慢慢地成为了地图工具中一个不成文的标准。它把地图以图片的形式切割成很多个小块: <code>Tile</code>，当用户在地图上滑动或者缩放时，就会加载更多的 <code>Tile</code>，对比以前直接加载一大块图片的方式效率更高，用户体验更好。</p>
+<p>大部分的 <code>Tiled web map</code> 会依据 Google Maps 的一些实现标准：</p>
+<ul>
+<li>一个 <code>Tile</code> 是 256x256 像素。</li>
+<li>zoom Level 为 0 时，整个世界地图可以显示在单个 <code>Tile</code> 上。</li>
+<li>每增加一个地图缩放等级，一个 <code>Tile</code> 的像素会加倍。也就是说一个 <code>Tile</code> 会被四个 <code>Tile</code> 替换掉。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/zyphs21/cdn-assets/photo/zoomlevel/tileMap.jpg" alt=""></p>
+<blockquote>
+<p>上面原图片来自 <a href="http://troybrant.net/blog/2010/01/mkmapview-and-zoom-levels-a-visual-guide/" target="_blank" rel="noopener">troybrant.net</a>，由原图拼接而成。</p>
+</blockquote>
+<p>根据上面的标准，我们可以得出这样一个公式：</p>
+<p>$W=256 \times 2^{zoomlevel}$</p>
+<p>W 表示地图一边长的像素。</p>
+<h2 id="zoomLevel-算法解析"><a href="#zoomLevel-算法解析" class="headerlink" title="zoomLevel 算法解析"></a>zoomLevel 算法解析</h2><p>我们知道地球经度一周360度，那么一个经度范围占 <code>Tiled web map</code> 的多少像素呢？简单的除法可以得知：</p>
+<p>$\frac{360}{256 \times 2^{zoomlevel}}$</p>
+<p>上面说到 <code>MKCoordinateSpan</code> 它表示地图显示区域的 <strong>经纬度范围</strong>，假设我们把 <code>MKMapView</code> 的宽度设置为 <code>width</code>, 而 <code>MKCoordinateSpan.longitudeDelta</code> 是当前 <code>MKMapView</code> 显示区域的<strong>经度</strong>范围。那么我们可以得到这样一个等式：</p>
+<p>$\frac{360}{256 \times 2^{zoomlevel}} = \frac{longitudeDelta}{width}$</p>
+<p>一个简单的转换，即可得出 <code>zoomLevel</code> 的计算公式：</p>
+<p>$zoomLevel = log_2{\frac{360 \times width}{longitudeDelta \times 256}}$</p>
+<h2 id="示例代码"><a href="#示例代码" class="headerlink" title="示例代码"></a>示例代码</h2><p>用代码形式展示：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> mapWidth = mapView.frame.size.width</span><br><span class="line"><span class="keyword">let</span> zoomLevel = log2(<span class="number">360</span> * <span class="type">Double</span>(mapWidth) / <span class="number">256.0</span> / mapView.region.span.longitudeDelta)</span><br></pre></td></tr></table></figure>
+
+<p>我们还可以给 <code>MKMapView</code> 扩展一下：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">MKMapView</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> zoomLevel: <span class="type">Double</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> log2(<span class="number">360</span> * <span class="type">Double</span>(frame.size.width) / <span class="number">256.0</span> / region.span.longitudeDelta)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a href="https://en.wikipedia.org/wiki/Tiled_web_map" target="_blank" rel="noopener">维基百科: Tiled web map</a></li>
+<li><a href="https://blog.mapbox.com/512-map-tiles-cb5bfd6e72ba" target="_blank" rel="noopener">Mapbox Medium blog: 512 map tiles</a></li>
+<li><a href="https://stackoverflow.com/questions/4189621/setting-the-zoom-level-for-a-mkmapview/15020534#15020534" target="_blank" rel="noopener">Stackoverflow: Setting the zoom level for a MKMapView</a></li>
+<li><a href="http://troybrant.net/blog/2010/01/mkmapview-and-zoom-levels-a-visual-guide/" target="_blank" rel="noopener">troybrant blog: mkmapview and zoom levels a visual guide</a></li>
+<li><a href="https://www.microimages.com/documentation/TechGuides/80TilesetZoom.pdf" target="_blank" rel="noopener">Microimages: Setting Zoom Levels</a></li>
+</ul>
+<details open>
+<summary><strong>欢迎关注我的公众号</strong></summary>
+
+<table>
+<thead>
+<tr>
+<th align="center">HansonTalk</th>
+<th align="center">iOSTypist</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><img src="https://cdn.jsdelivr.net/gh/zyphs21/cdn-assets/qrcode/HansonTalk.jpg" alt="HansonTalk" align=center /></td>
+<td align="center"><img src="https://cdn.jsdelivr.net/gh/zyphs21/cdn-assets/qrcode/iOSTypist.jpg" alt="iOSTypist" align=center /></td>
+</tr>
+</tbody></table>
+</details>
 
           
             <br>
@@ -419,7 +439,7 @@
           
         
           
-            <p>本文永久链接是：<a href=http://myhanson.com/2017/05/03/HSStockChart%E4%BB%8B%E7%BB%8D/>http://myhanson.com/2017/05/03/HSStockChart%E4%BB%8B%E7%BB%8D/</a></p>
+            <p>本文永久链接是：<a href=http://myhanson.com/2019/05/08/%E8%AE%A1%E7%AE%97%E5%9C%B0%E5%9B%BE%E7%BC%A9%E6%94%BE%E7%AD%89%E7%BA%A7zoomLevel/>http://myhanson.com/2019/05/08/%E8%AE%A1%E7%AE%97%E5%9C%B0%E5%9B%BE%E7%BC%A9%E6%94%BE%E7%AD%89%E7%BA%A7zoomLevel/</a></p>
           
         
       </blockquote>
@@ -469,10 +489,10 @@
     <div class='new-meta-box'>
       
         
-          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2020-04-17T09:16:56+08:00">
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2020-04-20T22:49:05+08:00">
   <a class='notlink'>
     <i class="fas fa-edit fa-fw" aria-hidden="true"></i>
-    <p>更新于：Apr 17, 2020</p>
+    <p>更新于：Apr 20, 2020</p>
   </a>
 </div>
 
@@ -496,8 +516,7 @@
       
         <a class="-mob-share-qq" title="" rel="external nofollow noopener noreferrer"
           
-          href="http://connect.qq.com/widget/shareqq/index.html?url=http://myhanson.com/2017/05/03/HSStockChart%E4%BB%8B%E7%BB%8D/&title=HSStockChart介绍 - Hanson的博客&summary=HSStockChart 是一个绘制股票分时图、K 线图的库。支持流畅的回弹拖动，长按十字线，捏合放大缩小等功能，主要使用了 CAShapeLayer 来绘图，相比使用 Core Graphics 和重写 drawRect 的方法更高效，占用内存更小。GitHub 地址：HSStockChart  
-"
+          href="http://connect.qq.com/widget/shareqq/index.html?url=http://myhanson.com/2019/05/08/%E8%AE%A1%E7%AE%97%E5%9C%B0%E5%9B%BE%E7%BC%A9%E6%94%BE%E7%AD%89%E7%BA%A7zoomLevel/&title=计算地图缩放等级 zoomLevel - Hanson的博客&summary="
           
           >
           
@@ -509,8 +528,7 @@
       
         <a class="-mob-share-qzone" title="" rel="external nofollow noopener noreferrer"
           
-          href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://myhanson.com/2017/05/03/HSStockChart%E4%BB%8B%E7%BB%8D/&title=HSStockChart介绍 - Hanson的博客&summary=HSStockChart 是一个绘制股票分时图、K 线图的库。支持流畅的回弹拖动，长按十字线，捏合放大缩小等功能，主要使用了 CAShapeLayer 来绘图，相比使用 Core Graphics 和重写 drawRect 的方法更高效，占用内存更小。GitHub 地址：HSStockChart  
-"
+          href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://myhanson.com/2019/05/08/%E8%AE%A1%E7%AE%97%E5%9C%B0%E5%9B%BE%E7%BC%A9%E6%94%BE%E7%AD%89%E7%BA%A7zoomLevel/&title=计算地图缩放等级 zoomLevel - Hanson的博客&summary="
           
           >
           
@@ -522,8 +540,7 @@
       
         <a class="-mob-share-weibo" title="" rel="external nofollow noopener noreferrer"
           
-          href="http://service.weibo.com/share/share.php?url=http://myhanson.com/2017/05/03/HSStockChart%E4%BB%8B%E7%BB%8D/&title=HSStockChart介绍 - Hanson的博客&summary=HSStockChart 是一个绘制股票分时图、K 线图的库。支持流畅的回弹拖动，长按十字线，捏合放大缩小等功能，主要使用了 CAShapeLayer 来绘图，相比使用 Core Graphics 和重写 drawRect 的方法更高效，占用内存更小。GitHub 地址：HSStockChart  
-"
+          href="http://service.weibo.com/share/share.php?url=http://myhanson.com/2019/05/08/%E8%AE%A1%E7%AE%97%E5%9C%B0%E5%9B%BE%E7%BC%A9%E6%94%BE%E7%AD%89%E7%BA%A7zoomLevel/&title=计算地图缩放等级 zoomLevel - Hanson的博客&summary="
           
           >
           
@@ -547,12 +564,28 @@
         
           <div class="prev-next">
             
-              <a class='prev' href='/2017/05/09/%E8%87%AA%E5%AE%9A%E4%B9%89%20UISegmentedControl%20%E6%A0%B7%E5%BC%8F/'>
-                <p class='title'><i class="fas fa-chevron-left" aria-hidden="true"></i>自定义 UISegmentedControl 样式</p>
-                <p class='content'>系统的 UISegmentedControl 是个挺方便的控件，这里来讲讲在 Swift3 下自定义 UISegmentedControl 的样式，包括修改底色，边框颜色等等。
-要了解 UISe...</p>
+              <a class='prev' href='/2020/04/15/CoreLocation%E4%B8%AD%E7%9A%84Course%E5%92%8CHeading%E7%AE%80%E6%9E%90/'>
+                <p class='title'><i class="fas fa-chevron-left" aria-hidden="true"></i>CoreLocation 中的 Course 和 Heading 简析</p>
+                <p class='content'>很多地图 App 都会有一个当前定位的标记，该标记可以根据用户手持手机的朝向不同而改变方向。如图：
+
+
+
+如果要实现这个带方向定位的标记点，需要什么数据呢？
+
+
+
+定位数据
+手机朝向数据
+
+定位...</p>
               </a>
             
+            
+              <a class='next' href='/2019/05/05/%E8%AE%A1%E7%AE%97%E4%B8%80%E4%B8%AA%E5%A4%9A%E8%BE%B9%E5%BD%A2%E7%9A%84%E9%87%8D%E5%BF%83%E7%82%B9%E5%9D%90%E6%A0%87/'>
+                <p class='title'>计算一个多边形的重心点坐标<i class="fas fa-chevron-right" aria-hidden="true"></i></p>
+                <p class='content'>背景介绍与问题分析在之前的《如何判断一个多边形是否合法》 一文中有提到，用无人机规划飞行路线前，往往需要框选一个多边形的区域。
+而在地图控件上显示这个多边形区域时，往往会遇到这样一个需求：需要把...</p>
+              </a>
             
           </div>
         
@@ -575,11 +608,32 @@
 
 <!-- 根据页面mathjax变量决定是否加载MathJax数学公式js -->
 
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+    displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+    processEscapes: true,
+    tags: "ams",
+    macros: {
+      href: "{}"
+    }
+  },
+  options: {
+    ignoreHtmlClass: "tex2jax_ignore|dno",
+    skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+  }
+};
+</script>
+
+
 
 
   <script>
     window.subData = {
-      title: 'HSStockChart介绍',
+      title: '计算地图缩放等级 zoomLevel',
       tools: true
     }
   </script>
@@ -605,7 +659,7 @@
 
 
     <div class='content'>
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#功能"><span class="toc-text">功能</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#版本需求"><span class="toc-text">版本需求</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#说明"><span class="toc-text">说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#License"><span class="toc-text">License</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#背景及问题分析"><span class="toc-text">背景及问题分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#MKCoordinateRegion-和-MKCoordinateSpan"><span class="toc-text">MKCoordinateRegion 和 MKCoordinateSpan</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Tiled-web-map"><span class="toc-text">Tiled web map</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#zoomLevel-算法解析"><span class="toc-text">zoomLevel 算法解析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#示例代码"><span class="toc-text">示例代码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考资料"><span class="toc-text">参考资料</span></a></li></ol>
     </div>
   </section>
 
