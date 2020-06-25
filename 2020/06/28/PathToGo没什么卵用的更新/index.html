@@ -5,8 +5,6 @@
   <!-- SEO相关 -->
   
     
-      <meta name="robots" content="noindex,follow">
-    
   
   <!-- 渲染优化 -->
   <meta name="renderer" content="webkit">
@@ -18,8 +16,10 @@
 
   <!-- 页面元数据 -->
   
-    <title>Archive: 2018/7 - Hanson的博客</title>
+    <title>PathToGo “没什么卵用” 的更新 - Hanson的博客</title>
   
+  
+    <meta name="description" content="PathToGo 是一个可以复制当前选中文件的路径到粘贴板的小 Mac App。具体可以看看之前写的文章 《PathToGo诞生记》 。">
   
 
   <!-- feed -->
@@ -263,22 +263,11 @@
       
 
 <div class='l_main'>
-	
-		
-  <section class="post-list ">
-    
-      
-        
-          
-        
-      
-    
-    
-      
-        
-          <div class='post-wrapper'>
-            <article class="post white-box shadow reveal ">
   
+
+  
+    <article id="post" class="post white-box shadow article-type-post" itemscope itemprop="blogPost">
+      
 
 
   <section class='meta'>
@@ -288,11 +277,13 @@
       <div class="meta" id="header-meta">
         
           
-  <h2 class="title">
-    <a href="/2018/07/17/%E5%9C%A8Swift%E6%89%A9%E5%B1%95%E9%87%8C%E6%B7%BB%E5%8A%A0%22%E5%AD%98%E5%82%A8%E5%B1%9E%E6%80%A7%22/">
-      在Swift扩展里添加"存储属性"
-    </a>
-  </h2>
+  
+    <h1 class="title">
+      <a href="/2020/06/28/PathToGo%E6%B2%A1%E4%BB%80%E4%B9%88%E5%8D%B5%E7%94%A8%E7%9A%84%E6%9B%B4%E6%96%B0/">
+        PathToGo “没什么卵用” 的更新
+      </a>
+    </h1>
+  
 
 
         
@@ -315,9 +306,9 @@
               
   
   <div class='new-meta-item category'>
-    <a href='/categories/Swift/' rel="nofollow">
+    <a href='/categories/%E5%BC%80%E6%BA%90-%E4%BA%A7%E5%93%81/' rel="nofollow">
       <i class="fas fa-folder-open fa-fw" aria-hidden="true"></i>
-      <p>Swift</p>
+      <p>开源/产品</p>
     </a>
   </div>
 
@@ -328,14 +319,9 @@
               <div class="new-meta-item date">
   <a class='notlink'>
     <i class="fas fa-calendar-alt fa-fw" aria-hidden="true"></i>
-    <p>发布于：Jul 17, 2018</p>
+    <p>发布于：Jun 28, 2020</p>
   </a>
 </div>
-
-            
-          
-            
-              
 
             
           
@@ -353,92 +339,91 @@
   </section>
 
 
-  <section class="article typo">
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>能在 Swift 扩展里添加”存储属性”吗？</p>
-      
-    </div>
-    
-      
-        <div class="button readmore">
-          <a href="/2018/07/17/%E5%9C%A8Swift%E6%89%A9%E5%B1%95%E9%87%8C%E6%B7%BB%E5%8A%A0%22%E5%AD%98%E5%82%A8%E5%B1%9E%E6%80%A7%22/">
-            Read More <i class="fas fa-chevron-right"></i>
-          </a>
-        </div>
-      
-    
-  </section>
-</article>
+      <section class="article typo">
+        <div class="article-entry" itemprop="articleBody">
+          
+          <p>PathToGo 是一个可以复制当前选中文件的路径到粘贴板的小 Mac App。具体可以看看之前写的文章 <a href="">《PathToGo诞生记》</a> 。</p>
+<a id="more"></a>
 
-          </div>
-        
-      
-    
-  </section>
+<h3 id="用户反馈"><a href="#用户反馈" class="headerlink" title="用户反馈"></a>用户反馈</h3><p>PathToGo 解决的是一个很冷门的需求，即便是我，也不会经常用它。甚至很多人觉得它 <code>“没有什么卵用”</code>。但是它仍然收获了一部分用户，甚至还收到用户的反馈：</p>
+<p><img src="https://imgkr.cn-bj.ufileos.com/ccdab9e6-bae4-4fa5-9f4c-a245b16894e7.png" alt=""></p>
+<p>这个用户的需求是希望复制出来的文件路径可以带上 <code>反斜杠转义符</code>，这样他可以直接复制到他的终端里跳转路径使用。</p>
+<p>很明显，这个用户并不知道 <code>Go2Shell</code> ，这款给了 <code>PathToGo</code> 诞生灵感的 App。如果他使用 <code>Go2Shell</code>  的话应该能够很好地解决他真正的需求。</p>
+<h3 id="我的吐槽"><a href="#我的吐槽" class="headerlink" title="我的吐槽"></a>我的吐槽</h3><p>Anyway，既然有用户反馈，我有了一点点更新它的动力。不过最大的动力还是来自于我对 <code>PathToGo</code> 的不满：<strong>它实在太丑了！</strong></p>
+<p>因为 <code>PathToGo</code> 的使用场景，注定它要常驻在 Finder 的 Toolbar 上。而当初在设计图标的时候，脑抽地给它设置了一个<strong>半透明背景</strong> 😂。在 macOS 的浅色模式下还好，但是在深色模式下的样子真的一言难尽：</p>
+<p><img src="https://imgkr.cn-bj.ufileos.com/a416976a-2092-4f0c-801a-057cbfc20a4a.png" alt="浅色模式下显示"></p>
+<p><img src="https://imgkr.cn-bj.ufileos.com/62b41f1b-cbf7-4cce-9b06-0863befd9df6.png" alt="深色模式下显示"></p>
+<p>如上图，真的太丑了！而且图标的大小与 Toolbar 上的其它 icon 相比显得是如此的格格不入。</p>
+<h3 id="重新设计图标"><a href="#重新设计图标" class="headerlink" title="重新设计图标"></a>重新设计图标</h3><p>所以，更新 PathToGo 的首要任务是重新设计图标！</p>
+<p>设计不是我的长项，所以我给自己订的只有两个要求：</p>
+<ol>
+<li>改掉背景色 </li>
+<li>图标尺寸在 Finder 上不要显得那么突兀</li>
+</ol>
+<p>打开 Sketch，一顿操作后，PathToGo 的图标现在长这样了：</p>
+<p><img src="https://imgkr.cn-bj.ufileos.com/8459c5a7-cd62-4bf6-a9d9-a32766274a5c.png" alt="PathToGo图标"></p>
+<p>然后它在 Finder 上是这样子的：</p>
+<p><img src="https://imgkr.cn-bj.ufileos.com/9fd7a8c4-f2ad-4cf5-8587-f139480f978e.png" alt=""></p>
+<p>嗯嗯，看着还可以。</p>
+<p>不过还能更进一步吗？能在好看的同时又能够满足上面用户反馈的需求吗？</p>
+<p>这时候，我发现了一个东西：<strong><a href="https://developer.apple.com/library/archive/documentation/General/Conceptual/ExtensibilityPG/Finder.html" target="_blank" rel="noopener">FinderSync</a></strong></p>
+<h3 id="用-FinderSync-改造"><a href="#用-FinderSync-改造" class="headerlink" title="用 FinderSync 改造"></a>用 FinderSync 改造</h3><p>FinderSync 是苹果提供的一个扩展功能，它的目的是可以让开发者自定义 Finder 文件的界面，以提示用户文件的监听使用状态等。比如你的 App 可以进行文件同步的功能，你希望让用户知道当前文件是否已经同步完成了，可以通过 FinderSync 这个扩展来给文件添加 icon 以达到提示的作用：</p>
+<p><img src="https://imgkr.cn-bj.ufileos.com/f2ad6a3f-ef5c-4c0d-9ec6-5f78b9774ea3.png" alt=""></p>
+<p>我注意到 FinderSync 可以给 Finder 添加一个原生的 Toolbar！如果 PathToGo 可以做成一个原生样式的 Toolbar 按钮，那不就太完美了吗？</p>
+<p>不过 FinderSync 只支持有下拉选项的 Toolbar 按钮样式，那其实可以将上面用户反馈的功能做到这里：</p>
+<p>点击下拉出两个选项，一个是复制纯文本，一个是复制出带有反斜杠转义的文本。</p>
+<p>这样就既能保留 PathToGo 原有的功能基础上，扩展出了新的功能，尽管与 PathToGo <code>一点击即达</code> 的初衷有点违背，但是我认为这是<strong>在权衡好看和功能性两者之间的最好妥协</strong>。</p>
+<p>于是，PathToGo 在支持原来拖动放置在 Finder Toolbar 的形式的基础上，多了一种以 FinderSync 为踏板的新形式，<strong>终于让它很好地融入了 Toolbar 上</strong>：</p>
+<p><img src="https://imgkr.cn-bj.ufileos.com/51709307-f8e5-4715-90a8-a1eea46296ba.png" alt="PathToGo 在 Finder Toolbar 上"></p>
+<p>添加的方式是：右击 Finder Toolbar 空白处，进入自定义 Toolbar，找到 PathToGo 并拖动添加到 Toolbar 上就可以啦！</p>
+<p><img src="https://imgkr.cn-bj.ufileos.com/464ba02e-a880-425c-8da3-9032d820fd1e.png" alt=""></p>
+<h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>尽管在很多人看来 PathToGo 还是一个没什么卵用的东西，但是这次从出现更新的念头，到最后利用 FinderSync “曲线救国”的实现过程，我是觉得很有意思的。</p>
+<blockquote>
+<p>PathToGo 下载地址：<code>https://github.com/HansonStudio/PathToGo/releases</code></p>
+</blockquote>
+<blockquote>
+<p>欢迎关注我的公众号：HansonTalk<br><img src="https://cdn.jsdelivr.net/gh/zyphs21/cdn-assets/qrcode/HansonTalk.jpg" alt=""></p>
+</blockquote>
+
+          
+            <br>
+            
+              
   
     
-    <!-- 根据主题中的设置决定是否在archive中针对摘要部分的MathJax公式加载mathjax.js文件 -->
     
-    
+
+
 
   
 
-
-	
-</div>
-<aside class='l_side'>
-  
   
     
     
 
-<section class="widget blogger shadow desktop mobile">
+
+
+  
+
+  
+    
+    
+
+<section class="widget copyright  ">
   <div class='content'>
     
-      
-        <a class='avatar flat-box' href='/about/'>
-          <img no-lazy src='https://cdn.jsdelivr.net/gh/zyphs21/cdn-assets/avatar/avatar.png'/>
-        </a>
-      
-    
-    
-      <div class='text'>
-        
-          <h2>Hanson</h2>
-        
-        
-        
-      </div>
-    
-    
-      <div class="social-wrapper">
+      <blockquote>
         
           
-            <a href="/atom.xml"
-              class="social fas fa-rss flat-btn"
-              target="_blank"
-              rel="external nofollow noopener noreferrer">
-            </a>
+            <p>博客内容遵循 署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0) 协议</p>
+
           
         
           
-            <a href="mailto:hansenhs21@live.com"
-              class="social fas fa-envelope flat-btn"
-              target="_blank"
-              rel="external nofollow noopener noreferrer">
-            </a>
+            <p>本文永久链接是：<a href=http://myhanson.com/2020/06/28/PathToGo%E6%B2%A1%E4%BB%80%E4%B9%88%E5%8D%B5%E7%94%A8%E7%9A%84%E6%9B%B4%E6%96%B0/>http://myhanson.com/2020/06/28/PathToGo%E6%B2%A1%E4%BB%80%E4%B9%88%E5%8D%B5%E7%94%A8%E7%9A%84%E6%9B%B4%E6%96%B0/</a></p>
           
         
-          
-            <a href="https://github.com/zyphs21"
-              class="social fab fa-github flat-btn"
-              target="_blank"
-              rel="external nofollow noopener noreferrer">
-            </a>
-          
-        
-      </div>
+      </blockquote>
     
   </div>
 </section>
@@ -448,57 +433,181 @@
   
     
     
+
+<section class="widget qrcode  desktop mobile">
   
 
-  <section class="widget category shadow desktop">
+  <div class='content article-entry'>
+    
+      
+        <div class='fancybox'><img src='https://cdn.jsdelivr.net/gh/zyphs21/cdn-assets/qrcode/HansonTalk.jpg'
+        
+          height='64px'
+        ></div>
+      
+    
+      
+        <div class='fancybox'><img src='https://cdn.jsdelivr.net/gh/zyphs21/cdn-assets/qrcode/iOSTypist.jpg'
+        
+          height='64px'
+        ></div>
+      
+    
+  </div>
+</section>
+
+  
+
+
+            
+          
+        </div>
+        
+          
+
+
+  <section class='meta' id="footer-meta">
+    <div class='new-meta-box'>
+      
+        
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2020-06-25T17:34:09+08:00">
+  <a class='notlink'>
+    <i class="fas fa-edit fa-fw" aria-hidden="true"></i>
+    <p>更新于：Jun 25, 2020</p>
+  </a>
+</div>
+
+        
+      
+        
+          
+
+        
+      
+        
+          
+
+        
+      
+        
+          
+  <div class="new-meta-item share -mob-share-list">
+  <div class="-mob-share-list share-body">
+    
+      
+        <a class="-mob-share-qq" title="" rel="external nofollow noopener noreferrer"
+          
+          href="http://connect.qq.com/widget/shareqq/index.html?url=http://myhanson.com/2020/06/28/PathToGo%E6%B2%A1%E4%BB%80%E4%B9%88%E5%8D%B5%E7%94%A8%E7%9A%84%E6%9B%B4%E6%96%B0/&title=PathToGo “没什么卵用” 的更新 - Hanson的博客&summary=PathToGo 是一个可以复制当前选中文件的路径到粘贴板的小 Mac App。具体可以看看之前写的文章 《PathToGo诞生记》 。"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/logo/128/qq.png">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-qzone" title="" rel="external nofollow noopener noreferrer"
+          
+          href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://myhanson.com/2020/06/28/PathToGo%E6%B2%A1%E4%BB%80%E4%B9%88%E5%8D%B5%E7%94%A8%E7%9A%84%E6%9B%B4%E6%96%B0/&title=PathToGo “没什么卵用” 的更新 - Hanson的博客&summary=PathToGo 是一个可以复制当前选中文件的路径到粘贴板的小 Mac App。具体可以看看之前写的文章 《PathToGo诞生记》 。"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/logo/128/qzone.png">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-weibo" title="" rel="external nofollow noopener noreferrer"
+          
+          href="http://service.weibo.com/share/share.php?url=http://myhanson.com/2020/06/28/PathToGo%E6%B2%A1%E4%BB%80%E4%B9%88%E5%8D%B5%E7%94%A8%E7%9A%84%E6%9B%B4%E6%96%B0/&title=PathToGo “没什么卵用” 的更新 - Hanson的博客&summary=PathToGo 是一个可以复制当前选中文件的路径到粘贴板的小 Mac App。具体可以看看之前写的文章 《PathToGo诞生记》 。"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/logo/128/weibo.png">
+          
+        </a>
+      
+    
+  </div>
+</div>
+
+
+
+        
+      
+    </div>
+  </section>
+
+
+        
+        
+          <div class="prev-next">
+            
+            
+              <a class='next' href='/2020/06/12/%E9%80%9A%E8%BF%87%20DeveloperID%E8%AF%81%E4%B9%A6%E5%88%86%E5%8F%91%20Mac%20App%20%E7%9A%84%E7%BB%8F%E9%AA%8C/'>
+                <p class='title'>通过 DeveloperID证书分发 Mac App 的经验<i class="fas fa-chevron-right" aria-hidden="true"></i></p>
+                <p class='content'>对 Mac App 打包后，我们可以选择通过 Developer ID 方式直接向我们的客户分发 Mac App 而不用将 App 传到 Mac App Store。
+
+在这个过程中遇到了一些坑...</p>
+              </a>
+            
+          </div>
+        
+      </section>
+    </article>
+  
+
+  
+    <!-- 显示推荐文章和评论 -->
+
+
+
+  
+
+
+  
+
+
+
+
+<!-- 根据页面mathjax变量决定是否加载MathJax数学公式js -->
+
+
+
+  <script>
+    window.subData = {
+      title: 'PathToGo “没什么卵用” 的更新',
+      tools: true
+    }
+  </script>
+
+
+</div>
+<aside class='l_side'>
+  
+  
+
+  
+    
+    
+
+
+  <section class="widget toc-wrapper shadow desktop mobile">
     
   <header>
     
-      <a href='/blog/categories/'><i class="fas fa-folder-open fa-fw" aria-hidden="true"></i><span class='name'>文章分类</span></a>
+      <i class="fas fa-list fa-fw" aria-hidden="true"></i><span class='name'>本文目录</span>
     
   </header>
 
 
     <div class='content'>
-      <ul class="entry navigation">
-        
-          <li><a class="flat-box"
-            title="/categories/Swift/" href="/categories/Swift/"
-            id="categoriesSwift"
-            ><div class='name'>Swift</div><div class='badge'>(3)</div></a></li>
-        
-          <li><a class="flat-box"
-            title="/categories/iOS%E5%BC%80%E5%8F%91/" href="/categories/iOS%E5%BC%80%E5%8F%91/"
-            id="categoriesiOSE5BC80E58F91"
-            ><div class='name'>iOS开发</div><div class='badge'>(7)</div></a></li>
-        
-          <li><a class="flat-box"
-            title="/categories/%E5%B7%A5%E5%85%B7%E6%95%99%E7%A8%8B/" href="/categories/%E5%B7%A5%E5%85%B7%E6%95%99%E7%A8%8B/"
-            id="categoriesE5B7A5E585B7E69599E7A88B"
-            ><div class='name'>工具教程</div><div class='badge'>(1)</div></a></li>
-        
-          <li><a class="flat-box"
-            title="/categories/%E5%BC%80%E6%BA%90-%E4%BA%A7%E5%93%81/" href="/categories/%E5%BC%80%E6%BA%90-%E4%BA%A7%E5%93%81/"
-            id="categoriesE5BC80E6BA90-E4BAA7E59381"
-            ><div class='name'>开源/产品</div><div class='badge'>(4)</div></a></li>
-        
-          <li><a class="flat-box"
-            title="/categories/%E7%AE%97%E6%B3%95%E5%AE%9E%E8%B7%B5/" href="/categories/%E7%AE%97%E6%B3%95%E5%AE%9E%E8%B7%B5/"
-            id="categoriesE7AE97E6B395E5AE9EE8B7B5"
-            ><div class='name'>算法实践</div><div class='badge'>(3)</div></a></li>
-        
-      </ul>
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#用户反馈"><span class="toc-text">用户反馈</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#我的吐槽"><span class="toc-text">我的吐槽</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#重新设计图标"><span class="toc-text">重新设计图标</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#用-FinderSync-改造"><span class="toc-text">用 FinderSync 改造</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#最后"><span class="toc-text">最后</span></a></li></ol>
     </div>
   </section>
 
-
-  
-
-  
-    
-    
-
-  
 
   
 
@@ -565,14 +674,6 @@
   </footer>
 
 <script>setLoadingBarProgress(80);</script>
-
-
-
-
-	<!-- 根据主题中的设置决定是否在archive中针对摘要部分的MathJax公式加载mathjax.js文件 -->
-	
-
-	
 
 
       <script>setLoadingBarProgress(60);</script>
