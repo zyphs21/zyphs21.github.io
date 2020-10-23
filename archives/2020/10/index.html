@@ -18,7 +18,7 @@
 
   <!-- 页面元数据 -->
   
-    <title>归档：2020/10 - Hanson的博客</title>
+    <title>Archive: 2020/10 - Hanson的博客</title>
   
   
 
@@ -356,13 +356,7 @@
   <section class="article typo">
     <div class="article-entry" itemprop="articleBody">
       
-        <p>OpenGL ES 的很多教程里都会有这样一个例子来讲解纹理：将一张图片作为纹理显示在屏幕上。</p>
-<p>因为纹理坐标和实际屏幕显示的坐标不一样，把图片渲染在屏幕上后，图片是上下颠倒的。</p>
-<p>一个解决方法是对当前的顶点坐标，乘以绕 z 轴旋转180度的矩阵，这样图片就能正确显示了。<br>$$<br>\begin{bmatrix}<br>cos\theta&amp;-sin\theta&amp;0&amp;0\<br>sin\theta&amp;cos\theta&amp;0&amp;0\<br>0&amp;0&amp;1&amp;0\<br>0&amp;0&amp;0&amp;1<br>\end{bmatrix}<br>$$<br>那么如何理解这个旋转矩阵呢？</p>
-<p>影响我们理解这个矩阵的第一个问题是：</p>
-<p><strong>为什么这个矩阵是 4x4 的？</strong> 而且我们发现旋转，缩放、平移等变换矩阵都是 4x4 的。</p>
-<p>在直观上的认知里，表达一个三维空间的坐标用 x,y,z 就足够了，那在三维空间里进行矩阵变换，用 3x3 的矩阵就够了，为什么需要 4x4 呢？</p>
-<p>为了回答这个问题，下面我们先在几何意义上理解<strong><u>向量和矩阵</u></strong>之间的关系，然后通过<strong><u>推导旋转矩阵</u></strong>和<u><strong>平移矩阵</strong></u>，一步步来解开这个疑惑。</p>
+        <p>在直观上的认知里，表达一个三维空间的坐标用 x,y,z 就足够了，那在三维空间里进行矩阵变换，用 3x3 的矩阵就够了，为什么需要 4x4 呢？为了回答这个问题，下面我们先在几何意义上理解向量和矩阵之间的关系，然后通过推导旋转矩阵和平移矩阵，一步步来解开这个疑惑。</p>
       
     </div>
     
@@ -386,6 +380,27 @@
     
     <!-- 根据主题中的设置决定是否在archive中针对摘要部分的MathJax公式加载mathjax.js文件 -->
     
+    
+      <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+    displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+    processEscapes: true,
+    tags: "ams",
+    macros: {
+      href: "{}"
+    }
+  },
+  options: {
+    ignoreHtmlClass: "tex2jax_ignore|dno",
+    skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+  }
+};
+</script>
+
     
 
   
@@ -553,16 +568,16 @@
       
     
       
-        <div><p>博客内容遵循 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0) 协议</a></p>
+        <div><p>Blog content follows the <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" target="_blank" rel="noopener">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) License</a></p>
 </div>
       
     
       
-        本站使用
+        Use
         <a href="https://volantis.js.org/" target="_blank" class="codename">Volantis</a>
-        作为主题，总访问量为
+        as theme, total visits
           <span id="busuanzi_value_site_pv"><i class="fas fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span>
-          次
+          times
         
       
     
@@ -582,6 +597,27 @@
 
 	<!-- 根据主题中的设置决定是否在archive中针对摘要部分的MathJax公式加载mathjax.js文件 -->
 	
+
+	
+	    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+    displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+    processEscapes: true,
+    tags: "ams",
+    macros: {
+      href: "{}"
+    }
+  },
+  options: {
+    ignoreHtmlClass: "tex2jax_ignore|dno",
+    skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+  }
+};
+</script>
 
 	
 

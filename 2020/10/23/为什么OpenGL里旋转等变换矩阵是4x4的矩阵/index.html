@@ -19,9 +19,7 @@
     <title>为什么OpenGL里旋转等变换矩阵是4x4的矩阵 - Hanson的博客</title>
   
   
-    <meta name="description" content="OpenGL ES 的很多教程里都会有这样一个例子来讲解纹理：将一张图片作为纹理显示在屏幕上。
-因为纹理坐标和实际屏幕显示的坐标不一样，把图片渲染在屏幕上后，图片是上下颠倒的。
-一个解决方法是对当前的顶点坐标，乘以绕 z 轴旋转180度的矩阵，这样图片就能正确显示了。$$\begin{bmatrix}cos\th...">
+    <meta name="description" content="在直观上的认知里，表达一个三维空间的坐标用 x,y,z 就足够了，那在三维空间里进行矩阵变换，用 3x3 的矩阵就够了，为什么需要 4x4 呢？为了回答这个问题，下面我们先在几何意义上理解向量和矩阵之间的关系，然后通过推导旋转矩阵和平移矩阵，一步步来解开这个疑惑。">
   
 
   <!-- feed -->
@@ -351,8 +349,6 @@
 <p><strong>为什么这个矩阵是 4x4 的？</strong> 而且我们发现旋转，缩放、平移等变换矩阵都是 4x4 的。</p>
 <p>在直观上的认知里，表达一个三维空间的坐标用 x,y,z 就足够了，那在三维空间里进行矩阵变换，用 3x3 的矩阵就够了，为什么需要 4x4 呢？</p>
 <p>为了回答这个问题，下面我们先在几何意义上理解<strong><u>向量和矩阵</u></strong>之间的关系，然后通过<strong><u>推导旋转矩阵</u></strong>和<u><strong>平移矩阵</strong></u>，一步步来解开这个疑惑。</p>
-<a id="more"></a>
-
 <h2 id="向量和矩阵"><a href="#向量和矩阵" class="headerlink" title="向量和矩阵"></a>向量和矩阵</h2><p>在几何平面上，我们可以把平面上任意一<code>点</code>，当作<u>与原点组成</u>的一个 <code>向量</code> 来理解。</p>
 <p>如图 ，A 点可以表示成向量  $\vec{OA}$  ；在 x 轴和 y 轴上各有 i 点（1， 0）和  j 点（0，1），同样的，让它们与原点组成向量，为了简化，我们用  $\vec{i}$  和 $\vec{j}$ 表示这两个向量。</p>
 <p><img src="https://cdn.jsdelivr.net/gh/zhenwanping/cdn-assets@master/photo/20201022184245.png" alt="image-20201022184243547"></p>
@@ -497,7 +493,7 @@
     <div class='new-meta-box'>
       
         
-          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2020-10-23T08:31:11+08:00">
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2020-10-23T08:38:12+08:00">
   <a class='notlink'>
     <i class="fas fa-edit fa-fw" aria-hidden="true"></i>
     <p>更新于：Oct 23, 2020</p>
@@ -524,13 +520,7 @@
       
         <a class="-mob-share-qq" title="" rel="external nofollow noopener noreferrer"
           
-          href="http://connect.qq.com/widget/shareqq/index.html?url=http://myhanson.com/2020/10/23/%E4%B8%BA%E4%BB%80%E4%B9%88OpenGL%E9%87%8C%E6%97%8B%E8%BD%AC%E7%AD%89%E5%8F%98%E6%8D%A2%E7%9F%A9%E9%98%B5%E6%98%AF4x4%E7%9A%84%E7%9F%A9%E9%98%B5/&title=为什么OpenGL里旋转等变换矩阵是4x4的矩阵 - Hanson的博客&summary=OpenGL ES 的很多教程里都会有这样一个例子来讲解纹理：将一张图片作为纹理显示在屏幕上。
-因为纹理坐标和实际屏幕显示的坐标不一样，把图片渲染在屏幕上后，图片是上下颠倒的。
-一个解决方法是对当前的顶点坐标，乘以绕 z 轴旋转180度的矩阵，这样图片就能正确显示了。$$\begin{bmatrix}cos\theta&amp;-sin\theta&amp;0&amp;0\sin\theta&amp;cos\theta&amp;0&amp;0\0&amp;0&amp;1&amp;0\0&amp;0&amp;0&amp;1\end{bmatrix}$$那么如何理解这个旋转矩阵呢？
-影响我们理解这个矩阵的第一个问题是：
-为什么这个矩阵是 4x4 的？ 而且我们发现旋转，缩放、平移等变换矩阵都是 4x4 的。
-在直观上的认知里，表达一个三维空间的坐标用 x,y,z 就足够了，那在三维空间里进行矩阵变换，用 3x3 的矩阵就够了，为什么需要 4x4 呢？
-为了回答这个问题，下面我们先在几何意义上理解向量和矩阵之间的关系，然后通过推导旋转矩阵和平移矩阵，一步步来解开这个疑惑。"
+          href="http://connect.qq.com/widget/shareqq/index.html?url=http://myhanson.com/2020/10/23/%E4%B8%BA%E4%BB%80%E4%B9%88OpenGL%E9%87%8C%E6%97%8B%E8%BD%AC%E7%AD%89%E5%8F%98%E6%8D%A2%E7%9F%A9%E9%98%B5%E6%98%AF4x4%E7%9A%84%E7%9F%A9%E9%98%B5/&title=为什么OpenGL里旋转等变换矩阵是4x4的矩阵 - Hanson的博客&summary="
           
           >
           
@@ -542,13 +532,7 @@
       
         <a class="-mob-share-qzone" title="" rel="external nofollow noopener noreferrer"
           
-          href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://myhanson.com/2020/10/23/%E4%B8%BA%E4%BB%80%E4%B9%88OpenGL%E9%87%8C%E6%97%8B%E8%BD%AC%E7%AD%89%E5%8F%98%E6%8D%A2%E7%9F%A9%E9%98%B5%E6%98%AF4x4%E7%9A%84%E7%9F%A9%E9%98%B5/&title=为什么OpenGL里旋转等变换矩阵是4x4的矩阵 - Hanson的博客&summary=OpenGL ES 的很多教程里都会有这样一个例子来讲解纹理：将一张图片作为纹理显示在屏幕上。
-因为纹理坐标和实际屏幕显示的坐标不一样，把图片渲染在屏幕上后，图片是上下颠倒的。
-一个解决方法是对当前的顶点坐标，乘以绕 z 轴旋转180度的矩阵，这样图片就能正确显示了。$$\begin{bmatrix}cos\theta&amp;-sin\theta&amp;0&amp;0\sin\theta&amp;cos\theta&amp;0&amp;0\0&amp;0&amp;1&amp;0\0&amp;0&amp;0&amp;1\end{bmatrix}$$那么如何理解这个旋转矩阵呢？
-影响我们理解这个矩阵的第一个问题是：
-为什么这个矩阵是 4x4 的？ 而且我们发现旋转，缩放、平移等变换矩阵都是 4x4 的。
-在直观上的认知里，表达一个三维空间的坐标用 x,y,z 就足够了，那在三维空间里进行矩阵变换，用 3x3 的矩阵就够了，为什么需要 4x4 呢？
-为了回答这个问题，下面我们先在几何意义上理解向量和矩阵之间的关系，然后通过推导旋转矩阵和平移矩阵，一步步来解开这个疑惑。"
+          href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://myhanson.com/2020/10/23/%E4%B8%BA%E4%BB%80%E4%B9%88OpenGL%E9%87%8C%E6%97%8B%E8%BD%AC%E7%AD%89%E5%8F%98%E6%8D%A2%E7%9F%A9%E9%98%B5%E6%98%AF4x4%E7%9A%84%E7%9F%A9%E9%98%B5/&title=为什么OpenGL里旋转等变换矩阵是4x4的矩阵 - Hanson的博客&summary="
           
           >
           
@@ -560,13 +544,7 @@
       
         <a class="-mob-share-weibo" title="" rel="external nofollow noopener noreferrer"
           
-          href="http://service.weibo.com/share/share.php?url=http://myhanson.com/2020/10/23/%E4%B8%BA%E4%BB%80%E4%B9%88OpenGL%E9%87%8C%E6%97%8B%E8%BD%AC%E7%AD%89%E5%8F%98%E6%8D%A2%E7%9F%A9%E9%98%B5%E6%98%AF4x4%E7%9A%84%E7%9F%A9%E9%98%B5/&title=为什么OpenGL里旋转等变换矩阵是4x4的矩阵 - Hanson的博客&summary=OpenGL ES 的很多教程里都会有这样一个例子来讲解纹理：将一张图片作为纹理显示在屏幕上。
-因为纹理坐标和实际屏幕显示的坐标不一样，把图片渲染在屏幕上后，图片是上下颠倒的。
-一个解决方法是对当前的顶点坐标，乘以绕 z 轴旋转180度的矩阵，这样图片就能正确显示了。$$\begin{bmatrix}cos\theta&amp;-sin\theta&amp;0&amp;0\sin\theta&amp;cos\theta&amp;0&amp;0\0&amp;0&amp;1&amp;0\0&amp;0&amp;0&amp;1\end{bmatrix}$$那么如何理解这个旋转矩阵呢？
-影响我们理解这个矩阵的第一个问题是：
-为什么这个矩阵是 4x4 的？ 而且我们发现旋转，缩放、平移等变换矩阵都是 4x4 的。
-在直观上的认知里，表达一个三维空间的坐标用 x,y,z 就足够了，那在三维空间里进行矩阵变换，用 3x3 的矩阵就够了，为什么需要 4x4 呢？
-为了回答这个问题，下面我们先在几何意义上理解向量和矩阵之间的关系，然后通过推导旋转矩阵和平移矩阵，一步步来解开这个疑惑。"
+          href="http://service.weibo.com/share/share.php?url=http://myhanson.com/2020/10/23/%E4%B8%BA%E4%BB%80%E4%B9%88OpenGL%E9%87%8C%E6%97%8B%E8%BD%AC%E7%AD%89%E5%8F%98%E6%8D%A2%E7%9F%A9%E9%98%B5%E6%98%AF4x4%E7%9A%84%E7%9F%A9%E9%98%B5/&title=为什么OpenGL里旋转等变换矩阵是4x4的矩阵 - Hanson的博客&summary="
           
           >
           
@@ -616,6 +594,27 @@
 
 
 <!-- 根据页面mathjax变量决定是否加载MathJax数学公式js -->
+
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+    displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+    processEscapes: true,
+    tags: "ams",
+    macros: {
+      href: "{}"
+    }
+  },
+  options: {
+    ignoreHtmlClass: "tex2jax_ignore|dno",
+    skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+  }
+};
+</script>
+
 
 
 
@@ -694,16 +693,16 @@
       
     
       
-        <div><p>博客内容遵循 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0) 协议</a></p>
+        <div><p>Blog content follows the <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" target="_blank" rel="noopener">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) License</a></p>
 </div>
       
     
       
-        本站使用
+        Use
         <a href="https://volantis.js.org/" target="_blank" class="codename">Volantis</a>
-        作为主题，总访问量为
+        as theme, total visits
           <span id="busuanzi_value_site_pv"><i class="fas fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span>
-          次
+          times
         
       
     
