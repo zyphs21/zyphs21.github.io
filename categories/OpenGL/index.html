@@ -5,6 +5,8 @@
   <!-- SEO相关 -->
   
     
+      <meta name="robots" content="noindex,follow">
+    
   
   <!-- 渲染优化 -->
   <meta name="renderer" content="webkit">
@@ -16,14 +18,8 @@
 
   <!-- 页面元数据 -->
   
-    <title>PathToGo诞生记 - Hanson的博客</title>
+    <title>分类：OpenGL - Hanson的博客</title>
   
-  
-    <meta name="description" content="不知道大家在使用 Mac 的时候有没有这样的需求:
-
-经常需要获取当前文件或者文件夹的路径，并且复制到粘贴板。
-
-对于我来说经常有这种需要，然后我就从网上再结合自己的经验，找了好几种方法：">
   
 
   <!-- feed -->
@@ -266,12 +262,25 @@
     <div class='body-wrapper'>
       
 
+
 <div class='l_main'>
   
-
-  
-    <article id="post" class="post white-box shadow article-type-post" itemscope itemprop="blogPost">
+    
       
+  <section class="post-list ">
+    
+      
+        
+          
+        
+      
+    
+    
+      
+        
+          <div class='post-wrapper'>
+            <article class="post white-box shadow reveal ">
+  
 
 
   <section class='meta'>
@@ -281,13 +290,11 @@
       <div class="meta" id="header-meta">
         
           
-  
-    <h1 class="title">
-      <a href="/2018/03/02/PathToGo%E8%AF%9E%E7%94%9F%E8%AE%B0/">
-        PathToGo诞生记
-      </a>
-    </h1>
-  
+  <h2 class="title">
+    <a href="/2020/10/23/%E4%B8%BA%E4%BB%80%E4%B9%88OpenGL%E9%87%8C%E6%97%8B%E8%BD%AC%E7%AD%89%E5%8F%98%E6%8D%A2%E7%9F%A9%E9%98%B5%E6%98%AF4x4%E7%9A%84%E7%9F%A9%E9%98%B5/">
+      为什么OpenGL里旋转等变换矩阵是4x4的矩阵
+    </a>
+  </h2>
 
 
         
@@ -310,9 +317,9 @@
               
   
   <div class='new-meta-item category'>
-    <a href='/categories/%E5%BC%80%E6%BA%90-%E4%BA%A7%E5%93%81/' rel="nofollow">
+    <a href='/categories/OpenGL/' rel="nofollow">
       <i class="fas fa-folder-open fa-fw" aria-hidden="true"></i>
-      <p>开源/产品</p>
+      <p>OpenGL</p>
     </a>
   </div>
 
@@ -323,9 +330,14 @@
               <div class="new-meta-item date">
   <a class='notlink'>
     <i class="fas fa-calendar-alt fa-fw" aria-hidden="true"></i>
-    <p>发布于：Mar 2, 2018</p>
+    <p>发布于：Oct 23, 2020</p>
   </a>
 </div>
+
+            
+          
+            
+              
 
             
           
@@ -343,290 +355,165 @@
   </section>
 
 
-      <section class="article typo">
-        <div class="article-entry" itemprop="articleBody">
-          
-          <p>不知道大家在使用 Mac 的时候有没有这样的需求:</p>
-<blockquote>
-<p>经常需要获取当前文件或者文件夹的路径，并且复制到粘贴板。</p>
-</blockquote>
-<p>对于我来说经常有这种需要，然后我就从网上再结合自己的经验，找了好几种方法：</p>
-<a id="more"></a>
-
-<ol>
-<li>右键-选择「显示简介」，然后在弹出的窗口里直接用鼠标拖动复制「位    置」里的路径。</li>
-</ol>
-<p>​    缺点：麻烦。</p>
-<ol start="2">
-<li>把文件拖到浏览器，在浏览器地址栏复制路径。</li>
-</ol>
-<p>​    缺点：麻烦。</p>
-<ol start="3">
-<li>打开终端，把文件拖入终端，终端会把文件路径打印出来，然后复制。</li>
-</ol>
-<p>​    缺点：麻烦。</p>
-<ol start="4">
-<li>打开终端，cd到目标目录，然后输入 「pwd|pbcopy」就可以把路径复制到粘贴板。</li>
-</ol>
-<p>​    缺点：麻烦。</p>
-<ol start="5">
-<li>选择文件，然后使用快捷键「Option + Command + C」。</li>
-</ol>
-<p>​    缺点：这个快捷键在更低版本的系统中好像不行，而且会与 Alfred 的一个快捷键冲突。还是麻烦。</p>
-<ol start="6">
-<li>利用 Automator 来建立 Service 服务添加到右键服务菜单。</li>
-</ol>
-<p>​    缺点：麻烦。</p>
-<p>以上几种方法都不能满足我的需求：</p>
-<blockquote>
-<ol>
-<li>直观快捷</li>
-<li>最好可以同时获取多个文件/文件夹的路径。</li>
-</ol>
-</blockquote>
-<p>这时候我想起了很受大家欢迎的一款效率软件：Go2Shell</p>
-<p><img src="https://user-gold-cdn.xitu.io/2018/3/2/161e49096986d7c9?w=262&h=238&f=png&s=66436" alt=""></p>
-<p>这款软件把它拖动到 Finder 的工具栏后，只要点击它就可以立刻启动终端，并且进入到当前的路径。</p>
-<p>那可以不可以也做一款这样的 App 操作和 Go2Shell 类似，选中一个或多个文件或文件夹然后直接一点，就可以把当前选中的文件或文件夹路径复制到粘贴板呢？</p>
-<p>然后经过一番折腾，『PathToGo』这款 App 就诞生了。</p>
-<p><img src="https://user-gold-cdn.xitu.io/2018/3/2/161e490bc920f193?w=554&h=438&f=png&s=151480" alt=""></p>
-<p>虽然一开始是想直接利用 AppleScript 然后导出为应用程序的，可是看着 AppleScript 导出为应用程序的图标实在不够酷，就直接着手做了 PathToGo 这个简单的 Mac App。</p>
-<p>下面看看实际体验效果吧：</p>
-<p>首先是把『PathToGo』拖动到 Finder 的工具栏，记得是按住『command键』来进行拖动。</p>
-<p><img src="https://user-gold-cdn.xitu.io/2018/3/2/161e491134c3825f?w=492&h=214&f=gif&s=199517" alt=""></p>
-<p>拖放好了之后，只需要选中你想要的一个或多个文件/文件夹，然后点击在工具栏上的『PathToGo』的图标，路径就已经复制到粘贴板上了，然后你就能愉快的 用 command+v 就能粘贴出你选择的文件的路径了。</p>
-<p><img src="https://user-gold-cdn.xitu.io/2018/3/2/161e491402bb99d2?w=668&h=366&f=gif&s=297785" alt=""></p>
-<p>怎么样？是不是很方便快捷呢！<br><a href="https://github.com/HansonStudio/PathToGo" target="_blank" rel="noopener">PathToGo</a> 已经开源在 HansonStudio 的 Github 组织下了，大家可以在 Release 页面下载使用。</p>
-
-          
-            <br>
-            
-              
-  
-    
-    
-
-
-
-  
-
-  
-    
-    
-
-
-
-  
-
-  
-    
-    
-
-<section class="widget copyright  ">
-  <div class='content'>
-    
-      <blockquote>
-        
-          
-            <p>博客内容遵循 署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0) 协议</p>
-
-          
-        
-          
-            <p>本文永久链接是：<a href=http://myhanson.com/2018/03/02/PathToGo%E8%AF%9E%E7%94%9F%E8%AE%B0/>http://myhanson.com/2018/03/02/PathToGo%E8%AF%9E%E7%94%9F%E8%AE%B0/</a></p>
-          
-        
-      </blockquote>
-    
-  </div>
-</section>
-
-  
-
-  
-    
-    
-
-<section class="widget qrcode  desktop mobile">
-  
-
-  <div class='content article-entry'>
-    
+  <section class="article typo">
+    <div class="article-entry" itemprop="articleBody">
       
-        <div class='fancybox'><img src='https://cdn.jsdelivr.net/gh/zyphs21/cdn-assets/qrcode/HansonTalk.jpg'
-        
-          height='64px'
-        ></div>
-      
-    
-      
-        <div class='fancybox'><img src='https://cdn.jsdelivr.net/gh/zyphs21/cdn-assets/qrcode/iOSTypist.jpg'
-        
-          height='64px'
-        ></div>
-      
-    
-  </div>
-</section>
-
-  
-
-
-            
-          
-        </div>
-        
-          
-
-
-  <section class='meta' id="footer-meta">
-    <div class='new-meta-box'>
-      
-        
-          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2020-04-17T09:17:15+08:00">
-  <a class='notlink'>
-    <i class="fas fa-edit fa-fw" aria-hidden="true"></i>
-    <p>更新于：Apr 17, 2020</p>
-  </a>
-</div>
-
-        
-      
-        
-          
-
-        
-      
-        
-          
-
-        
-      
-        
-          
-  <div class="new-meta-item share -mob-share-list">
-  <div class="-mob-share-list share-body">
-    
-      
-        <a class="-mob-share-qq" title="" rel="external nofollow noopener noreferrer"
-          
-          href="http://connect.qq.com/widget/shareqq/index.html?url=http://myhanson.com/2018/03/02/PathToGo%E8%AF%9E%E7%94%9F%E8%AE%B0/&title=PathToGo诞生记 - Hanson的博客&summary=不知道大家在使用 Mac 的时候有没有这样的需求:
-
-经常需要获取当前文件或者文件夹的路径，并且复制到粘贴板。
-
-对于我来说经常有这种需要，然后我就从网上再结合自己的经验，找了好几种方法："
-          
-          >
-          
-            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/logo/128/qq.png">
-          
-        </a>
-      
-    
-      
-        <a class="-mob-share-qzone" title="" rel="external nofollow noopener noreferrer"
-          
-          href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://myhanson.com/2018/03/02/PathToGo%E8%AF%9E%E7%94%9F%E8%AE%B0/&title=PathToGo诞生记 - Hanson的博客&summary=不知道大家在使用 Mac 的时候有没有这样的需求:
-
-经常需要获取当前文件或者文件夹的路径，并且复制到粘贴板。
-
-对于我来说经常有这种需要，然后我就从网上再结合自己的经验，找了好几种方法："
-          
-          >
-          
-            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/logo/128/qzone.png">
-          
-        </a>
-      
-    
-      
-        <a class="-mob-share-weibo" title="" rel="external nofollow noopener noreferrer"
-          
-          href="http://service.weibo.com/share/share.php?url=http://myhanson.com/2018/03/02/PathToGo%E8%AF%9E%E7%94%9F%E8%AE%B0/&title=PathToGo诞生记 - Hanson的博客&summary=不知道大家在使用 Mac 的时候有没有这样的需求:
-
-经常需要获取当前文件或者文件夹的路径，并且复制到粘贴板。
-
-对于我来说经常有这种需要，然后我就从网上再结合自己的经验，找了好几种方法："
-          
-          >
-          
-            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/logo/128/weibo.png">
-          
-        </a>
-      
-    
-  </div>
-</div>
-
-
-
-        
+        <p>OpenGL ES 的很多教程里都会有这样一个例子来讲解纹理：将一张图片作为纹理显示在屏幕上。</p>
+<p>因为纹理坐标和实际屏幕显示的坐标不一样，把图片渲染在屏幕上后，图片是上下颠倒的。</p>
+<p>一个解决方法是对当前的顶点坐标，乘以绕 z 轴旋转180度的矩阵，这样图片就能正确显示了。<br>$$<br>\begin{bmatrix}<br>cos\theta&amp;-sin\theta&amp;0&amp;0\<br>sin\theta&amp;cos\theta&amp;0&amp;0\<br>0&amp;0&amp;1&amp;0\<br>0&amp;0&amp;0&amp;1<br>\end{bmatrix}<br>$$<br>那么如何理解这个旋转矩阵呢？</p>
+<p>影响我们理解这个矩阵的第一个问题是：</p>
+<p><strong>为什么这个矩阵是 4x4 的？</strong> 而且我们发现旋转，缩放、平移等变换矩阵都是 4x4 的。</p>
+<p>在直观上的认知里，表达一个三维空间的坐标用 x,y,z 就足够了，那在三维空间里进行矩阵变换，用 3x3 的矩阵就够了，为什么需要 4x4 呢？</p>
+<p>为了回答这个问题，下面我们先在几何意义上理解<strong><u>向量和矩阵</u></strong>之间的关系，然后通过<strong><u>推导旋转矩阵</u></strong>和<u><strong>平移矩阵</strong></u>，一步步来解开这个疑惑。</p>
       
     </div>
+    
+      
+        <div class="button readmore">
+          <a href="/2020/10/23/%E4%B8%BA%E4%BB%80%E4%B9%88OpenGL%E9%87%8C%E6%97%8B%E8%BD%AC%E7%AD%89%E5%8F%98%E6%8D%A2%E7%9F%A9%E9%98%B5%E6%98%AF4x4%E7%9A%84%E7%9F%A9%E9%98%B5/">
+            Read More <i class="fas fa-chevron-right"></i>
+          </a>
+        </div>
+      
+    
   </section>
+</article>
 
-
-        
-        
-          <div class="prev-next">
-            
-              <a class='prev' href='/2018/03/14/%E9%80%9A%E8%BF%87RunScript%E7%BB%99iOS%E9%A1%B9%E7%9B%AE%E8%87%AA%E5%A2%9E%E7%89%88%E6%9C%AC%E5%8F%B7(Versioin%E5%92%8CBuild)/'>
-                <p class='title'><i class="fas fa-chevron-left" aria-hidden="true"></i>通过RunScript给iOS项目自增版本号(Versioin和Build)</p>
-                <p class='content'>需求分析
-在打包应用之后，需要自增 Version 的最后一位 和 Build 的值。
-只在 Archive(Release) 的时候触发该自增。
-
-添加 RunScript在 项目Target...</p>
-              </a>
-            
-            
-              <a class='next' href='/2017/12/08/%E7%94%A8SwiftGen%E7%AE%A1%E7%90%86UIImage%E7%AD%89%E7%9A%84String-based%E6%8E%A5%E5%8F%A3/'>
-                <p class='title'>用SwiftGen管理UIImage等的String-based接口<i class="fas fa-chevron-right" aria-hidden="true"></i></p>
-                <p class='content'>问题现状平时我们使用UIImage，UIFont，UIColor会遇到很多String-based的接口方法，比如常用的UIImage：
-1let testImage = UIImage(nam...</p>
-              </a>
-            
           </div>
         
-      </section>
-    </article>
+      
+    
+  </section>
   
-
-  
-    <!-- 显示推荐文章和评论 -->
-
-
-
-  
-
+    
+    <!-- 根据主题中的设置决定是否在archive中针对摘要部分的MathJax公式加载mathjax.js文件 -->
+    
+    
 
   
 
 
-
-
-<!-- 根据页面mathjax变量决定是否加载MathJax数学公式js -->
-
-
-
-  <script>
-    window.subData = {
-      title: 'PathToGo诞生记',
-      tools: true
-    }
-  </script>
-
+    
+  
 
 </div>
 <aside class='l_side'>
   
   
+    
+    
+
+<section class="widget blogger shadow desktop mobile">
+  <div class='content'>
+    
+      
+        <a class='avatar flat-box' href='/about/'>
+          <img no-lazy src='https://cdn.jsdelivr.net/gh/zyphs21/cdn-assets/avatar/avatar.png'/>
+        </a>
+      
+    
+    
+      <div class='text'>
+        
+          <h2>Hanson</h2>
+        
+        
+        
+      </div>
+    
+    
+      <div class="social-wrapper">
+        
+          
+            <a href="/atom.xml"
+              class="social fas fa-rss flat-btn"
+              target="_blank"
+              rel="external nofollow noopener noreferrer">
+            </a>
+          
+        
+          
+            <a href="mailto:hansenhs21@live.com"
+              class="social fas fa-envelope flat-btn"
+              target="_blank"
+              rel="external nofollow noopener noreferrer">
+            </a>
+          
+        
+          
+            <a href="https://github.com/zyphs21"
+              class="social fab fa-github flat-btn"
+              target="_blank"
+              rel="external nofollow noopener noreferrer">
+            </a>
+          
+        
+      </div>
+    
+  </div>
+</section>
+
+  
+
+  
+    
+    
+  
+
+  <section class="widget category shadow desktop">
+    
+  <header>
+    
+      <a href='/blog/categories/'><i class="fas fa-folder-open fa-fw" aria-hidden="true"></i><span class='name'>文章分类</span></a>
+    
+  </header>
+
+
+    <div class='content'>
+      <ul class="entry navigation">
+        
+          <li><a class="flat-box"
+            title="/categories/OpenGL/" href="/categories/OpenGL/"
+            id="categoriesOpenGL"
+            ><div class='name'>OpenGL</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box"
+            title="/categories/Swift/" href="/categories/Swift/"
+            id="categoriesSwift"
+            ><div class='name'>Swift</div><div class='badge'>(3)</div></a></li>
+        
+          <li><a class="flat-box"
+            title="/categories/iOS%E5%BC%80%E5%8F%91/" href="/categories/iOS%E5%BC%80%E5%8F%91/"
+            id="categoriesiOSE5BC80E58F91"
+            ><div class='name'>iOS开发</div><div class='badge'>(7)</div></a></li>
+        
+          <li><a class="flat-box"
+            title="/categories/%E5%B7%A5%E5%85%B7%E6%95%99%E7%A8%8B/" href="/categories/%E5%B7%A5%E5%85%B7%E6%95%99%E7%A8%8B/"
+            id="categoriesE5B7A5E585B7E69599E7A88B"
+            ><div class='name'>工具教程</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box"
+            title="/categories/%E5%BC%80%E6%BA%90-%E4%BA%A7%E5%93%81/" href="/categories/%E5%BC%80%E6%BA%90-%E4%BA%A7%E5%93%81/"
+            id="categoriesE5BC80E6BA90-E4BAA7E59381"
+            ><div class='name'>开源/产品</div><div class='badge'>(5)</div></a></li>
+        
+          <li><a class="flat-box"
+            title="/categories/%E7%AE%97%E6%B3%95%E5%AE%9E%E8%B7%B5/" href="/categories/%E7%AE%97%E6%B3%95%E5%AE%9E%E8%B7%B5/"
+            id="categoriesE7AE97E6B395E5AE9EE8B7B5"
+            ><div class='name'>算法实践</div><div class='badge'>(3)</div></a></li>
+        
+      </ul>
+    </div>
+  </section>
+
+
+  
 
   
     
     
 
-
+  
 
   
 

@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html>
+<head hexo-theme='https://volantis.js.org/#2.6.1'>
+  <meta charset="utf-8">
+  <!-- SEO相关 -->
+  
+    
+  
+  <!-- 渲染优化 -->
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <!-- 页面元数据 -->
+  
+    <title>为什么OpenGL里旋转等变换矩阵是4x4的矩阵 - Hanson的博客</title>
+  
+  
+    <meta name="description" content="OpenGL ES 的很多教程里都会有这样一个例子来讲解纹理：将一张图片作为纹理显示在屏幕上。
+因为纹理坐标和实际屏幕显示的坐标不一样，把图片渲染在屏幕上后，图片是上下颠倒的。
+一个解决方法是对当前的顶点坐标，乘以绕 z 轴旋转180度的矩阵，这样图片就能正确显示了。$$\begin{bmatrix}cos\th...">
+  
+
+  <!-- feed -->
+  
+
+  <!-- import meta -->
+  
+
+  <!-- link -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13/css/all.min.css">
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
+
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-waves@0.7.6/dist/waves.min.css">
+
+  
+
+  
+
+  
+
+  <!-- import link -->
+  
+
+  
+  
+    
+<link rel="stylesheet" href="/css/style.css">
+
+  
+
+  <script>
+    function setLoadingBarProgress(num) {
+      document.getElementById('loading-bar').style.width=num+"%";
+    }
+  </script>
+
+  
+  
+</head>
+
+<body>
+  
+  <div id="loading-bar-wrapper">
+  <div id="loading-bar"></div>
+</div>
+<header class="l_header shadow blur">
+  <div class='container'>
+  <div class='wrapper'>
+    <div class='nav-sub'>
+      <p class="title"></p>
+      <ul class='switcher nav-list-h'>
+        <li><a class="s-comment fas fa-comments fa-fw" target="_self" href='javascript:void(0)'></a></li>
+        
+          <li><a class="s-toc fas fa-list fa-fw" target="_self" href='javascript:void(0)'></a></li>
+        
+      </ul>
+    </div>
+		<div class="nav-main">
+      
+        
+        <a class="title flat-box" target="_self" href='/'>
+          
+          
+          
+            Hanson
+          
+          
+        </a>
+      
+
+			<div class='menu navigation'>
+				<ul class='nav-list-h'>
+          
+          
+          
+            
+            
+              <li>
+                <a class="flat-box" href=/archives/
+                  
+                  
+                  
+                    id="archives"
+                  >
+                  <i class='fas fa-list-alt fa-fw'></i>所有文章
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="flat-box" href=/product/
+                  
+                  
+                  
+                    id="product"
+                  >
+                  <i class='fas fa-laptop-code fa-fw'></i>我的项目
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="flat-box" href=/categories/
+                  
+                  
+                  
+                    id="categories"
+                  >
+                  <i class='fas fa-folder-open fa-fw'></i>分类
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="flat-box" href=/about/
+                  
+                  
+                  
+                    id="about"
+                  >
+                  <i class='fas fa-info-circle fa-fw'></i>关于
+                </a>
+                
+              </li>
+            
+          
+          
+				</ul>
+			</div>
+
+      <div class="m_search">
+        <form name="searchform" class="form u-search-form">
+          <i class="icon fas fa-search fa-fw"></i>
+          <input type="text" class="input u-search-input" placeholder="Search..." />
+        </form>
+      </div>
+
+			<ul class='switcher nav-list-h'>
+				
+					<li><a class="s-search fas fa-search fa-fw" target="_self" href='javascript:void(0)'></a></li>
+				
+				<li>
+          <a class="s-menu fas fa-bars fa-fw" target="_self" href='javascript:void(0)'></a>
+          <ul class="menu-phone list-v navigation white-box">
+            
+              
+            
+              <li>
+                <a class="flat-box" href=/archives/
+                  
+                  
+                  
+                    id="archives"
+                  >
+                  <i class='fas fa-list-alt fa-fw'></i>所有文章
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="flat-box" href=/product/
+                  
+                  
+                  
+                    id="product"
+                  >
+                  <i class='fas fa-laptop-code fa-fw'></i>我的项目
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="flat-box" href=/categories/
+                  
+                  
+                  
+                    id="categories"
+                  >
+                  <i class='fas fa-folder-open fa-fw'></i>分类
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="flat-box" href=/about/
+                  
+                  
+                  
+                    id="about"
+                  >
+                  <i class='fas fa-info-circle fa-fw'></i>关于
+                </a>
+                
+              </li>
+            
+          
+            
+          </ul>
+        </li>
+			</ul>
+		</div>
+	</div>
+  </div>
+</header>
+
+<script>setLoadingBarProgress(40);</script>
+
+
+
+  <div class="l_body nocover">
+    <div class='body-wrapper'>
+      
+
+<div class='l_main'>
+  
+
+  
+    <article id="post" class="post white-box shadow article-type-post" itemscope itemprop="blogPost">
+      
+
+
+  <section class='meta'>
+    
+      
+      
+      <div class="meta" id="header-meta">
+        
+          
+  
+    <h1 class="title">
+      <a href="/2020/10/23/%E4%B8%BA%E4%BB%80%E4%B9%88OpenGL%E9%87%8C%E6%97%8B%E8%BD%AC%E7%AD%89%E5%8F%98%E6%8D%A2%E7%9F%A9%E9%98%B5%E6%98%AF4x4%E7%9A%84%E7%9F%A9%E9%98%B5/">
+        为什么OpenGL里旋转等变换矩阵是4x4的矩阵
+      </a>
+    </h1>
+  
+
+
+        
+        <div class='new-meta-box'>
+          
+            
+          
+            
+              
+<div class='new-meta-item author'>
+  <a href="http://www.myhanson.com" target="_blank" rel="nofollow noopener">
+    <img src="https://cdn.jsdelivr.net/gh/zyphs21/cdn-assets/avatar/avatar.png">
+    <p>Hanson</p>
+  </a>
+</div>
+
+            
+          
+            
+              
+  
+  <div class='new-meta-item category'>
+    <a href='/categories/OpenGL/' rel="nofollow">
+      <i class="fas fa-folder-open fa-fw" aria-hidden="true"></i>
+      <p>OpenGL</p>
+    </a>
+  </div>
+
+
+            
+          
+            
+              <div class="new-meta-item date">
+  <a class='notlink'>
+    <i class="fas fa-calendar-alt fa-fw" aria-hidden="true"></i>
+    <p>发布于：Oct 23, 2020</p>
+  </a>
+</div>
+
+            
+          
+            
+              
+
+            
+          
+        </div>
+        
+          <hr>
+        
+      </div>
+    
+  </section>
+
+
+      <section class="article typo">
+        <div class="article-entry" itemprop="articleBody">
+          
+          <p>OpenGL ES 的很多教程里都会有这样一个例子来讲解纹理：将一张图片作为纹理显示在屏幕上。</p>
+<p>因为纹理坐标和实际屏幕显示的坐标不一样，把图片渲染在屏幕上后，图片是上下颠倒的。</p>
+<p>一个解决方法是对当前的顶点坐标，乘以绕 z 轴旋转180度的矩阵，这样图片就能正确显示了。<br>$$<br>\begin{bmatrix}<br>cos\theta&amp;-sin\theta&amp;0&amp;0\<br>sin\theta&amp;cos\theta&amp;0&amp;0\<br>0&amp;0&amp;1&amp;0\<br>0&amp;0&amp;0&amp;1<br>\end{bmatrix}<br>$$<br>那么如何理解这个旋转矩阵呢？</p>
+<p>影响我们理解这个矩阵的第一个问题是：</p>
+<p><strong>为什么这个矩阵是 4x4 的？</strong> 而且我们发现旋转，缩放、平移等变换矩阵都是 4x4 的。</p>
+<p>在直观上的认知里，表达一个三维空间的坐标用 x,y,z 就足够了，那在三维空间里进行矩阵变换，用 3x3 的矩阵就够了，为什么需要 4x4 呢？</p>
+<p>为了回答这个问题，下面我们先在几何意义上理解<strong><u>向量和矩阵</u></strong>之间的关系，然后通过<strong><u>推导旋转矩阵</u></strong>和<u><strong>平移矩阵</strong></u>，一步步来解开这个疑惑。</p>
+<a id="more"></a>
+
+<h2 id="向量和矩阵"><a href="#向量和矩阵" class="headerlink" title="向量和矩阵"></a>向量和矩阵</h2><p>在几何平面上，我们可以把平面上任意一<code>点</code>，当作<u>与原点组成</u>的一个 <code>向量</code> 来理解。</p>
+<p>如图 ，A 点可以表示成向量  $\vec{OA}$  ；在 x 轴和 y 轴上各有 i 点（1， 0）和  j 点（0，1），同样的，让它们与原点组成向量，为了简化，我们用  $\vec{i}$  和 $\vec{j}$ 表示这两个向量。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zhenwanping/cdn-assets@master/photo/20201022184245.png" alt="image-20201022184243547"></p>
+<p>因为 A 点的坐标为 (3, 2)，如果我们要用  $\vec{i}$  和 $\vec{j}$  表示 $\vec{OA}$ ，那是这样的：<br>$$<br>3\vec{i} + 2\vec{j} = \vec{OA}<br>$$<br>这里的几何意义是 $\vec{i}$ 延展到 $3\vec{i}$  ，$\vec{j}$ 延展到 $2\vec{j}$ ，然后把这两个向量相加即可得到 $\vec{OA}$</p>
+<p>i  坐标是 （1， 0），j 坐标是 （0，1），我们把上面这个等式转换成竖列的形式：<br>$$<br>3<br>\begin{bmatrix}<br>1\0<br>\end{bmatrix}<br>+<br>2<br>\begin{bmatrix}<br>0\1<br>\end{bmatrix}<br>=<br>\begin{bmatrix}<br>3\2<br>\end{bmatrix}<br>$$<br>这里其实是向量的简单运算，运算过程如下：<br>$$<br>\begin{bmatrix}<br>3 \times  1\<br>3 \times 0<br>\end{bmatrix}<br>+<br>\begin{bmatrix}<br>2 \times 0\<br>2 \times 1<br>\end{bmatrix}<br>=<br>\begin{bmatrix}<br>3 \times 1 + 2 \times 0\<br>3 \times 0 + 2 \times 1<br>\end{bmatrix}<br>=<br>\begin{bmatrix}<br>3\<br>2<br>\end{bmatrix}<br>$$<br>看到运算过程是否有种似曾相识的感觉？这不就是矩阵与向量的乘法计算吗？这个运算其实就是将<code>向量左乘一个矩阵</code> 的计算：<br>$$<br>\begin{bmatrix}<br>1 &amp; 0\<br>0 &amp; 1<br>\end{bmatrix}<br>\begin{bmatrix}<br>3\<br>2<br>\end{bmatrix}<br>=<br>\begin{bmatrix}<br>3 \times 1 + 2 \times 0\<br>3 \times 0 + 2 \times 1<br>\end{bmatrix}<br>=<br>\begin{bmatrix}<br>3\<br>2<br>\end{bmatrix}<br>$$<br>这里 $\begin{bmatrix}1 &amp; 0\0 &amp; 1\end{bmatrix}$  其实就是<code>单元矩阵</code>，左乘一个单元矩阵并不会改变原来的值。而这个单元矩阵以两个竖列来看，<strong>正是 i 和 j 点的坐标</strong>，也是向量  $\vec{i}$  和  $\vec{j}$ ，在数学上将  $\vec{i}$  和  $\vec{j}$  称为此坐标系的 <code>基向量</code>。</p>
+<h2 id="推导旋转矩阵"><a href="#推导旋转矩阵" class="headerlink" title="推导旋转矩阵"></a>推导旋转矩阵</h2><p>我们现在把整个坐标轴绕原点逆时针旋转  $45^o$ ：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zhenwanping/cdn-assets@master/photo/20201022220658.png" alt="image-20201022220656758"></p>
+<p>旋转后  i 点和 j 点对应  $i^\prime$  和  $j^\prime$ 位置。</p>
+<p>通过简单的三角函数计算得到： $i^\prime$ 坐标为 $\begin{bmatrix}cos45^o \ sin45^o\end{bmatrix}$ ，$j^\prime$ 坐标为 $\begin{bmatrix} -sin45^o \ cons45^o \end{bmatrix}$</p>
+<p>旋转后，A 点的坐标是多少呢？回顾上面的做法， $\vec{i^\prime}$ 延展到 $3\vec{i^\prime}$  ，$\vec{j^\prime}$ 延展到 $2\vec{j^\prime}$ ，然后把这两个向量相加即可得到 $\vec{OA^\prime}$ 。结合上面一节矩阵和向量的推演，可以变成下面的形式：<br>$$<br>\begin{bmatrix}<br>cos45^o &amp; -sin45^o \<br>sin45^o &amp; cos45^o<br>\end{bmatrix}<br>\begin{bmatrix}<br>3 \ 2<br>\end{bmatrix}<br>$$<br>我们发现，左边的矩阵不正是开头所看到的 <code>旋转矩阵</code> 吗？只不过这是二维平面上的旋转矩阵:<br>$$<br>\begin{bmatrix}<br>cos\theta &amp; -sin\theta \<br>sin\theta &amp; cos\theta<br>\end{bmatrix}<br>$$<br>结合图形和计算，我们可以这样理解这个二维矩阵：二维矩阵代表一个坐标系里的两个基向量，而在这个坐标系里的点与原点组成的向量，都可以用这两个基向量的变换来表示。那么旋转一个点，可以转换成旋转这个点所在的坐标系，从而通过变化的基向量求出旋转后的点的位置。</p>
+<p>其实这种变换在数学上称作 <code>线性变换</code> ，线性变换是通过 <code>矩阵乘法</code> 来实现</p>
+<blockquote>
+<p><strong>线性变换</strong>：是在两个<a href="https://zh.wikipedia.org/wiki/向量空间" target="_blank" rel="noopener">向量空间</a>（包括由函数构成的抽象的向量空间）之间的一种保持向量加法和标量乘法的特殊映射</p>
+</blockquote>
+<blockquote>
+<p>线性变换在几何直观上有如下特点：</p>
+<ul>
+<li><p>变换前后，直线仍然保持是直线的状态</p>
+</li>
+<li><p>变换前后，原点保持固定，不会变化</p>
+</li>
+</ul>
+</blockquote>
+<p>我们从二维平面，推导到三维坐标也是同理，只不过是多了个 z 轴<br>$$<br>\begin{bmatrix}<br>1 &amp; 0 &amp; 0 \<br>0 &amp; 1 &amp; 0 \<br>0 &amp; 0 &amp; 1<br>\end{bmatrix}<br>\<br>$$<br>竖着来看这个矩阵，是 x，y，z轴上的三个基向量，同时它又是一个单元矩阵。</p>
+<p>同理上面二维平面的推导，三维坐标绕 z 轴的旋转矩阵为：<br>$$<br>\begin{bmatrix}<br>cos\theta&amp;-sin\theta&amp;0\<br>sin\theta&amp;cos\theta&amp;0\<br>0&amp;0&amp;1<br>\end{bmatrix}<br>$$</p>
+<h2 id="推导平移矩阵"><a href="#推导平移矩阵" class="headerlink" title="推导平移矩阵"></a>推导平移矩阵</h2><p>那么平移操作，能不能也用这种矩阵与向量相乘的形式呢？我们再次回到二维平面，看看将 A 点平移到 B 点的情况是怎样的。</p>
+<img src="https://cdn.jsdelivr.net/gh/zhenwanping/cdn-assets@master/photo/20201022222202.png" alt="image-20201022222139291" style="zoom: 33%;" />
+
+<p>要将 A 点（3，2）平移到 B 点(4，5)，实际上就是先将 A 点往右移动 1 ，再往上移动 3，即 x 坐标值增加 1，y坐标值增加 3<br>$$<br>\begin{bmatrix}<br>x + 1 \ y + 3<br>\end{bmatrix}<br>=<br>\begin{bmatrix}<br>x \ y<br>\end{bmatrix}<br>+<br>\begin{bmatrix}<br>1 \ 3<br>\end{bmatrix}<br>=<br>\begin{bmatrix}<br>3 + 1 \ 2 + 3<br>\end{bmatrix}<br>=<br>\begin{bmatrix}<br>4 \ 5<br>\end{bmatrix}<br>$$<br>从上面的运算来看，平移这种操作实际上是 <code>向量的加法</code>，即:<br>$$<br>\vec{OA} + \vec{OC} = \vec{OB}<br>$$</p>
+<p>$$<br>\begin{bmatrix} 3 \ 2 \end{bmatrix} + \begin{bmatrix} 1 \ 3 \end{bmatrix}<br>=<br>\begin{bmatrix} 4 \ 5 \end{bmatrix}<br>$$</p>
+<p>我们可以通过向量加法的 <code>平行四边形法则</code> 加深理解，如下图：</p>
+<img src="https://cdn.jsdelivr.net/gh/zhenwanping/cdn-assets@master/photo/20201022223037.png" alt="image-20201022223035113" style="zoom:50%;" />
+
+<p>对于平移这种操作，<strong>我们无法仅仅通过矩阵乘法来实现</strong>。</p>
+<p>而实际上，平移这种操作属于 <code>仿射变换</code> 。</p>
+<blockquote>
+<p><strong>仿射变换</strong>，又称<strong>仿射映射</strong>，是指在几何中，对一个向量空间进行一次<a href="https://zh.wikipedia.org/wiki/线性变换" target="_blank" rel="noopener">线性变换</a>并接上一个平移，变换为另一个向量空间。</p>
+</blockquote>
+<p>仿射变换在几何直观上，相比线性变换，它不需要保证变换前后坐标原点不变。</p>
+<p>如下图，从 A 点平移到 B 点，我们换一个角度思考，这次不移动点，而是<code>移动整个坐标轴</code>，同样可以达到平移 A 点到 B 点的需求，但是坐标原点移动到了 O’ 点（1，3）。</p>
+<img src="https://cdn.jsdelivr.net/gh/zhenwanping/cdn-assets@master/photo/20201022230510.png" alt="image-20201022230432040" style="zoom: 33%;" />
+
+
+
+<p>我们希望构造的是像下面这种矩阵乘法的等式，这样才能用一个通用的计算模式来处理坐标点的变换。<br>$$<br>\begin{bmatrix}<br>矩阵<br>\end{bmatrix}<br>\begin{bmatrix}<br>3\2<br>\end{bmatrix}<br>=<br>\begin{bmatrix}<br>4\5<br>\end{bmatrix}<br>$$<br>到这里，我们终于要请出 <code>齐次坐标</code> 了。</p>
+<blockquote>
+<p>齐次坐标就是将一个原本是 n 维的向量用一个 n+1 维向量来表示，是指一个用于投影几何里的坐标系统，如同用于欧氏几何里的笛卡儿坐标一般。</p>
+</blockquote>
+<p>用一个通俗的讲法是，我们需要 <code>升维</code> 来处理这个问题。</p>
+<blockquote>
+<p>通过增加一个维度，我们可以在<code>高维度</code>上，通过线性变换来处理<code>低维度</code>的仿射变换。</p>
+</blockquote>
+<p>这句话咋一听感觉很有哲理，但是通过下面的数学等式就能知道其中的奥妙：<br>$$<br>\begin{bmatrix}<br>1 &amp; 0 &amp; 1 \<br>0 &amp; 1 &amp; 3 \<br>0 &amp; 0 &amp; 1<br>\end{bmatrix}<br>\begin{bmatrix}<br>3 \ 2 \ 1<br>\end{bmatrix}<br>=<br>\begin{bmatrix}<br>1 \times 3 + 0 \times 2 + 1 \times 1 \<br>0 \times 3 + 1 \times 2 + 3 \times 1 \<br>0 \times 3 + 0 \times 2 + 1 \times 1<br>\end{bmatrix}<br>=<br>\begin{bmatrix}<br>4 \ 5 \ 1<br>\end{bmatrix}<br>$$<br>观察上面的运算过程，结果 $\begin{bmatrix}4\ 5\1 \end{bmatrix}$ 不正是我们上面所得的 $\begin{bmatrix} 4\5 \end{bmatrix}$ 吗？只不过多了一个 z 轴的坐标值。</p>
+<p>我们通过升级一个维度，将在二维平面上的平移问题转换成了在三维坐标的矩阵和向量乘法。那么在二维平面上，这个平移矩阵就为：<br>$$<br>\begin{bmatrix}<br>1 &amp; 0 &amp; tx \<br>0 &amp; 1 &amp; ty \<br>0 &amp; 0 &amp; 1<br>\end{bmatrix}<br>$$<br>tx 和 ty 就对应在 x 轴 和 y 轴上的移动距离。</p>
+<p>同理推广到三维坐标系，要实现三维坐标的平移操作，同样需要通过升维，引入齐次坐标来计算。那么三维坐标下的平移矩阵就为：<br>$$<br>\begin{bmatrix}<br>1 &amp; 0 &amp; 0 &amp; tx \<br>0 &amp; 1 &amp; 0 &amp; ty \<br>0 &amp; 0 &amp; 1 &amp; tz \<br>0 &amp; 0 &amp; 0 &amp; 1<br>\end{bmatrix}<br>$$</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>至此，我们可以回答最开始的问题了，为什么 OpenGL 里的矩阵变换是 4x4 的矩阵呢？</p>
+<p>我们来想象这样一个场景：如果我要让顶点坐标旋转一定角度后，再平移一段距离，那么这里面的操作就涉及 3x3 矩阵的计算和 4x4 矩阵的计算，如果不统一起来，这种连续变换的计算操作将很复杂。</p>
+<p>所以如果要用矩阵乘法来统一所有的平移、旋转等等变换计算，为了照顾到平移这类仿射变换，统一用 4x4 矩阵来计算既能满足场景又方便计算。</p>
+
+          
+            <br>
+            
+              
+  
+    
+    
+
+
+
+  
+
+  
+    
+    
+
+
+
+  
+
+  
+    
+    
+
+<section class="widget copyright  ">
+  <div class='content'>
+    
+      <blockquote>
+        
+          
+            <p>博客内容遵循 署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0) 协议</p>
+
+          
+        
+          
+            <p>本文永久链接是：<a href=http://myhanson.com/2020/10/23/%E4%B8%BA%E4%BB%80%E4%B9%88OpenGL%E9%87%8C%E6%97%8B%E8%BD%AC%E7%AD%89%E5%8F%98%E6%8D%A2%E7%9F%A9%E9%98%B5%E6%98%AF4x4%E7%9A%84%E7%9F%A9%E9%98%B5/>http://myhanson.com/2020/10/23/%E4%B8%BA%E4%BB%80%E4%B9%88OpenGL%E9%87%8C%E6%97%8B%E8%BD%AC%E7%AD%89%E5%8F%98%E6%8D%A2%E7%9F%A9%E9%98%B5%E6%98%AF4x4%E7%9A%84%E7%9F%A9%E9%98%B5/</a></p>
+          
+        
+      </blockquote>
+    
+  </div>
+</section>
+
+  
+
+  
+    
+    
+
+<section class="widget qrcode  desktop mobile">
+  
+
+  <div class='content article-entry'>
+    
+      
+        <div class='fancybox'><img src='https://cdn.jsdelivr.net/gh/zyphs21/cdn-assets/qrcode/HansonTalk.jpg'
+        
+          height='64px'
+        ></div>
+      
+    
+      
+        <div class='fancybox'><img src='https://cdn.jsdelivr.net/gh/zyphs21/cdn-assets/qrcode/iOSTypist.jpg'
+        
+          height='64px'
+        ></div>
+      
+    
+  </div>
+</section>
+
+  
+
+
+            
+          
+        </div>
+        
+          
+
+
+  <section class='meta' id="footer-meta">
+    <div class='new-meta-box'>
+      
+        
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2020-10-23T08:31:11+08:00">
+  <a class='notlink'>
+    <i class="fas fa-edit fa-fw" aria-hidden="true"></i>
+    <p>更新于：Oct 23, 2020</p>
+  </a>
+</div>
+
+        
+      
+        
+          
+
+        
+      
+        
+          
+
+        
+      
+        
+          
+  <div class="new-meta-item share -mob-share-list">
+  <div class="-mob-share-list share-body">
+    
+      
+        <a class="-mob-share-qq" title="" rel="external nofollow noopener noreferrer"
+          
+          href="http://connect.qq.com/widget/shareqq/index.html?url=http://myhanson.com/2020/10/23/%E4%B8%BA%E4%BB%80%E4%B9%88OpenGL%E9%87%8C%E6%97%8B%E8%BD%AC%E7%AD%89%E5%8F%98%E6%8D%A2%E7%9F%A9%E9%98%B5%E6%98%AF4x4%E7%9A%84%E7%9F%A9%E9%98%B5/&title=为什么OpenGL里旋转等变换矩阵是4x4的矩阵 - Hanson的博客&summary=OpenGL ES 的很多教程里都会有这样一个例子来讲解纹理：将一张图片作为纹理显示在屏幕上。
+因为纹理坐标和实际屏幕显示的坐标不一样，把图片渲染在屏幕上后，图片是上下颠倒的。
+一个解决方法是对当前的顶点坐标，乘以绕 z 轴旋转180度的矩阵，这样图片就能正确显示了。$$\begin{bmatrix}cos\theta&amp;-sin\theta&amp;0&amp;0\sin\theta&amp;cos\theta&amp;0&amp;0\0&amp;0&amp;1&amp;0\0&amp;0&amp;0&amp;1\end{bmatrix}$$那么如何理解这个旋转矩阵呢？
+影响我们理解这个矩阵的第一个问题是：
+为什么这个矩阵是 4x4 的？ 而且我们发现旋转，缩放、平移等变换矩阵都是 4x4 的。
+在直观上的认知里，表达一个三维空间的坐标用 x,y,z 就足够了，那在三维空间里进行矩阵变换，用 3x3 的矩阵就够了，为什么需要 4x4 呢？
+为了回答这个问题，下面我们先在几何意义上理解向量和矩阵之间的关系，然后通过推导旋转矩阵和平移矩阵，一步步来解开这个疑惑。"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/logo/128/qq.png">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-qzone" title="" rel="external nofollow noopener noreferrer"
+          
+          href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://myhanson.com/2020/10/23/%E4%B8%BA%E4%BB%80%E4%B9%88OpenGL%E9%87%8C%E6%97%8B%E8%BD%AC%E7%AD%89%E5%8F%98%E6%8D%A2%E7%9F%A9%E9%98%B5%E6%98%AF4x4%E7%9A%84%E7%9F%A9%E9%98%B5/&title=为什么OpenGL里旋转等变换矩阵是4x4的矩阵 - Hanson的博客&summary=OpenGL ES 的很多教程里都会有这样一个例子来讲解纹理：将一张图片作为纹理显示在屏幕上。
+因为纹理坐标和实际屏幕显示的坐标不一样，把图片渲染在屏幕上后，图片是上下颠倒的。
+一个解决方法是对当前的顶点坐标，乘以绕 z 轴旋转180度的矩阵，这样图片就能正确显示了。$$\begin{bmatrix}cos\theta&amp;-sin\theta&amp;0&amp;0\sin\theta&amp;cos\theta&amp;0&amp;0\0&amp;0&amp;1&amp;0\0&amp;0&amp;0&amp;1\end{bmatrix}$$那么如何理解这个旋转矩阵呢？
+影响我们理解这个矩阵的第一个问题是：
+为什么这个矩阵是 4x4 的？ 而且我们发现旋转，缩放、平移等变换矩阵都是 4x4 的。
+在直观上的认知里，表达一个三维空间的坐标用 x,y,z 就足够了，那在三维空间里进行矩阵变换，用 3x3 的矩阵就够了，为什么需要 4x4 呢？
+为了回答这个问题，下面我们先在几何意义上理解向量和矩阵之间的关系，然后通过推导旋转矩阵和平移矩阵，一步步来解开这个疑惑。"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/logo/128/qzone.png">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-weibo" title="" rel="external nofollow noopener noreferrer"
+          
+          href="http://service.weibo.com/share/share.php?url=http://myhanson.com/2020/10/23/%E4%B8%BA%E4%BB%80%E4%B9%88OpenGL%E9%87%8C%E6%97%8B%E8%BD%AC%E7%AD%89%E5%8F%98%E6%8D%A2%E7%9F%A9%E9%98%B5%E6%98%AF4x4%E7%9A%84%E7%9F%A9%E9%98%B5/&title=为什么OpenGL里旋转等变换矩阵是4x4的矩阵 - Hanson的博客&summary=OpenGL ES 的很多教程里都会有这样一个例子来讲解纹理：将一张图片作为纹理显示在屏幕上。
+因为纹理坐标和实际屏幕显示的坐标不一样，把图片渲染在屏幕上后，图片是上下颠倒的。
+一个解决方法是对当前的顶点坐标，乘以绕 z 轴旋转180度的矩阵，这样图片就能正确显示了。$$\begin{bmatrix}cos\theta&amp;-sin\theta&amp;0&amp;0\sin\theta&amp;cos\theta&amp;0&amp;0\0&amp;0&amp;1&amp;0\0&amp;0&amp;0&amp;1\end{bmatrix}$$那么如何理解这个旋转矩阵呢？
+影响我们理解这个矩阵的第一个问题是：
+为什么这个矩阵是 4x4 的？ 而且我们发现旋转，缩放、平移等变换矩阵都是 4x4 的。
+在直观上的认知里，表达一个三维空间的坐标用 x,y,z 就足够了，那在三维空间里进行矩阵变换，用 3x3 的矩阵就够了，为什么需要 4x4 呢？
+为了回答这个问题，下面我们先在几何意义上理解向量和矩阵之间的关系，然后通过推导旋转矩阵和平移矩阵，一步步来解开这个疑惑。"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/logo/128/weibo.png">
+          
+        </a>
+      
+    
+  </div>
+</div>
+
+
+
+        
+      
+    </div>
+  </section>
+
+
+        
+        
+          <div class="prev-next">
+            
+            
+              <a class='next' href='/2020/09/12/OpenGLES%E5%92%8CSwift%E5%AE%9E%E7%8E%B0%E5%85%A8%E6%99%AF%E5%9B%BE%E6%B5%8F%E8%A7%88(%E5%85%A8%E6%99%AF%E7%90%83,360%E5%BA%A6%E6%B5%8F%E8%A7%88,%E5%B0%8F%E8%A1%8C%E6%98%9F)/'>
+                <p class='title'>OpenGLES和Swift实现全景图浏览(全景球,360度浏览,小行星)<i class="fas fa-chevron-right" aria-hidden="true"></i></p>
+                <p class='content'>最近在学习 OpenGLES，其实也就学到纹理那里，所以想着做个小项目来巩固一下知识。而一个全景浏览器正好囊括顶点坐标，纹理坐标，索引绘图，MVP 矩阵变换等等知识，是一个很不错的练手项目。我选...</p>
+              </a>
+            
+          </div>
+        
+      </section>
+    </article>
+  
+
+  
+    <!-- 显示推荐文章和评论 -->
+
+
+
+  
+
+
+  
+
+
+
+
+<!-- 根据页面mathjax变量决定是否加载MathJax数学公式js -->
+
+
+
+  <script>
+    window.subData = {
+      title: '为什么OpenGL里旋转等变换矩阵是4x4的矩阵',
+      tools: true
+    }
+  </script>
+
+
+</div>
+<aside class='l_side'>
+  
+  
+
+  
+    
+    
+
+
+  <section class="widget toc-wrapper shadow desktop mobile">
+    
+  <header>
+    
+      <i class="fas fa-list fa-fw" aria-hidden="true"></i><span class='name'>本文目录</span>
+    
+  </header>
+
+
+    <div class='content'>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#向量和矩阵"><span class="toc-text">向量和矩阵</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#推导旋转矩阵"><span class="toc-text">推导旋转矩阵</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#推导平移矩阵"><span class="toc-text">推导平移矩阵</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a></li></ol>
+    </div>
+  </section>
+
+
+  
+
+
+</aside>
+
+
+  
+  <footer class="clearfix">
+    <br><br>
+    
+      
+        <br>
+        <div class="social-wrapper">
+          
+            
+              <a href="/atom.xml"
+                class="social fas fa-rss flat-btn"
+                target="_blank"
+                rel="external nofollow noopener noreferrer">
+              </a>
+            
+          
+            
+              <a href="mailto:hansenhs21@live.com"
+                class="social fas fa-envelope flat-btn"
+                target="_blank"
+                rel="external nofollow noopener noreferrer">
+              </a>
+            
+          
+            
+              <a href="https://github.com/zyphs21"
+                class="social fab fa-github flat-btn"
+                target="_blank"
+                rel="external nofollow noopener noreferrer">
+              </a>
+            
+          
+        </div>
+      
+    
+      
+        <div><p>博客内容遵循 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0) 协议</a></p>
+</div>
+      
+    
+      
+        本站使用
+        <a href="https://volantis.js.org/" target="_blank" class="codename">Volantis</a>
+        作为主题，总访问量为
+          <span id="busuanzi_value_site_pv"><i class="fas fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span>
+          次
+        
+      
+    
+      
+        <div class='copyright'>
+        <p><a href="www.myhanson.com">Copyright © 2017-2020 Hanson</a></p>
+
+        </div>
+      
+    
+  </footer>
+
+<script>setLoadingBarProgress(80);</script>
+
+
+      <script>setLoadingBarProgress(60);</script>
+    </div>
+    <a class="s-top fas fa-arrow-up fa-fw" href='javascript:void(0)'></a>
+  </div>
+  
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4/dist/jquery.min.js"></script>
+
+
+  <script>
+    
+    var SEARCH_SERVICE = "hexo" || "hexo";
+    var ROOT = "/" || "/";
+    if (!ROOT.endsWith('/')) ROOT += '/';
+  </script>
+
+
+  <script async src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-volantis@2/js/instant_page.js" type="module" defer integrity="sha384-OeDn4XE77tdHo8pGtE1apMPmAipjoxUQ++eeJa6EtJCfHlvijigWiJpD7VDPWXV1"></script>
+
+
+
+  
+<script src="https://cdn.jsdelivr.net/npm/node-waves@0.7.6/dist/waves.min.js"></script>
+
+  <script type="text/javascript">
+    $(function() {
+      Waves.attach('.flat-btn', ['waves-button']);
+      Waves.attach('.float-btn', ['waves-button', 'waves-float']);
+      Waves.attach('.float-btn-light', ['waves-button', 'waves-float', 'waves-light']);
+      Waves.attach('.flat-box', ['waves-block']);
+      Waves.attach('.float-box', ['waves-block', 'waves-float']);
+      Waves.attach('.waves-image');
+      Waves.init();
+    });
+  </script>
+
+
+  <script async src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-busuanzi@2.3/js/busuanzi.pure.mini.js"></script>
+
+
+
+  
+  
+  
+    
+<script src="https://cdn.jsdelivr.net/npm/jquery-backstretch@2.1.18/jquery.backstretch.min.js"></script>
+
+    <script type="text/javascript">
+      $(function(){
+        var imgs=["https://cdn.jsdelivr.net/gh/xaoxuu/cdn-wallpaper/abstract/41F215B9-261F-48B4-80B5-4E86E165259E.jpeg"];
+        if ('true' == 'true') {
+          function shuffle(arr){
+            /*From countercurrent-time*/
+            var n = arr.length;
+            while(n--) {
+              var index = Math.floor(Math.random() * n);
+              var temp = arr[index];
+              arr[index] = arr[n];
+              arr[n] = temp;
+            }
+          }
+          shuffle(imgs);
+        }
+        if ('.cover') {
+          $('.cover').backstretch(
+            imgs,
+          {
+            duration: "20000",
+            fade: "1500"
+          });
+        } else {
+          $.backstretch(
+            imgs,
+          {
+            duration: "20000",
+            fade: "1500"
+          });
+        }
+      });
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+<script src="/js/app.js"></script>
+
+
+
+  
+<script src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-volantis@2.4/js/search.js"></script>
+
+
+
+  
+<script src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-volantis@2/js/comment_typing.js"></script>
+
+
+
+
+
+
+<!-- 复制 -->
+
+  <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="fas fa-copy"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('fa-copy');
+        $icon.addClass('fa-check-circle');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('fa-check-circle');
+          $icon.addClass('fa-copy');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('fa-copy');
+        $icon.addClass('fa-times-circle');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('fa-times-circle');
+          $icon.addClass('fa-copy');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+
+
+
+
+<!-- fancybox -->
+
+  <script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+<script>
+  let LAZY_LOAD_IMAGE = "";
+  $(".article-entry").find("div.fancybox").find("img").each(function () {
+      var element = document.createElement("a");
+      $(element).attr("data-fancybox", "gallery");
+      $(element).attr("href", $(this).attr("src"));
+      /* 图片采用懒加载处理时,
+       * 一般图片标签内会有个属性名来存放图片的真实地址，比如 data-original,
+       * 那么此处将原本的属性名src替换为对应属性名data-original,
+       * 修改如下
+       */
+       if (LAZY_LOAD_IMAGE) {
+         $(element).attr("href", $(this).attr("data-original"));
+       }
+      $(this).wrap(element);
+  });
+</script>
+
+
+
+
+
+
+  <script>setLoadingBarProgress(100);</script>
+</body>
+</html>
