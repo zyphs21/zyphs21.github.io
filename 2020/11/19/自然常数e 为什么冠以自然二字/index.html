@@ -16,10 +16,10 @@
 
   <!-- 页面元数据 -->
   
-    <title>为什么OpenGL里旋转等变换矩阵是4x4的矩阵 - Hanson的博客</title>
+    <title>自然常数 e 为什么冠以“自然”二字 - Hanson的博客</title>
   
   
-    <meta name="description" content="在直观上的认知里，表达一个三维空间的坐标用 x,y,z 就足够了，那在三维空间里进行矩阵变换，用 3x3 的矩阵就够了，为什么需要 4x4 呢？为了回答这个问题，下面我们先在几何意义上理解向量和矩阵之间的关系，然后通过推导旋转矩阵和平移矩阵，一步步来解开这个疑惑。">
+    <meta name="description" content="π 应该是我们最熟悉的数学常数了，但是除了 π 以外，还有一个数学常数  e，它同样重要，同样与我们生活息息相关，甚至被冠名为 自然常数。">
   
 
   <!-- feed -->
@@ -279,8 +279,8 @@
           
   
     <h1 class="title">
-      <a href="/2020/10/23/%E4%B8%BA%E4%BB%80%E4%B9%88OpenGL%E9%87%8C%E6%97%8B%E8%BD%AC%E7%AD%89%E5%8F%98%E6%8D%A2%E7%9F%A9%E9%98%B5%E6%98%AF4x4%E7%9A%84%E7%9F%A9%E9%98%B5/">
-        为什么OpenGL里旋转等变换矩阵是4x4的矩阵
+      <a href="/2020/11/19/%E8%87%AA%E7%84%B6%E5%B8%B8%E6%95%B0e%20%E4%B8%BA%E4%BB%80%E4%B9%88%E5%86%A0%E4%BB%A5%E8%87%AA%E7%84%B6%E4%BA%8C%E5%AD%97/">
+        自然常数 e 为什么冠以“自然”二字
       </a>
     </h1>
   
@@ -306,9 +306,9 @@
               
   
   <div class='new-meta-item category'>
-    <a href='/categories/OpenGL/' rel="nofollow">
+    <a href='/categories/%E6%95%B0%E5%AD%A6/' rel="nofollow">
       <i class="fas fa-folder-open fa-fw" aria-hidden="true"></i>
-      <p>OpenGL</p>
+      <p>数学</p>
     </a>
   </div>
 
@@ -319,7 +319,7 @@
               <div class="new-meta-item date">
   <a class='notlink'>
     <i class="fas fa-calendar-alt fa-fw" aria-hidden="true"></i>
-    <p>发布于：Oct 23, 2020</p>
+    <p>发布于：Nov 19, 2020</p>
   </a>
 </div>
 
@@ -342,73 +342,74 @@
       <section class="article typo">
         <div class="article-entry" itemprop="articleBody">
           
-          <p>OpenGL ES 的很多教程里都会有这样一个例子来讲解纹理：将一张图片作为纹理显示在屏幕上。</p>
-<p>因为纹理坐标和实际屏幕显示的坐标不一样，把图片渲染在屏幕上后，图片是上下颠倒的。</p>
-<p>一个解决方法是对当前的顶点坐标，乘以绕 z 轴旋转180度的矩阵，这样图片就能正确显示了。</p>
-<p>$$<br>\begin{bmatrix}<br>cos\theta &amp; -sin\theta &amp; 0 &amp; 0 \\ sin\theta &amp; cos\theta &amp; 0 &amp; 0 \\ 0 &amp; 0 &amp; 1 &amp; 0 \\ 0 &amp; 0 &amp; 0 &amp; 1 \<br>\end{bmatrix}<br>$$</p>
-<p>那么如何理解这个旋转矩阵呢？</p>
-<p>影响我们理解这个矩阵的第一个问题是：</p>
-<p><strong>为什么这个矩阵是 4x4 的？</strong> 而且我们发现旋转，缩放、平移等变换矩阵都是 4x4 的。</p>
-<p>在直观上的认知里，表达一个三维空间的坐标用 x,y,z 就足够了，那在三维空间里进行矩阵变换，用 3x3 的矩阵就够了，为什么需要 4x4 呢？</p>
-<p>为了回答这个问题，下面我们先在几何意义上理解<strong><u>向量和矩阵</u></strong>之间的关系，然后通过<strong><u>推导旋转矩阵</u></strong>和<u><strong>平移矩阵</strong></u>，一步步来解开这个疑惑。</p>
-<h2 id="向量和矩阵"><a href="#向量和矩阵" class="headerlink" title="向量和矩阵"></a>向量和矩阵</h2><p>在几何平面上，我们可以把平面上任意一<code>点</code>，当作<u>与原点组成</u>的一个 <code>向量</code> 来理解。</p>
-<p>如图 ，A 点可以表示成向量  $\vec{OA}$  ；在 x 轴和 y 轴上各有 i 点（1， 0）和  j 点（0，1），同样的，让它们与原点组成向量，为了简化，我们用  $\vec{i}$  和 $\vec{j}$ 表示这两个向量。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/zhenwanping/cdn-assets@master/photo/20201022184245.png" alt="image-20201022184243547"></p>
-<p>因为 A 点的坐标为 (3, 2)，如果我们要用  $\vec{i}$  和 $\vec{j}$  表示 $\vec{OA}$ ，那是这样的：<br>$$<br>3\vec{i} + 2\vec{j} = \vec{OA}<br>$$<br>这里的几何意义是 $\vec{i}$ 延展到 $3\vec{i}$  ，$\vec{j}$ 延展到 $2\vec{j}$ ，然后把这两个向量相加即可得到 $\vec{OA}$</p>
-<p>i  坐标是 （1， 0），j 坐标是 （0，1），我们把上面这个等式转换成竖列的形式：<br>$$<br>3<br>\begin{bmatrix}1\\0\end{bmatrix}<br>+<br>2<br>\begin{bmatrix}<br>0\\1<br>\end{bmatrix}<br>=<br>\begin{bmatrix}<br>3 \\ 2<br>\end{bmatrix}<br>$$<br>这里其实是向量的简单运算，运算过程如下：<br>$$<br>\begin{bmatrix}<br>3 \times  1 \\ 3 \times 0<br>\end{bmatrix}<br>+<br>\begin{bmatrix}<br>2 \times 0\\2 \times 1<br>\end{bmatrix}<br>=<br>\begin{bmatrix}<br>3 \times 1 + 2 \times 0\\3 \times 0 + 2 \times 1<br>\end{bmatrix}<br>=<br>\begin{bmatrix}<br>3\\2<br>\end{bmatrix}<br>$$<br>看到运算过程是否有种似曾相识的感觉？这不就是矩阵与向量的乘法计算吗？这个运算其实就是将<code>向量左乘一个矩阵</code> 的计算：<br>$$<br>\begin{bmatrix}<br>1 &amp; 0\\0 &amp; 1<br>\end{bmatrix}<br>\begin{bmatrix}<br>3\\2<br>\end{bmatrix}<br>=<br>\begin{bmatrix}<br>3 \times 1 + 2 \times 0 \\3 \times 0 + 2 \times 1<br>\end{bmatrix}<br>=<br>\begin{bmatrix}<br>3 \\ 2<br>\end{bmatrix}<br>$$<br>这里 $\begin{bmatrix} 1 &amp; 0 \\ 0 &amp; 1 \end{bmatrix}$  其实就是<code>单元矩阵</code>，左乘一个单元矩阵并不会改变原来的值。而这个单元矩阵以两个竖列来看，<strong>正是 i 和 j 点的坐标</strong>，也是向量  $\vec{i}$  和  $\vec{j}$ ，在数学上将  $\vec{i}$  和  $\vec{j}$  称为此坐标系的 <code>基向量</code>。</p>
-<h2 id="推导旋转矩阵"><a href="#推导旋转矩阵" class="headerlink" title="推导旋转矩阵"></a>推导旋转矩阵</h2><p>我们现在把整个坐标轴绕原点逆时针旋转  $45^o$ ：</p>
-<p><img src="https://cdn.jsdelivr.net/gh/zhenwanping/cdn-assets@master/photo/20201022220658.png" alt="image-20201022220656758"></p>
-<p>旋转后  i 点和 j 点对应  $i^\prime$  和  $j^\prime$ 位置。</p>
-<p>通过简单的三角函数计算得到： $i^\prime$ 坐标为 $\begin{bmatrix}cos45^o \\ sin45^o\end{bmatrix}$ ，$j^\prime$ 坐标为 $\begin{bmatrix} -sin45^o \\ cons45^o \end{bmatrix}$</p>
-<p>旋转后，A 点的坐标是多少呢？回顾上面的做法， $\vec{i^\prime}$ 延展到 $3\vec{i^\prime}$  ，$\vec{j^\prime}$ 延展到 $2\vec{j^\prime}$ ，然后把这两个向量相加即可得到 $\vec{OA^\prime}$ 。结合上面一节矩阵和向量的推演，可以变成下面的形式：<br>$$<br>\begin{bmatrix}<br>cos45^o &amp; -sin45^o \\sin45^o &amp; cos45^o<br>\end{bmatrix}<br>\begin{bmatrix}<br>3 \\ 2<br>\end{bmatrix}<br>$$<br>我们发现，左边的矩阵不正是开头所看到的 <code>旋转矩阵</code> 吗？只不过这是二维平面上的旋转矩阵:<br>$$<br>\begin{bmatrix}<br>cos\theta &amp; -sin\theta \\sin\theta &amp; cos\theta<br>\end{bmatrix}<br>$$<br>结合图形和计算，我们可以这样理解这个二维矩阵：二维矩阵代表一个坐标系里的两个基向量，而在这个坐标系里的点与原点组成的向量，都可以用这两个基向量的变换来表示。那么旋转一个点，可以转换成旋转这个点所在的坐标系，从而通过变化的基向量求出旋转后的点的位置。</p>
-<p>其实这种变换在数学上称作 <code>线性变换</code> ，线性变换是通过 <code>矩阵乘法</code> 来实现</p>
+          <p> $\pi$ 应该是我们最熟悉的数学常数了，但是除了 $\pi$ 以外，还有一个数学常数  $e$，它同样重要，同样与我们生活息息相关，甚至被冠名为 <code>自然常数</code>，它是对数函数的底数，有时候也称它为欧拉数（Euler number），以瑞士数学家欧拉命名。</p>
+<p>它的一个数学定义是这样的：<br>$$<br>e = \lim\limits_{n \to \infty} (1+\frac{1}{n})^n<br>$$</p>
+<p>其数值约等于（小数点后25位）： <code>2.71828 18284 59045 23536 02874</code></p>
+<p>相信大家前段时间都玩过或听过《荒野乱斗》这个游戏，我司前端大佬 Fred 哥也一直在为升杯而努力，玩这个游戏很大的一个动力是攒个宝箱开个英雄出来。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zhenwanping/cdn-assets@master/photo/20201116095953.png" alt="荒野乱斗超级宝箱"></p>
+<p>假设现在有一个超级宝箱，它开出英雄的概率是 0.1%（1/1000），千分之一。我们的 Fred 哥又很有钱，那他氪金氪它个 1000 发，是不是一定能开出个英雄来？基于我们的数学常识，明显不是的。</p>
+<p>那么我们可不可以求一下 Fred 哥倒霉的概率呢？他买了 1000 个超级宝箱，一个英雄都没开出的概率是多少呢？</p>
+<p>一个超级宝箱，它开出英雄的概率是 0.1%（1/1000），那开不出英雄的概率就是：<br>$$<br>1-\frac{1}{1000}<br>$$<br>第一次开不中概率是 $(1-\frac{1}{1000})$，那两次开不中的概率是 $(1-\frac{1}{1000})(1-\frac{1}{1000})$ ，以此类推，那开 1000 个宝箱都不中的概率是：<br>$$<br>(1-\frac{1}{1000})^{1000} \approx 0.36769542477096404462680613922046134399<br>$$<br>乍一看，好像跟我们的 $e$ 没啥联系啊。</p>
+<p>但是如果我们把 <code>0.367695424770964044626...</code> 这个值倒转一下：<br>$$<br>\frac{1}{0.367695424770964044626..} \approx 2.71964221644285036539755346440401494764<br>$$<br>怎么样？结果的 <code>2.719642216442...</code> 这个数值是不是似曾相识？这非常接近我们的自然常数  $e$ 的值。</p>
+<p>如果宝箱开出英雄的概率变成 0.01%，万分之一，Fred 哥买的宝箱数目也增大到一万个，那这个值又会如何变化呢：<br>$$<br>(1-\frac{1}{10000})^{10000} \approx 0.3678610464329299241113356722185087445<br>$$</p>
+<p>$$<br>\frac{1}{0.3678610464329299241113356722185087445} \approx 2.7184177550104492651837311208355930494<br>$$</p>
+<p>如果继续将开出英雄的概率变低，Fred 哥买的宝箱数目也相应变大，最后结果是怎样的呢？我们先构造这样一个式子来计算：<br>$$<br>\frac{1}{(1-\frac{1}{n})^n}<br>$$<br>接着利用 Swift Playground 来计算其结果，观察随着 n 变大，最后的结果是怎样变化的：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zhenwanping/cdn-assets@master/photo/20201111105035.png" alt="SwiftPlayground计算截图"></p>
+<p>我们可以发现，随着 n 越来越大，最后的值会越来越接近 $e$ 的值！我们可以用下面这个极限的式子表示：<br>$$<br>\lim\limits_{n \to \infty} (1-\frac{1}{n})^n = \frac{1}{e}<br>$$<br>扩展一下：</p>
+<p>如果我们把前面说到的超级宝箱例子，具象成一个装满球的箱子，假设箱子里有 1000 个球，我们每次有放回地抽取一个球，抽取 1000 次，那么最后没有被抽到的球大概有多少个呢？答案是 368 个。</p>
+<p>这里的计算其实与上面的几乎一样，求出没有被抽到球的概率，然后乘以球的总数：<br>$$<br>(1-\frac{1}{1000})^{1000} \approx 0.368<br>$$</p>
+<p>$$<br>1000 \times 0.368 = 368<br>$$</p>
+<p>这个在统计学上，这个其实叫做<code>自助抽样法(Bootstrapping Method)</code> : 是一种从给定训练集中有放回的均匀抽样，也就是说，每当选中一个样本，它等可能地被再次选中并被再次添加到训练集中。</p>
 <blockquote>
-<p><strong>线性变换</strong>：是在两个<a href="https://zh.wikipedia.org/wiki/向量空间" target="_blank" rel="noopener">向量空间</a>（包括由函数构成的抽象的向量空间）之间的一种保持向量加法和标量乘法的特殊映射</p>
+<p>从数量为 N 的样本中「有放回地」随机抽取出一个「数量同样为N」的样本，那么理论上来说，原来的 N 个个体中大约会有 <code>36.8%</code> 的个体不会被抽中。（引用<a href="https://www.zhihu.com/question/20296247" target="_blank" rel="noopener">来源</a>）</p>
 </blockquote>
-<blockquote>
-<p>线性变换在几何直观上有如下特点：</p>
-<ul>
-<li><p>变换前后，直线仍然保持是直线的状态</p>
-</li>
-<li><p>变换前后，原点保持固定，不会变化</p>
-</li>
-</ul>
-</blockquote>
-<p>我们从二维平面，推导到三维坐标也是同理，只不过是多了个 z 轴<br>$$<br>\begin{bmatrix}<br>1 &amp; 0 &amp; 0 \\0 &amp; 1 &amp; 0 \\0 &amp; 0 &amp; 1<br>\end{bmatrix}<br>$$<br>竖着来看这个矩阵，是 x，y，z轴上的三个基向量，同时它又是一个单元矩阵。</p>
-<p>同理上面二维平面的推导，三维坐标绕 z 轴的旋转矩阵为：<br>$$<br>\begin{bmatrix}<br>cos\theta&amp;-sin\theta&amp;0\\sin\theta&amp;cos\theta&amp;0\\0&amp;0&amp;1<br>\end{bmatrix}<br>$$</p>
-<h2 id="推导平移矩阵"><a href="#推导平移矩阵" class="headerlink" title="推导平移矩阵"></a>推导平移矩阵</h2><p>那么平移操作，能不能也用这种矩阵与向量相乘的形式呢？我们再次回到二维平面，看看将 A 点平移到 B 点的情况是怎样的。</p>
-<img src="https://cdn.jsdelivr.net/gh/zhenwanping/cdn-assets@master/photo/20201022222202.png" alt="image-20201022222139291" style="zoom: 33%;" />
-
-<p>要将 A 点（3，2）平移到 B 点(4，5)，实际上就是先将 A 点往右移动 1 ，再往上移动 3，即 x 坐标值增加 1，y坐标值增加 3<br>$$<br>\begin{bmatrix}<br>x + 1 \\ y + 3<br>\end{bmatrix}<br>=<br>\begin{bmatrix}<br>x \\ y<br>\end{bmatrix}<br>+<br>\begin{bmatrix}<br>1 \\ 3<br>\end{bmatrix}<br>=<br>\begin{bmatrix}<br>3 + 1 \\ 2 + 3<br>\end{bmatrix}<br>=<br>\begin{bmatrix}<br>4 \\ 5<br>\end{bmatrix}<br>$$<br>从上面的运算来看，平移这种操作实际上是 <code>向量的加法</code>，即:<br>$$<br>\vec{OA} + \vec{OC} = \vec{OB}<br>$$</p>
-<p>$$<br>\begin{bmatrix} 3 \\ 2 \end{bmatrix} + \begin{bmatrix} 1 \\ 3 \end{bmatrix}=\begin{bmatrix} 4 \\ 5 \end{bmatrix}<br>$$</p>
-<p>我们可以通过向量加法的 <code>平行四边形法则</code> 加深理解，如下图：</p>
-<img src="https://cdn.jsdelivr.net/gh/zhenwanping/cdn-assets@master/photo/20201022223037.png" alt="image-20201022223035113" style="zoom:50%;" />
-
-<p>对于平移这种操作，<strong>我们无法仅仅通过矩阵乘法来实现</strong>。</p>
-<p>而实际上，平移这种操作属于 <code>仿射变换</code> 。</p>
-<blockquote>
-<p><strong>仿射变换</strong>，又称<strong>仿射映射</strong>，是指在几何中，对一个向量空间进行一次<a href="https://zh.wikipedia.org/wiki/线性变换" target="_blank" rel="noopener">线性变换</a>并接上一个平移，变换为另一个向量空间。</p>
-</blockquote>
-<p>仿射变换在几何直观上，相比线性变换，它不需要保证变换前后坐标原点不变。</p>
-<p>如下图，从 A 点平移到 B 点，我们换一个角度思考，这次不移动点，而是<code>移动整个坐标轴</code>，同样可以达到平移 A 点到 B 点的需求，但是坐标原点移动到了 O’ 点（1，3）。</p>
-<img src="https://cdn.jsdelivr.net/gh/zhenwanping/cdn-assets@master/photo/20201022230510.png" alt="image-20201022230432040" style="zoom: 33%;" />
-
-
-
-<p>我们希望构造的是像下面这种矩阵乘法的等式，这样才能用一个通用的计算模式来处理坐标点的变换。<br>$$<br>\begin{bmatrix}<br>矩阵<br>\end{bmatrix}<br>\begin{bmatrix}<br>3\\2<br>\end{bmatrix}<br>=<br>\begin{bmatrix}<br>4\\5<br>\end{bmatrix}<br>$$<br>到这里，我们终于要请出 <code>齐次坐标</code> 了。</p>
-<blockquote>
-<p>齐次坐标就是将一个原本是 n 维的向量用一个 n+1 维向量来表示，是指一个用于投影几何里的坐标系统，如同用于欧氏几何里的笛卡儿坐标一般。</p>
-</blockquote>
-<p>用一个通俗的讲法是，我们需要 <code>升维</code> 来处理这个问题。</p>
-<blockquote>
-<p>通过增加一个维度，我们可以在<code>高维度</code>上，通过线性变换来处理<code>低维度</code>的仿射变换。</p>
-</blockquote>
-<p>这句话咋一听感觉很有哲理，但是通过下面的数学等式就能知道其中的奥妙：<br>$$<br>\begin{bmatrix}<br>1 &amp; 0 &amp; 1 \\0 &amp; 1 &amp; 3 \\0 &amp; 0 &amp; 1<br>\end{bmatrix}<br>\begin{bmatrix}<br>3 \\ 2 \\ 1<br>\end{bmatrix}<br>=<br>\begin{bmatrix}<br>1 \times 3 + 0 \times 2 + 1 \times 1 \\0 \times 3 + 1 \times 2 + 3 \times 1 \\0 \times 3 + 0 \times 2 + 1 \times 1<br>\end{bmatrix}<br>=<br>\begin{bmatrix}<br>4 \\ 5 \\ 1<br>\end{bmatrix}<br>$$<br>观察上面的运算过程，结果 $\begin{bmatrix}4\\5\\1 \end{bmatrix}$ 不正是我们上面所得的 $\begin{bmatrix} 4\\5 \end{bmatrix}$ 吗？只不过多了一个 z 轴的坐标值。</p>
-<p>我们通过升级一个维度，将在二维平面上的平移问题转换成了在三维坐标的矩阵和向量乘法。那么在二维平面上，这个平移矩阵就为：<br>$$<br>\begin{bmatrix}<br>1 &amp; 0 &amp; tx \\0 &amp; 1 &amp; ty \\0 &amp; 0 &amp; 1<br>\end{bmatrix}<br>$$<br>tx 和 ty 就对应在 x 轴 和 y 轴上的移动距离。</p>
-<p>同理推广到三维坐标系，要实现三维坐标的平移操作，同样需要通过升维，引入齐次坐标来计算。那么三维坐标下的平移矩阵就为：<br>$$<br>\begin{bmatrix}<br>1 &amp; 0 &amp; 0 &amp; tx \\0 &amp; 1 &amp; 0 &amp; ty \\0 &amp; 0 &amp; 1 &amp; tz \\0 &amp; 0 &amp; 0 &amp; 1 \<br>\end{bmatrix}<br>$$</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>至此，我们可以回答最开始的问题了，为什么 OpenGL 里的矩阵变换是 4x4 的矩阵呢？</p>
-<p>我们来想象这样一个场景：如果我要让顶点坐标旋转一定角度后，再平移一段距离，那么这里面的操作就涉及 3x3 矩阵的计算和 4x4 矩阵的计算，如果不统一起来，这种连续变换的计算操作将很复杂。</p>
-<p>所以如果要用矩阵乘法来统一所有的平移、旋转等等变换计算，为了照顾到平移这类仿射变换，统一用 4x4 矩阵来计算既能满足场景又方便计算。</p>
+<p> 这种抽样方法已经应用在很多领域，比如在机器学习领域，大家都略有耳闻的 <code>随机森林</code> 算法，就是在训练集中利用这种抽样方式，从原始训练样本集 N 中有放回地重复随机抽取 N 个样本生成新的训练样本集合训练决策树，然后没有被抽中的 36.8% 作为 Out of Bag 数据集训练，即袋外误差来验证决策树。具体就不展开讲了，因为我也不是很懂 :-)</p>
+<p>我们回到 Fred 哥身上，前文提到 Fred 哥很有钱，但是有一天 Fred 哥居然找我借了 100 块钱，我很无耻地定了 100% 的年息利率。也就是一年后我可以得到 200 块：<br>$$<br>100 \times (1 + 100\%) = 200<br>$$<br>但是这时候我想起了复利的概念，如果仍然保持 100% 的年利率，但是我半年结一次息，把得到的利息和加入100块里，让它利滚利，也就是说每半年的利率为 $\frac{100\%}{2} = 50\%$ 那这样的话，一年后我可以得到 225 块：<br>$$<br>100 \times (1+\frac{100\%}{2}） \times (1+\frac{100\%}{2}) = 225<br>$$<br>看起来复利真不错啊！丧心病狂的我决定从半年结一次息改成每个季度结一次息，一年后我可以得到 244 块：<br>$$<br>100 \times (1+\frac{100\%}{4})^4 \approx 244<br>$$<br>太棒了，又多了点钱，贪得无厌的我决定每个月结一次息，不，我要每天结一次息，我要半天结一次息，我要每小时结一次息，我要每分钟结一次息，我要每秒结一次息…… 被连续复利冲昏头脑的我想着这次要彻底榨干 Fred 哥！兴奋的我，又打开了 Swift Playground，喜滋滋地让程序帮我算出最后能得多少钱：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zhenwanping/cdn-assets@master/photo/20201111162711.png" alt="SwiftPlayground计算复利"></p>
+<p>咦！发生什么情况，怎么随着结息次数的增加，钱怎么都不往上涨了？？而且越来越趋向 271.828 。</p>
+<p>这个数字是不是似曾相识？没错，这个值就是 $e \approx 2.71828$ 乘以 100 所得到，也就是不管结息次数怎么增大，最后得到的钱也只能是 $e$ 倍！因此也有人说 $e$ 是在一个特定周期内的增长极限。</p>
+<p>这里我们祭出一个关于极限的公式：<br>$$<br>\lim\limits_{n \to \infty} (1+\frac{1}{n})^n = e<br>$$</p>
+<p>通过上面的例子，大家应该能体会 $e$ 是多么神奇的一个数学常数。$e$ 在我们生活中可以说无处不在，除了这些纯数学上的例子外，自然界中很多东西也和 $e$ 有关。比如等角螺线，或者称对数螺线、生长螺线。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zhenwanping/cdn-assets@master/photo/20201117152859.png" alt="等角螺线图片"></p>
+<p>它是自然界中常见的螺线，在极坐标系 $(r, \theta)$ 中，这个曲线的公式可以写成：<br>$$<br>r = ae^{b\theta}<br>$$<br>从公式可以看到，我们的 $e$ 又出现了。还真的是无处不在啊。</p>
+<p>下面举一下自然界中的例子（来自维基百科：<a href="https://zh.wikipedia.org/wiki/%E7%AD%89%E8%A7%92%E8%9E%BA%E7%BA%BF" target="_blank" rel="noopener">等角螺线</a>）：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>鹦鹉螺的贝壳像等角螺线</td>
+<td><img src="https://cdn.jsdelivr.net/gh/zhenwanping/cdn-assets@master/photo/20201111165255.png" alt="鹦鹉螺等角螺线"></td>
+</tr>
+<tr>
+<td>菊的花蕊排列成等角螺线</td>
+<td><img src="https://cdn.jsdelivr.net/gh/zhenwanping/cdn-assets@master/photo/20201111165449.png" alt="菊花种子"></td>
+</tr>
+<tr>
+<td>鹰以等角螺线的方式接近它们的猎物</td>
+<td></td>
+</tr>
+<tr>
+<td>昆虫以等角螺线的方式接近光源</td>
+<td></td>
+</tr>
+<tr>
+<td>蜘蛛网的构造与等角螺线相似</td>
+<td><img src="https://cdn.jsdelivr.net/gh/zhenwanping/cdn-assets@master/photo/20201111165605.png" alt="蜘蛛网的构造与等角螺线相似"></td>
+</tr>
+<tr>
+<td>旋涡星系的旋臂差不多是等角螺线。银河系的四大旋臂的倾斜度约为 12°。</td>
+<td><img src="https://cdn.jsdelivr.net/gh/zhenwanping/cdn-assets@master/photo/20201111170543.png" alt="旋涡星系的旋臂"></td>
+</tr>
+<tr>
+<td>低气压(热带气旋、温带气旋等)的外观像等角螺线</td>
+<td><img src="https://cdn.jsdelivr.net/gh/zhenwanping/cdn-assets@master/photo/20201111170713.png" alt="低气压(热带气旋、温带气旋等)"></td>
+</tr>
+</tbody></table>
+<p>最后点一下题吧，这些自然的现象，都与等角螺线有关，也就是都跟我们的自然常数 $e$ 有关。小至游戏宝箱，大至宇宙星系，都有 $e$ 存在的身影。$e$ 称之为自然常数，当之无愧。</p>
 
           
             <br>
@@ -445,7 +446,7 @@
           
         
           
-            <p>本文永久链接是：<a href=http://myhanson.com/2020/10/23/%E4%B8%BA%E4%BB%80%E4%B9%88OpenGL%E9%87%8C%E6%97%8B%E8%BD%AC%E7%AD%89%E5%8F%98%E6%8D%A2%E7%9F%A9%E9%98%B5%E6%98%AF4x4%E7%9A%84%E7%9F%A9%E9%98%B5/>http://myhanson.com/2020/10/23/%E4%B8%BA%E4%BB%80%E4%B9%88OpenGL%E9%87%8C%E6%97%8B%E8%BD%AC%E7%AD%89%E5%8F%98%E6%8D%A2%E7%9F%A9%E9%98%B5%E6%98%AF4x4%E7%9A%84%E7%9F%A9%E9%98%B5/</a></p>
+            <p>本文永久链接是：<a href=http://myhanson.com/2020/11/19/%E8%87%AA%E7%84%B6%E5%B8%B8%E6%95%B0e%20%E4%B8%BA%E4%BB%80%E4%B9%88%E5%86%A0%E4%BB%A5%E8%87%AA%E7%84%B6%E4%BA%8C%E5%AD%97/>http://myhanson.com/2020/11/19/%E8%87%AA%E7%84%B6%E5%B8%B8%E6%95%B0e%20%E4%B8%BA%E4%BB%80%E4%B9%88%E5%86%A0%E4%BB%A5%E8%87%AA%E7%84%B6%E4%BA%8C%E5%AD%97/</a></p>
           
         
       </blockquote>
@@ -495,10 +496,10 @@
     <div class='new-meta-box'>
       
         
-          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2020-10-23T09:23:43+08:00">
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2020-11-19T23:32:45+08:00">
   <a class='notlink'>
     <i class="fas fa-edit fa-fw" aria-hidden="true"></i>
-    <p>更新于：Oct 23, 2020</p>
+    <p>更新于：Nov 19, 2020</p>
   </a>
 </div>
 
@@ -522,7 +523,7 @@
       
         <a class="-mob-share-qq" title="" rel="external nofollow noopener noreferrer"
           
-          href="http://connect.qq.com/widget/shareqq/index.html?url=http://myhanson.com/2020/10/23/%E4%B8%BA%E4%BB%80%E4%B9%88OpenGL%E9%87%8C%E6%97%8B%E8%BD%AC%E7%AD%89%E5%8F%98%E6%8D%A2%E7%9F%A9%E9%98%B5%E6%98%AF4x4%E7%9A%84%E7%9F%A9%E9%98%B5/&title=为什么OpenGL里旋转等变换矩阵是4x4的矩阵 - Hanson的博客&summary="
+          href="http://connect.qq.com/widget/shareqq/index.html?url=http://myhanson.com/2020/11/19/%E8%87%AA%E7%84%B6%E5%B8%B8%E6%95%B0e%20%E4%B8%BA%E4%BB%80%E4%B9%88%E5%86%A0%E4%BB%A5%E8%87%AA%E7%84%B6%E4%BA%8C%E5%AD%97/&title=自然常数 e 为什么冠以“自然”二字 - Hanson的博客&summary="
           
           >
           
@@ -534,7 +535,7 @@
       
         <a class="-mob-share-qzone" title="" rel="external nofollow noopener noreferrer"
           
-          href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://myhanson.com/2020/10/23/%E4%B8%BA%E4%BB%80%E4%B9%88OpenGL%E9%87%8C%E6%97%8B%E8%BD%AC%E7%AD%89%E5%8F%98%E6%8D%A2%E7%9F%A9%E9%98%B5%E6%98%AF4x4%E7%9A%84%E7%9F%A9%E9%98%B5/&title=为什么OpenGL里旋转等变换矩阵是4x4的矩阵 - Hanson的博客&summary="
+          href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://myhanson.com/2020/11/19/%E8%87%AA%E7%84%B6%E5%B8%B8%E6%95%B0e%20%E4%B8%BA%E4%BB%80%E4%B9%88%E5%86%A0%E4%BB%A5%E8%87%AA%E7%84%B6%E4%BA%8C%E5%AD%97/&title=自然常数 e 为什么冠以“自然”二字 - Hanson的博客&summary="
           
           >
           
@@ -546,7 +547,7 @@
       
         <a class="-mob-share-weibo" title="" rel="external nofollow noopener noreferrer"
           
-          href="http://service.weibo.com/share/share.php?url=http://myhanson.com/2020/10/23/%E4%B8%BA%E4%BB%80%E4%B9%88OpenGL%E9%87%8C%E6%97%8B%E8%BD%AC%E7%AD%89%E5%8F%98%E6%8D%A2%E7%9F%A9%E9%98%B5%E6%98%AF4x4%E7%9A%84%E7%9F%A9%E9%98%B5/&title=为什么OpenGL里旋转等变换矩阵是4x4的矩阵 - Hanson的博客&summary="
+          href="http://service.weibo.com/share/share.php?url=http://myhanson.com/2020/11/19/%E8%87%AA%E7%84%B6%E5%B8%B8%E6%95%B0e%20%E4%B8%BA%E4%BB%80%E4%B9%88%E5%86%A0%E4%BB%A5%E8%87%AA%E7%84%B6%E4%BA%8C%E5%AD%97/&title=自然常数 e 为什么冠以“自然”二字 - Hanson的博客&summary="
           
           >
           
@@ -570,15 +571,12 @@
         
           <div class="prev-next">
             
-              <a class='prev' href='/2020/11/19/%E8%87%AA%E7%84%B6%E5%B8%B8%E6%95%B0e%20%E4%B8%BA%E4%BB%80%E4%B9%88%E5%86%A0%E4%BB%A5%E8%87%AA%E7%84%B6%E4%BA%8C%E5%AD%97/'>
-                <p class='title'><i class="fas fa-chevron-left" aria-hidden="true"></i>自然常数 e 为什么冠以“自然”二字</p>
-                <p class='content'> $\pi$ 应该是我们最熟悉的数学常数了，但是除了 $\pi$ 以外，还有一个数学常数  $e$，它同样重要，同样与我们生活息息相关，甚至被冠名为 自然常数，它是对数函数的底数，有时候也称它为...</p>
-              </a>
             
-            
-              <a class='next' href='/2020/09/12/OpenGLES%E5%92%8CSwift%E5%AE%9E%E7%8E%B0%E5%85%A8%E6%99%AF%E5%9B%BE%E6%B5%8F%E8%A7%88(%E5%85%A8%E6%99%AF%E7%90%83,360%E5%BA%A6%E6%B5%8F%E8%A7%88,%E5%B0%8F%E8%A1%8C%E6%98%9F)/'>
-                <p class='title'>OpenGLES和Swift实现全景图浏览(全景球,360度浏览,小行星)<i class="fas fa-chevron-right" aria-hidden="true"></i></p>
-                <p class='content'>最近在学习 OpenGLES，其实也就学到纹理那里，所以想着做个小项目来巩固一下知识。而一个全景浏览器正好囊括顶点坐标，纹理坐标，索引绘图，MVP 矩阵变换等等知识，是一个很不错的练手项目。我选...</p>
+              <a class='next' href='/2020/10/23/%E4%B8%BA%E4%BB%80%E4%B9%88OpenGL%E9%87%8C%E6%97%8B%E8%BD%AC%E7%AD%89%E5%8F%98%E6%8D%A2%E7%9F%A9%E9%98%B5%E6%98%AF4x4%E7%9A%84%E7%9F%A9%E9%98%B5/'>
+                <p class='title'>为什么OpenGL里旋转等变换矩阵是4x4的矩阵<i class="fas fa-chevron-right" aria-hidden="true"></i></p>
+                <p class='content'>OpenGL ES 的很多教程里都会有这样一个例子来讲解纹理：将一张图片作为纹理显示在屏幕上。
+因为纹理坐标和实际屏幕显示的坐标不一样，把图片渲染在屏幕上后，图片是上下颠倒的。
+一个解决方法是对...</p>
               </a>
             
           </div>
@@ -627,7 +625,7 @@ window.MathJax = {
 
   <script>
     window.subData = {
-      title: '为什么OpenGL里旋转等变换矩阵是4x4的矩阵',
+      title: '自然常数 e 为什么冠以“自然”二字',
       tools: true
     }
   </script>
@@ -642,20 +640,6 @@ window.MathJax = {
     
     
 
-
-  <section class="widget toc-wrapper shadow desktop mobile">
-    
-  <header>
-    
-      <i class="fas fa-list fa-fw" aria-hidden="true"></i><span class='name'>本文目录</span>
-    
-  </header>
-
-
-    <div class='content'>
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#向量和矩阵"><span class="toc-text">向量和矩阵</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#推导旋转矩阵"><span class="toc-text">推导旋转矩阵</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#推导平移矩阵"><span class="toc-text">推导平移矩阵</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a></li></ol>
-    </div>
-  </section>
 
 
   
