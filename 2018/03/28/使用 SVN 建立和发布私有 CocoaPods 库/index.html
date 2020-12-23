@@ -16,10 +16,10 @@
 
   <!-- 页面元数据 -->
   
-    <title>PathToGo “没什么卵用” 的更新 - Hanson的博客</title>
+    <title>使用SVN建立和发布私有CocoaPods库 - Hanson的博客</title>
   
   
-    <meta name="description" content="PathToGo 是一个可以复制当前选中文件的路径到粘贴板的小 Mac App。具体可以看看之前写的文章 《PathToGo诞生记》 。">
+    <meta name="description" content="现在应该没有人用 SVN 了吧">
   
 
   <!-- feed -->
@@ -279,8 +279,8 @@
           
   
     <h1 class="title">
-      <a href="/2020/06/28/PathToGo%E6%B2%A1%E4%BB%80%E4%B9%88%E5%8D%B5%E7%94%A8%E7%9A%84%E6%9B%B4%E6%96%B0/">
-        PathToGo “没什么卵用” 的更新
+      <a href="/2018/03/28/%E4%BD%BF%E7%94%A8%20SVN%20%E5%BB%BA%E7%AB%8B%E5%92%8C%E5%8F%91%E5%B8%83%E7%A7%81%E6%9C%89%20CocoaPods%20%E5%BA%93/">
+        使用SVN建立和发布私有CocoaPods库
       </a>
     </h1>
   
@@ -306,9 +306,9 @@
               
   
   <div class='new-meta-item category'>
-    <a href='/categories/%E5%BC%80%E6%BA%90-%E4%BA%A7%E5%93%81/' rel="nofollow">
+    <a href='/categories/%E5%B7%A5%E5%85%B7%E6%95%99%E7%A8%8B/' rel="nofollow">
       <i class="fas fa-folder-open fa-fw" aria-hidden="true"></i>
-      <p>开源/产品</p>
+      <p>工具教程</p>
     </a>
   </div>
 
@@ -319,7 +319,7 @@
               <div class="new-meta-item date">
   <a class='notlink'>
     <i class="fas fa-calendar-alt fa-fw" aria-hidden="true"></i>
-    <p>发布于：Jun 28, 2020</p>
+    <p>发布于：Mar 28, 2018</p>
   </a>
 </div>
 
@@ -342,48 +342,35 @@
       <section class="article typo">
         <div class="article-entry" itemprop="articleBody">
           
-          <p>PathToGo 是一个可以复制当前选中文件的路径到粘贴板的小 Mac App。具体可以看看之前写的文章 <a href="">《PathToGo诞生记》</a> 。</p>
-<a id="more"></a>
+          <h2 id="SVN-项目结构"><a href="#SVN-项目结构" class="headerlink" title="SVN 项目结构"></a>SVN 项目结构</h2><p>首先，一般 SVN 项目有如下的结构：</p>
+<ul>
+<li>trunk：项目主干</li>
+<li>branches：开发或者 Bug 分支</li>
+<li>tags：发布的版本</li>
+</ul>
+<p>比如说我们已经写好了一个 CocoaPods 的库，它的名字是 xxxKit，那么它应该在看起来是这样的：<br><img src="" alt=""></p>
+<h2 id="建立-CocoaPods-库"><a href="#建立-CocoaPods-库" class="headerlink" title="建立 CocoaPods 库"></a>建立 CocoaPods 库</h2><p>我们在 trunk 的目录下执行 </p>
+<p><code>pod lib create xxxKit</code></p>
+<p>按照提示输入后，在该目录下就会利用 CocoaPods 的模板生成了一个项目。我们主要关注<code>xxxKit.podspec</code> 这个文件。</p>
+<p>修改 <code>xxxKit.podspec</code>，比如：   </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Pod::Spec.new do |s|</span><br><span class="line">  s.name         &#x3D; &quot;xxxKit&quot;</span><br><span class="line">  s.version      &#x3D; &quot;0.1.1&quot;</span><br><span class="line">  s.summary      &#x3D; &quot;xxxKit.&quot;</span><br><span class="line">  s.homepage     &#x3D; &quot;https:&#x2F;&#x2F;github.com&#x2F;zyphs21&#x2F;&quot;</span><br><span class="line">  s.author       &#x3D; &#123; &quot;zyphs21&quot; &#x3D;&gt; &quot;hansenhs21@live.com&quot; &#125;</span><br><span class="line">  s.source       &#x3D; &#123; :svn &#x3D;&gt; &quot;http:&#x2F;&#x2F;xxxx&#x2F;xxxKit&#x2F;&quot;, :tag &#x3D;&gt; s.version.to_s &#125;</span><br><span class="line">  s.source_files  &#x3D; &quot;xxxKit&#x2F;**&#x2F;*.&#123;swift&#125;&quot;</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
 
-<h3 id="用户反馈"><a href="#用户反馈" class="headerlink" title="用户反馈"></a>用户反馈</h3><p>PathToGo 解决的是一个很冷门的需求，即便是我，也不会经常用它。甚至很多人觉得它 <code>“没有什么卵用”</code>。但是它仍然收获了一部分用户，甚至还收到用户的反馈：</p>
-<p><img src="https://imgkr.cn-bj.ufileos.com/ccdab9e6-bae4-4fa5-9f4c-a245b16894e7.png" alt=""></p>
-<p>这个用户的需求是希望复制出来的文件路径可以带上 <code>反斜杠转义符</code>，这样他可以直接复制到他的终端里跳转路径使用。</p>
-<p>很明显，这个用户并不知道 <code>Go2Shell</code> ，这款给了 <code>PathToGo</code> 诞生灵感的 App。如果他使用 <code>Go2Shell</code>  的话应该能够很好地解决他真正的需求。</p>
-<h3 id="我的吐槽"><a href="#我的吐槽" class="headerlink" title="我的吐槽"></a>我的吐槽</h3><p>Anyway，既然有用户反馈，我有了一点点更新它的动力。不过最大的动力还是来自于我对 <code>PathToGo</code> 的不满：<strong>它实在太丑了！</strong></p>
-<p>因为 <code>PathToGo</code> 的使用场景，注定它要常驻在 Finder 的 Toolbar 上。而当初在设计图标的时候，脑抽地给它设置了一个<strong>半透明背景</strong> 😂。在 macOS 的浅色模式下还好，但是在深色模式下的样子真的一言难尽：</p>
-<p><img src="https://imgkr.cn-bj.ufileos.com/a416976a-2092-4f0c-801a-057cbfc20a4a.png" alt="浅色模式下显示"></p>
-<p><img src="https://imgkr.cn-bj.ufileos.com/62b41f1b-cbf7-4cce-9b06-0863befd9df6.png" alt="深色模式下显示"></p>
-<p>如上图，真的太丑了！而且图标的大小与 Toolbar 上的其它 icon 相比显得是如此的格格不入。</p>
-<h3 id="重新设计图标"><a href="#重新设计图标" class="headerlink" title="重新设计图标"></a>重新设计图标</h3><p>所以，更新 PathToGo 的首要任务是重新设计图标！</p>
-<p>设计不是我的长项，所以我给自己订的只有两个要求：</p>
+<p>主要注意是指定 source 那里，路径填的是 SVN 仓库的地址，并加上 tag。</p>
+<p><code>s.source = { :svn =&gt; &quot;http://xxxx/xxxKit/&quot;, :tag =&gt; s.version.to_s }</code></p>
+<h2 id="打-tags-发布一个版本"><a href="#打-tags-发布一个版本" class="headerlink" title="打 tags 发布一个版本"></a>打 tags 发布一个版本</h2><p>这里以 <code>Cornerstone</code> 这个 Mac 端的 SVN 工具来说明。</p>
 <ol>
-<li>改掉背景色 </li>
-<li>图标尺寸在 Finder 上不要显得那么突兀</li>
+<li><p>去到远程库里进行打 tags，注意只有在远程库操作才能打 tag。</p>
+<p> <img src="" alt=""></p>
+</li>
+<li><p>选择在 trunk 主干上 <code>右键</code> -&gt; <code>Tag…</code>，然后输入 tag 标签，比如 v0.1.1</p>
+<p> <img src="" alt=""></p>
+</li>
 </ol>
-<p>打开 Sketch，一顿操作后，PathToGo 的图标现在长这样了：</p>
-<p><img src="https://imgkr.cn-bj.ufileos.com/8459c5a7-cd62-4bf6-a9d9-a32766274a5c.png" alt="PathToGo图标"></p>
-<p>然后它在 Finder 上是这样子的：</p>
-<p><img src="https://imgkr.cn-bj.ufileos.com/9fd7a8c4-f2ad-4cf5-8587-f139480f978e.png" alt=""></p>
-<p>嗯嗯，看着还可以。</p>
-<p>不过还能更进一步吗？能在好看的同时又能够满足上面用户反馈的需求吗？</p>
-<p>这时候，我发现了一个东西：<strong><a href="https://developer.apple.com/library/archive/documentation/General/Conceptual/ExtensibilityPG/Finder.html" target="_blank" rel="noopener">FinderSync</a></strong></p>
-<h3 id="用-FinderSync-改造"><a href="#用-FinderSync-改造" class="headerlink" title="用 FinderSync 改造"></a>用 FinderSync 改造</h3><p>FinderSync 是苹果提供的一个扩展功能，它的目的是可以让开发者自定义 Finder 文件的界面，以提示用户文件的监听使用状态等。比如你的 App 可以进行文件同步的功能，你希望让用户知道当前文件是否已经同步完成了，可以通过 FinderSync 这个扩展来给文件添加 icon 以达到提示的作用：</p>
-<p><img src="https://imgkr.cn-bj.ufileos.com/f2ad6a3f-ef5c-4c0d-9ec6-5f78b9774ea3.png" alt=""></p>
-<p>我注意到 FinderSync 可以给 Finder 添加一个原生的 Toolbar！如果 PathToGo 可以做成一个原生样式的 Toolbar 按钮，那不就太完美了吗？</p>
-<p>不过 FinderSync 只支持有下拉选项的 Toolbar 按钮样式，那其实可以将上面用户反馈的功能做到这里：</p>
-<p>点击下拉出两个选项，一个是复制纯文本，一个是复制出带有反斜杠转义的文本。</p>
-<p>这样就既能保留 PathToGo 原有的功能基础上，扩展出了新的功能，尽管与 PathToGo <code>一点击即达</code> 的初衷有点违背，但是我认为这是<strong>在权衡好看和功能性两者之间的最好妥协</strong>。</p>
-<p>于是，PathToGo 在支持原来拖动放置在 Finder Toolbar 的形式的基础上，多了一种以 FinderSync 为踏板的新形式，<strong>终于让它很好地融入了 Toolbar 上</strong>：</p>
-<p><img src="https://imgkr.cn-bj.ufileos.com/51709307-f8e5-4715-90a8-a1eea46296ba.png" alt="PathToGo 在 Finder Toolbar 上"></p>
-<p>添加的方式是：右击 Finder Toolbar 空白处，进入自定义 Toolbar，找到 PathToGo 并拖动添加到 Toolbar 上就可以啦！</p>
-<p><img src="https://imgkr.cn-bj.ufileos.com/464ba02e-a880-425c-8da3-9032d820fd1e.png" alt=""></p>
-<h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>尽管在很多人看来 PathToGo 还是一个没什么卵用的东西，但是这次从出现更新的念头，到最后利用 FinderSync “曲线救国”的实现过程，我是觉得很有意思的。</p>
-<blockquote>
-<p>PathToGo 下载地址：<code>https://github.com/HansonStudio/PathToGo/releases</code></p>
-</blockquote>
-<blockquote>
-<p>欢迎关注我的公众号：HansonTalk<br><img src="https://cdn.jsdelivr.net/gh/zyphs21/cdn-assets/qrcode/HansonTalk.jpg" alt=""></p>
-</blockquote>
+<p>之后只要有开发到了新的版本了，按照这样先打 tag。</p>
+<h2 id="使用私有库"><a href="#使用私有库" class="headerlink" title="使用私有库"></a>使用私有库</h2><p>去到需要使用该库的项目里，在 Podfile 里指定该版本：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pod &#39;xxxKit&#39;, :svn &#x3D;&gt; &#39;http:&#x2F;&#x2F;xxxx&#x2F;xxxKit&#x2F;&#39;, :tag &#x3D;&gt; &#39;0.1.1&#39;</span><br></pre></td></tr></table></figure>
+
+<p>然后执行 <code>pod install</code></p>
 
           
             <br>
@@ -420,7 +407,7 @@
           
         
           
-            <p>本文永久链接是：<a href=http://myhanson.com/2020/06/28/PathToGo%E6%B2%A1%E4%BB%80%E4%B9%88%E5%8D%B5%E7%94%A8%E7%9A%84%E6%9B%B4%E6%96%B0/>http://myhanson.com/2020/06/28/PathToGo%E6%B2%A1%E4%BB%80%E4%B9%88%E5%8D%B5%E7%94%A8%E7%9A%84%E6%9B%B4%E6%96%B0/</a></p>
+            <p>本文永久链接是：<a href=http://myhanson.com/2018/03/28/%E4%BD%BF%E7%94%A8%20SVN%20%E5%BB%BA%E7%AB%8B%E5%92%8C%E5%8F%91%E5%B8%83%E7%A7%81%E6%9C%89%20CocoaPods%20%E5%BA%93/>http://myhanson.com/2018/03/28/%E4%BD%BF%E7%94%A8%20SVN%20%E5%BB%BA%E7%AB%8B%E5%92%8C%E5%8F%91%E5%B8%83%E7%A7%81%E6%9C%89%20CocoaPods%20%E5%BA%93/</a></p>
           
         
       </blockquote>
@@ -470,10 +457,10 @@
     <div class='new-meta-box'>
       
         
-          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2020-06-25T17:34:09+08:00">
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2020-04-17T09:12:35+08:00">
   <a class='notlink'>
     <i class="fas fa-edit fa-fw" aria-hidden="true"></i>
-    <p>更新于：Jun 25, 2020</p>
+    <p>更新于：Apr 17, 2020</p>
   </a>
 </div>
 
@@ -497,7 +484,7 @@
       
         <a class="-mob-share-qq" title="" rel="external nofollow noopener noreferrer"
           
-          href="http://connect.qq.com/widget/shareqq/index.html?url=http://myhanson.com/2020/06/28/PathToGo%E6%B2%A1%E4%BB%80%E4%B9%88%E5%8D%B5%E7%94%A8%E7%9A%84%E6%9B%B4%E6%96%B0/&title=PathToGo “没什么卵用” 的更新 - Hanson的博客&summary=PathToGo 是一个可以复制当前选中文件的路径到粘贴板的小 Mac App。具体可以看看之前写的文章 《PathToGo诞生记》 。"
+          href="http://connect.qq.com/widget/shareqq/index.html?url=http://myhanson.com/2018/03/28/%E4%BD%BF%E7%94%A8%20SVN%20%E5%BB%BA%E7%AB%8B%E5%92%8C%E5%8F%91%E5%B8%83%E7%A7%81%E6%9C%89%20CocoaPods%20%E5%BA%93/&title=使用SVN建立和发布私有CocoaPods库 - Hanson的博客&summary="
           
           >
           
@@ -509,7 +496,7 @@
       
         <a class="-mob-share-qzone" title="" rel="external nofollow noopener noreferrer"
           
-          href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://myhanson.com/2020/06/28/PathToGo%E6%B2%A1%E4%BB%80%E4%B9%88%E5%8D%B5%E7%94%A8%E7%9A%84%E6%9B%B4%E6%96%B0/&title=PathToGo “没什么卵用” 的更新 - Hanson的博客&summary=PathToGo 是一个可以复制当前选中文件的路径到粘贴板的小 Mac App。具体可以看看之前写的文章 《PathToGo诞生记》 。"
+          href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://myhanson.com/2018/03/28/%E4%BD%BF%E7%94%A8%20SVN%20%E5%BB%BA%E7%AB%8B%E5%92%8C%E5%8F%91%E5%B8%83%E7%A7%81%E6%9C%89%20CocoaPods%20%E5%BA%93/&title=使用SVN建立和发布私有CocoaPods库 - Hanson的博客&summary="
           
           >
           
@@ -521,7 +508,7 @@
       
         <a class="-mob-share-weibo" title="" rel="external nofollow noopener noreferrer"
           
-          href="http://service.weibo.com/share/share.php?url=http://myhanson.com/2020/06/28/PathToGo%E6%B2%A1%E4%BB%80%E4%B9%88%E5%8D%B5%E7%94%A8%E7%9A%84%E6%9B%B4%E6%96%B0/&title=PathToGo “没什么卵用” 的更新 - Hanson的博客&summary=PathToGo 是一个可以复制当前选中文件的路径到粘贴板的小 Mac App。具体可以看看之前写的文章 《PathToGo诞生记》 。"
+          href="http://service.weibo.com/share/share.php?url=http://myhanson.com/2018/03/28/%E4%BD%BF%E7%94%A8%20SVN%20%E5%BB%BA%E7%AB%8B%E5%92%8C%E5%8F%91%E5%B8%83%E7%A7%81%E6%9C%89%20CocoaPods%20%E5%BA%93/&title=使用SVN建立和发布私有CocoaPods库 - Hanson的博客&summary="
           
           >
           
@@ -545,17 +532,19 @@
         
           <div class="prev-next">
             
-              <a class='prev' href='/2020/09/12/OpenGLES%E5%92%8CSwift%E5%AE%9E%E7%8E%B0%E5%85%A8%E6%99%AF%E5%9B%BE%E6%B5%8F%E8%A7%88(%E5%85%A8%E6%99%AF%E7%90%83,360%E5%BA%A6%E6%B5%8F%E8%A7%88,%E5%B0%8F%E8%A1%8C%E6%98%9F)/'>
-                <p class='title'><i class="fas fa-chevron-left" aria-hidden="true"></i>OpenGLES和Swift实现全景图浏览(全景球,360度浏览,小行星)</p>
-                <p class='content'>最近在学习 OpenGLES，其实也就学到纹理那里，所以想着做个小项目来巩固一下知识。而一个全景浏览器正好囊括顶点坐标，纹理坐标，索引绘图，MVP 矩阵变换等等知识，是一个很不错的练手项目。我选...</p>
+              <a class='prev' href='/2018/05/18/%E4%B8%8A%E6%9E%B6%E4%B8%AA%E5%B0%8F%E5%B7%A5%E5%85%B7-ImageGotcha/'>
+                <p class='title'><i class="fas fa-chevron-left" aria-hidden="true"></i>上架个小工具-ImageGotcha</p>
+                <p class='content'>上架了个小工具。ImageGotcha 是一个 Safari 的 Action Extension，它可以提取当前网页的图片方便查看和批量保存，比如可以去某些 Instagram 用户的主页批量...</p>
               </a>
             
             
-              <a class='next' href='/2020/06/12/%E9%80%9A%E8%BF%87%20DeveloperID%E8%AF%81%E4%B9%A6%E5%88%86%E5%8F%91%20Mac%20App%20%E7%9A%84%E7%BB%8F%E9%AA%8C/'>
-                <p class='title'>通过 DeveloperID证书分发 Mac App 的经验<i class="fas fa-chevron-right" aria-hidden="true"></i></p>
-                <p class='content'>对 Mac App 打包后，我们可以选择通过 Developer ID 方式直接向我们的客户分发 Mac App 而不用将 App 传到 Mac App Store。
+              <a class='next' href='/2018/03/14/%E9%80%9A%E8%BF%87%20RunScript%20%E7%BB%99%20iOS%20%E9%A1%B9%E7%9B%AE%E8%87%AA%E5%A2%9E%E7%89%88%E6%9C%AC%E5%8F%B7(Versioin%E5%92%8CBuild)/'>
+                <p class='title'>通过RunScript给iOS项目自增版本号(Versioin和Build)<i class="fas fa-chevron-right" aria-hidden="true"></i></p>
+                <p class='content'>需求分析
+在打包应用之后，需要自增 Version 的最后一位 和 Build 的值。
+只在 Archive(Release) 的时候触发该自增。
 
-在这个过程中遇到了一些坑...</p>
+添加 RunScript在 项目Target...</p>
               </a>
             
           </div>
@@ -583,7 +572,7 @@
 
   <script>
     window.subData = {
-      title: 'PathToGo “没什么卵用” 的更新',
+      title: '使用SVN建立和发布私有CocoaPods库',
       tools: true
     }
   </script>
@@ -609,7 +598,7 @@
 
 
     <div class='content'>
-      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#用户反馈"><span class="toc-text">用户反馈</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#我的吐槽"><span class="toc-text">我的吐槽</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#重新设计图标"><span class="toc-text">重新设计图标</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#用-FinderSync-改造"><span class="toc-text">用 FinderSync 改造</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#最后"><span class="toc-text">最后</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#SVN-项目结构"><span class="toc-text">SVN 项目结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#建立-CocoaPods-库"><span class="toc-text">建立 CocoaPods 库</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#打-tags-发布一个版本"><span class="toc-text">打 tags 发布一个版本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用私有库"><span class="toc-text">使用私有库</span></a></li></ol>
     </div>
   </section>
 

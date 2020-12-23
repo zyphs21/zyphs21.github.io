@@ -16,14 +16,10 @@
 
   <!-- 页面元数据 -->
   
-    <title>CoreLocation 中的 Course 和 Heading 简析 - Hanson的博客</title>
+    <title>一点 MacCatalyst 适配经验分享 - Hanson的博客</title>
   
   
-    <meta name="description" content="很多地图 App 都会有一个当前定位的标记，该标记可以根据用户手持手机的朝向不同而改变方向。如图：
-
-
-
-如果要实现这个带方向定位的标记点，需要什么数据呢？">
+    <meta name="description" content="最近通过 Mac Catalyst 把 ImageGotcha 带到了 macOS 上，这里简单做点分享">
   
 
   <!-- feed -->
@@ -283,8 +279,8 @@
           
   
     <h1 class="title">
-      <a href="/2020/04/15/CoreLocation%E4%B8%AD%E7%9A%84Course%E5%92%8CHeading%E7%AE%80%E6%9E%90/">
-        CoreLocation 中的 Course 和 Heading 简析
+      <a href="/2020/12/13/MacCatalyst%E9%80%82%E9%85%8D%E7%BB%8F%E9%AA%8C%E5%88%86%E4%BA%AB/">
+        一点 MacCatalyst 适配经验分享
       </a>
     </h1>
   
@@ -323,7 +319,7 @@
               <div class="new-meta-item date">
   <a class='notlink'>
     <i class="fas fa-calendar-alt fa-fw" aria-hidden="true"></i>
-    <p>发布于：Apr 15, 2020</p>
+    <p>发布于：Dec 13, 2020</p>
   </a>
 </div>
 
@@ -346,38 +342,40 @@
       <section class="article typo">
         <div class="article-entry" itemprop="articleBody">
           
-          <p>很多地图 App 都会有一个当前定位的标记，该标记可以根据用户手持手机的朝向不同而改变方向。如图：</p>
-<img src="https://imgkr.cn-bj.ufileos.com/6a305cfc-4d8e-4f17-ad25-d40534e29aec.png" width = "80" height = "80" alt="带方向的定位标记" align=center />
+          <h2 id="移除-TitleBar"><a href="#移除-TitleBar" class="headerlink" title="移除 TitleBar"></a>移除 TitleBar</h2><p>运行在 macOS 上默认会生成一个 TileBar，如果我们使用了 NavigationBar  则会出现两个头的现象，很不美观，所以可以移除这个 TiltleBar。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zhenwanping/cdn-assets@master/photo/20201112103950.png" alt="隐藏TitleBar"></p>
+<p>可以在合适的地方加入下面的代码，比如在 SceneDelegate 的 sceneWillConnectToSession 里：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">scene</span><span class="params">(<span class="number">_</span> scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions)</span></span> &#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">guard</span> <span class="keyword">let</span> windowScene = (scene <span class="keyword">as</span>? <span class="type">UIWindowScene</span>) <span class="keyword">else</span> &#123; <span class="keyword">return</span> &#125;</span><br><span class="line"></span><br><span class="line">  #<span class="keyword">if</span> targetEnvironment(macCatalyst)</span><br><span class="line">  <span class="keyword">if</span> <span class="keyword">let</span> titlebar = windowScene.titlebar &#123;</span><br><span class="line">    titlebar.titleVisibility = .hidden</span><br><span class="line">    titlebar.toolbar = <span class="literal">nil</span></span><br><span class="line">  &#125;</span><br><span class="line">  #endif</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
-<p>如果要实现这个带方向定位的标记点，需要什么数据呢？</p>
-<a id="more"></a>
 
-<ul>
-<li>定位数据</li>
-<li>手机朝向数据</li>
-</ul>
-<p>定位数据获取很简单，调用 <code>CLLocationManager</code> 的 <code>startUpdatingLocation()</code> 方法，然后在 <code>didUpdateLocations</code> 的回调方法中可以得到的 <code>CLLocation</code> 属性值。</p>
-<p><code>CLLocation</code> 对象中，除了有我们需要的 coordinate 位置数据外，还有一个 <code>course</code> 属性。</p>
-<p>这个 <code>course</code> 属性是不是我们需要的手机朝向数据呢？</p>
+<h2 id="CollectionViewLayout-布局问题"><a href="#CollectionViewLayout-布局问题" class="headerlink" title="CollectionViewLayout 布局问题"></a>CollectionViewLayout 布局问题</h2><p>macOS 上运行的 App 如果不加限制，App 的窗口几乎是可以随意拉伸，拖到拖小的。这就导致原本布局好的 CollectionViewCell 可能不是很美观，最好的情况是可以适配窗口大小的变化而变化。</p>
+<p>在 UICollectionViewLayout 里有个方法</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@available</span>(iOS <span class="number">7.0</span>, macCatalyst <span class="number">13.0</span>, *)</span><br><span class="line"><span class="keyword">open</span> <span class="function"><span class="keyword">func</span> <span class="title">invalidateLayout</span><span class="params">(with context: UICollectionViewLayoutInvalidationContext)</span></span></span><br></pre></td></tr></table></figure>
+
+<p>这个方法会在每次 App 窗口大小变化的时候被触发，可以在这里面进行重新布局。</p>
+<p>这里就涉及如何获取当前的窗口大小问题了，我们常用的 <code>UIScreen.main.bounds</code> 在 macOS 上已经不适用了。</p>
+<h2 id="获取窗口实际大小"><a href="#获取窗口实际大小" class="headerlink" title="获取窗口实际大小"></a>获取窗口实际大小</h2><p>这里需要获取当前 Active 的 <code>UIWindowScene</code> ，然后通过它的 <code>coordinateSpace</code> 拿到 bounds 信息：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">UIApplication</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> activeWindowScene: <span class="type">UIWindowScene?</span> &#123;</span><br><span class="line">        <span class="keyword">self</span>.connectedScenes</span><br><span class="line">            .<span class="built_in">filter</span> &#123; $<span class="number">0</span>.activationState == .foregroundActive &#125;</span><br><span class="line">            .compactMap &#123; $<span class="number">0</span> <span class="keyword">as</span>? <span class="type">UIWindowScene</span> &#125;.first</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">UIApplication</span>.shared.activeWindowScene.coordinateSpace.bounds</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="UICollectionView-多选交互问题"><a href="#UICollectionView-多选交互问题" class="headerlink" title="UICollectionView 多选交互问题"></a>UICollectionView 多选交互问题</h2><p>在 macOS 上，多选 CollectionView，是需要按住 commad 键进行点击，或者按住 Shift 键区间选择。这个与在 iOS 上的交互是不一样的。可以参考下面的内容：</p>
 <blockquote>
-<p>course:<br>The direction in which the device is traveling, measured in degrees and relative to due north.</p>
+<p><a href="https://stackoverflow.com/questions/60856636/mac-catalyst-tableview-allowmultipleselection-not-working" target="_blank" rel="noopener">https://stackoverflow.com/questions/60856636/mac-catalyst-tableview-allowmultipleselection-not-working</a></p>
+<p>Multiple selection on macOS Catalyst does not work in quite the same way as on iOS and iPadOS and this appears to be either a bug or an unfortunate choice of intended behavior.</p>
+<p>On macOS Catalyst, if you have enabled multiple selection in edit mode by setting tableView.allowsMultipleSelectionDuringEditing to true, only one row at a time can be directly selected by clicking with the pointer. However, multiple selection of contiguous rows is enabled by selecting a first row and then holding down SHIFT while selecting a second row, and multiple selection of non-contiguous rows is enabled by selecting a first row and then holding down COMMAND while selecting additional rows. This is Mac-like behavior in that it is how multiple selection generally works on macOS. So it is possible that this was intended behavior. But if that is the case, it is behavior that is hard to discover, not what an iOS/iPadOS user might expect, and works differently than on iOS and iPadOS. And it causes other problems - for example, in code I have a “Select All” function that is able to select all rows from code on iOS/iPadOS, and this code doesn’t work on macOS Catalyst.</p>
+<p>I filed Feedback on this. There is a simple project on GitHub at <a href="https://github.com/WB2ISS/MultipleSelection" target="_blank" rel="noopener">WB2ISS/MultipleSelection</a> that demonstrates the problem.</p>
 </blockquote>
-<blockquote>
-<p>Course values are measured in degrees starting at due north and continue clockwise around the compass. Thus, north is 0 degrees, east is 90 degrees, south is 180 degrees, and so on. Course values may not be available on all devices. A negative value indicates that the course information is invalid.</p>
-</blockquote>
-<p>从文档的解释来看，它是一个相对于地理北极以顺时针方向的角度数据，手机朝着正北方是 0 度，朝着东边是 90度，依次类推。</p>
-<p>看起来是我们想要的值。但是从实际测试(真机室内测试)结果看，<strong>这个值一直是返回 -1 。（负数代表此值当前不可用）</strong></p>
-<p>排除使用方式的不对，我们从文档 <a href="https://developer.apple.com/documentation/corelocation/getting_heading_and_course_information" target="_blank" rel="noopener">Getting Heading and Course Information</a> 发现，我们要获取的其实是 <code>heading</code>  的数据。</p>
-<p>通过调用 CLLocationManager 中的 </p>
-<pre><code>startUpdatingHeading()</code></pre><p>然后在 <code>locationManager(_:didUpdateHeading:)</code> 的回调方法中就可以获取到 heading 的数据了。</p>
-<h2 id="Course-和-Heading"><a href="#Course-和-Heading" class="headerlink" title="Course 和 Heading"></a>Course 和 Heading</h2><p>从字面意思上我们可以将它们区分为 <code>航向</code> 和 <code>朝向</code></p>
-<p><code>Course(航向)信息</code> 反映的是设备移动的速度和方向，并且仅在具有GPS硬件条件的设备上可用。</p>
-<p>注意不要将 <code>Course(航向)</code> 与 <code>Heading(朝向)</code> 混淆。Course(航向) 反映的是设备移动时的方向，是<strong>从GPS信息中获取到，它与设备的物理方向无关</strong>。</p>
-<p>而 <code>Heading(朝向)信息</code> 则是通过计算手机上传感器的值而获取到的相对于地理北极的角度信息。</p>
-<h3 id="Course"><a href="#Course" class="headerlink" title="Course"></a>Course</h3><p>Course 常常是用在进行导航的情况下。比如平时我们开车进行导航的时候，有时候车子转弯过快，会发现导航上的朝向并没有及时更新到正确的方向，要过一会才会更新，这就是因为 GPS 信息没有及时更新过来，故 Course 信息也就无法有足够的数据支持它更新。</p>
-<h3 id="Heading"><a href="#Heading" class="headerlink" title="Heading"></a>Heading</h3><p>Heading 是与物理设备有关的值，所以我们在获取 Heading 信息的时候，注意要配置 CLLocationManager 的 <code>headingOrientation</code> 属性。</p>
-<p>headingOrientation 默认值是 <code>portrait</code> ，即我们平时正面拿着手机。而当我们正面横着拿手机的时候，需要将 <code>headingOrientation</code> 属性根据实际情况改成 <code>landscapeLeft</code> 或者 <code>landscapeRight</code>，这样系统才能通过手机的持有方位计算正确的 <code>Heading</code> 值，不然 Heading 就一直是默认以 portrait 的形式计算得到。</p>
+<h2 id="App-icon-提示缺失-1024像素的问题"><a href="#App-icon-提示缺失-1024像素的问题" class="headerlink" title="App icon 提示缺失 1024像素的问题"></a>App icon 提示缺失 1024像素的问题</h2><p>一切就绪，提交审核的时候，突然遇到了这个无法审核的提示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Xcode 的素材目录中必须添加 1024 x 1024 像素的 App 图标。</span><br></pre></td></tr></table></figure>
+
+<p>但是实际上我的 Assets.xcassets 里的 AppIcon 里已经包含这个 1024x1024 的图标了。</p>
+<p>后面发现需要在 AppIcon 的 Attribute Inspector 里勾上 Mac：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zhenwanping/cdn-assets@master/photo/20201212130544.png" alt="image-20201212130453439"></p>
+<p>然后就会发现多了 Mac App Store 需要的 1024x1024 图标了，把它添加进去，重新打包上传到 App Store Connect 就行</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zhenwanping/cdn-assets@master/photo/20201212130656.png" alt="image-20201212130653774"></p>
+<p>要是这个提示能早点提示就好，没想到是等到最后提交审核的时候才会提示。</p>
 
           
             <br>
@@ -414,7 +412,7 @@
           
         
           
-            <p>本文永久链接是：<a href=http://myhanson.com/2020/04/15/CoreLocation%E4%B8%AD%E7%9A%84Course%E5%92%8CHeading%E7%AE%80%E6%9E%90/>http://myhanson.com/2020/04/15/CoreLocation%E4%B8%AD%E7%9A%84Course%E5%92%8CHeading%E7%AE%80%E6%9E%90/</a></p>
+            <p>本文永久链接是：<a href=http://myhanson.com/2020/12/13/MacCatalyst%E9%80%82%E9%85%8D%E7%BB%8F%E9%AA%8C%E5%88%86%E4%BA%AB/>http://myhanson.com/2020/12/13/MacCatalyst%E9%80%82%E9%85%8D%E7%BB%8F%E9%AA%8C%E5%88%86%E4%BA%AB/</a></p>
           
         
       </blockquote>
@@ -464,10 +462,10 @@
     <div class='new-meta-box'>
       
         
-          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2020-04-17T09:11:12+08:00">
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2020-12-23T10:24:32+08:00">
   <a class='notlink'>
     <i class="fas fa-edit fa-fw" aria-hidden="true"></i>
-    <p>更新于：Apr 17, 2020</p>
+    <p>更新于：Dec 23, 2020</p>
   </a>
 </div>
 
@@ -491,11 +489,7 @@
       
         <a class="-mob-share-qq" title="" rel="external nofollow noopener noreferrer"
           
-          href="http://connect.qq.com/widget/shareqq/index.html?url=http://myhanson.com/2020/04/15/CoreLocation%E4%B8%AD%E7%9A%84Course%E5%92%8CHeading%E7%AE%80%E6%9E%90/&title=CoreLocation 中的 Course 和 Heading 简析 - Hanson的博客&summary=很多地图 App 都会有一个当前定位的标记，该标记可以根据用户手持手机的朝向不同而改变方向。如图：
-
-
-
-如果要实现这个带方向定位的标记点，需要什么数据呢？"
+          href="http://connect.qq.com/widget/shareqq/index.html?url=http://myhanson.com/2020/12/13/MacCatalyst%E9%80%82%E9%85%8D%E7%BB%8F%E9%AA%8C%E5%88%86%E4%BA%AB/&title=一点 MacCatalyst 适配经验分享 - Hanson的博客&summary="
           
           >
           
@@ -507,11 +501,7 @@
       
         <a class="-mob-share-qzone" title="" rel="external nofollow noopener noreferrer"
           
-          href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://myhanson.com/2020/04/15/CoreLocation%E4%B8%AD%E7%9A%84Course%E5%92%8CHeading%E7%AE%80%E6%9E%90/&title=CoreLocation 中的 Course 和 Heading 简析 - Hanson的博客&summary=很多地图 App 都会有一个当前定位的标记，该标记可以根据用户手持手机的朝向不同而改变方向。如图：
-
-
-
-如果要实现这个带方向定位的标记点，需要什么数据呢？"
+          href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://myhanson.com/2020/12/13/MacCatalyst%E9%80%82%E9%85%8D%E7%BB%8F%E9%AA%8C%E5%88%86%E4%BA%AB/&title=一点 MacCatalyst 适配经验分享 - Hanson的博客&summary="
           
           >
           
@@ -523,11 +513,7 @@
       
         <a class="-mob-share-weibo" title="" rel="external nofollow noopener noreferrer"
           
-          href="http://service.weibo.com/share/share.php?url=http://myhanson.com/2020/04/15/CoreLocation%E4%B8%AD%E7%9A%84Course%E5%92%8CHeading%E7%AE%80%E6%9E%90/&title=CoreLocation 中的 Course 和 Heading 简析 - Hanson的博客&summary=很多地图 App 都会有一个当前定位的标记，该标记可以根据用户手持手机的朝向不同而改变方向。如图：
-
-
-
-如果要实现这个带方向定位的标记点，需要什么数据呢？"
+          href="http://service.weibo.com/share/share.php?url=http://myhanson.com/2020/12/13/MacCatalyst%E9%80%82%E9%85%8D%E7%BB%8F%E9%AA%8C%E5%88%86%E4%BA%AB/&title=一点 MacCatalyst 适配经验分享 - Hanson的博客&summary="
           
           >
           
@@ -551,16 +537,10 @@
         
           <div class="prev-next">
             
-              <a class='prev' href='/2020/06/08/%E5%88%A9%E7%94%A8%20Vision%20%E7%BB%99%E6%97%A0%E4%BA%BA%E6%9C%BA%E5%9B%BE%E4%BC%A0%E5%8A%A0%E4%B8%8A%E4%BA%BA%E8%84%B8%E8%AF%86%E5%88%AB%E5%8A%9F%E8%83%BD/'>
-                <p class='title'><i class="fas fa-chevron-left" aria-hidden="true"></i>利用 Vision给无人机图传加上人脸识别功能</p>
-                <p class='content'>Vision 是 iOS 上一个机器视觉的框架，它可以对图片和视频进行多种机器视觉相关的任务处理。Vision 里的人脸识别功能是最常用的功能之一，经过几次的迭代，它的识别效果已经很不错了，具体...</p>
-              </a>
             
-            
-              <a class='next' href='/2019/05/08/%E8%AE%A1%E7%AE%97%E5%9C%B0%E5%9B%BE%E7%BC%A9%E6%94%BE%E7%AD%89%E7%BA%A7zoomLevel/'>
-                <p class='title'>计算地图缩放等级 zoomLevel<i class="fas fa-chevron-right" aria-hidden="true"></i></p>
-                <p class='content'>背景及问题分析在一些第三方的地图 SDK 中，往往会有 zoomLevel 这样一个属性，常用于设置地图的缩放等级。
-但是在 iOS 自带的地图控件 MKMapView 是没有这样一个属性的。取...</p>
+              <a class='next' href='/2020/11/19/%E8%87%AA%E7%84%B6%E5%B8%B8%E6%95%B0e%20%E4%B8%BA%E4%BB%80%E4%B9%88%E5%86%A0%E4%BB%A5%E8%87%AA%E7%84%B6%E4%BA%8C%E5%AD%97/'>
+                <p class='title'>自然常数 e 为什么冠以“自然”二字<i class="fas fa-chevron-right" aria-hidden="true"></i></p>
+                <p class='content'> $\pi$ 应该是我们最熟悉的数学常数了，但是除了 $\pi$ 以外，还有一个数学常数  $e$，它同样重要，同样与我们生活息息相关，甚至被冠名为 自然常数，它是对数函数的底数，有时候也称它为...</p>
               </a>
             
           </div>
@@ -588,7 +568,7 @@
 
   <script>
     window.subData = {
-      title: 'CoreLocation 中的 Course 和 Heading 简析',
+      title: '一点 MacCatalyst 适配经验分享',
       tools: true
     }
   </script>
@@ -614,7 +594,7 @@
 
 
     <div class='content'>
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Course-和-Heading"><span class="toc-text">Course 和 Heading</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Course"><span class="toc-text">Course</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Heading"><span class="toc-text">Heading</span></a></li></ol></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#移除-TitleBar"><span class="toc-text">移除 TitleBar</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CollectionViewLayout-布局问题"><span class="toc-text">CollectionViewLayout 布局问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#获取窗口实际大小"><span class="toc-text">获取窗口实际大小</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#UICollectionView-多选交互问题"><span class="toc-text">UICollectionView 多选交互问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#App-icon-提示缺失-1024像素的问题"><span class="toc-text">App icon 提示缺失 1024像素的问题</span></a></li></ol>
     </div>
   </section>
 

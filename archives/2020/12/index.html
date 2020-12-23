@@ -5,6 +5,8 @@
   <!-- SEO相关 -->
   
     
+      <meta name="robots" content="noindex,follow">
+    
   
   <!-- 渲染优化 -->
   <meta name="renderer" content="webkit">
@@ -16,10 +18,8 @@
 
   <!-- 页面元数据 -->
   
-    <title>通过RunScript给iOS项目自增版本号(Versioin和Build) - Hanson的博客</title>
+    <title>Archive: 2020/12 - Hanson的博客</title>
   
-  
-    <meta name="description" content="RunScript给iOS项目自增版本号">
   
 
   <!-- feed -->
@@ -263,11 +263,22 @@
       
 
 <div class='l_main'>
-  
-
-  
-    <article id="post" class="post white-box shadow article-type-post" itemscope itemprop="blogPost">
+	
+		
+  <section class="post-list ">
+    
       
+        
+          
+        
+      
+    
+    
+      
+        
+          <div class='post-wrapper'>
+            <article class="post white-box shadow reveal ">
+  
 
 
   <section class='meta'>
@@ -277,13 +288,11 @@
       <div class="meta" id="header-meta">
         
           
-  
-    <h1 class="title">
-      <a href="/2018/03/14/%E9%80%9A%E8%BF%87RunScript%E7%BB%99iOS%E9%A1%B9%E7%9B%AE%E8%87%AA%E5%A2%9E%E7%89%88%E6%9C%AC%E5%8F%B7(Versioin%E5%92%8CBuild)/">
-        通过RunScript给iOS项目自增版本号(Versioin和Build)
-      </a>
-    </h1>
-  
+  <h2 class="title">
+    <a href="/2020/12/13/MacCatalyst%E9%80%82%E9%85%8D%E7%BB%8F%E9%AA%8C%E5%88%86%E4%BA%AB/">
+      一点 MacCatalyst 适配经验分享
+    </a>
+  </h2>
 
 
         
@@ -319,9 +328,14 @@
               <div class="new-meta-item date">
   <a class='notlink'>
     <i class="fas fa-calendar-alt fa-fw" aria-hidden="true"></i>
-    <p>发布于：Mar 14, 2018</p>
+    <p>发布于：Dec 13, 2020</p>
   </a>
 </div>
+
+            
+          
+            
+              
 
             
           
@@ -339,259 +353,162 @@
   </section>
 
 
-      <section class="article typo">
-        <div class="article-entry" itemprop="articleBody">
-          
-          <h2 id="需求分析"><a href="#需求分析" class="headerlink" title="需求分析"></a>需求分析</h2><ul>
-<li>在打包应用之后，需要自增 <strong>Version 的最后一位</strong> 和 <strong>Build</strong> 的值。<br><img src="https://user-gold-cdn.xitu.io/2018/3/14/162201d291ebc6c1?w=690&h=136&f=png&s=11268" alt=""></li>
-<li>只在 Archive(Release) 的时候触发该自增。</li>
-</ul>
-<h2 id="添加-RunScript"><a href="#添加-RunScript" class="headerlink" title="添加 RunScript"></a>添加 RunScript</h2><p>在 <code>项目Target</code> -&gt; <code>Build Phases</code> -&gt; <code>点击+号</code> -&gt; <code>New Run Script Phase</code></p>
-<p>然后添加如下内容：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> [ <span class="variable">$CONFIGURATION</span> == Release ]; <span class="keyword">then</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"当前为 Release Configuration,开始自增 Build"</span></span><br><span class="line">plist=<span class="variable">$&#123;INFOPLIST_FILE&#125;</span></span><br><span class="line">buildnum=$(/usr/libexec/PlistBuddy -c <span class="string">"Print CFBundleVersion"</span> <span class="string">"<span class="variable">$&#123;plist&#125;</span>"</span>)</span><br><span class="line"><span class="keyword">if</span> [[ <span class="string">"<span class="variable">$&#123;buildnum&#125;</span>"</span> == <span class="string">""</span> ]]; <span class="keyword">then</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"Error：在Plist文件里没有 Build 值"</span></span><br><span class="line"><span class="built_in">exit</span> 2</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line">buildnum=$(expr <span class="variable">$buildnum</span> + 1)</span><br><span class="line">/usr/libexec/PlistBuddy -c <span class="string">"Set CFBundleVersion <span class="variable">$buildnum</span>"</span> <span class="string">"<span class="variable">$&#123;plist&#125;</span>"</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"开始自增 Version 最后一位"</span></span><br><span class="line">versionNum=$(/usr/libexec/PlistBuddy -c <span class="string">"Print CFBundleShortVersionString"</span> <span class="string">"<span class="variable">$&#123;plist&#125;</span>"</span>)</span><br><span class="line">thirdPartVersonNum=`<span class="built_in">echo</span> <span class="variable">$versionNum</span> | awk -F <span class="string">"."</span> <span class="string">'&#123;print $3&#125;'</span>`</span><br><span class="line">thirdPartVersonNum=$((<span class="variable">$thirdPartVersonNum</span> + 1))</span><br><span class="line">newVersionStr=`<span class="built_in">echo</span> <span class="variable">$versionNum</span> | awk -F <span class="string">"."</span> <span class="string">'&#123;print $1 "." $2 ".'</span><span class="variable">$thirdPartVersonNum</span><span class="string">'" &#125;'</span>`</span><br><span class="line">/usr/libexec/PlistBuddy -c <span class="string">"Set CFBundleShortVersionString <span class="variable">$newVersionStr</span>"</span> <span class="string">"<span class="variable">$&#123;plist&#125;</span>"</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$CONFIGURATION</span> <span class="string">"当前不为 Release Configuration"</span></span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>因为我的版本号是<code>xx.xx.xx</code>这样的形式，所以我以 <code>.</code> 拆分版本号后，取出第三个值来增加，最后再拼接回来。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">versionNum&#x3D;$(&#x2F;usr&#x2F;libexec&#x2F;PlistBuddy -c &quot;Print CFBundleShortVersionString&quot; &quot;$&#123;plist&#125;&quot;)</span><br><span class="line"># 这里取出第三个值</span><br><span class="line">thirdPartVersonNum&#x3D;&#96;echo $versionNum | awk -F &quot;.&quot; &#39;&#123;print $3&#125;&#39;&#96;</span><br></pre></td></tr></table></figure>
-
-          
-            <br>
-            
-              
-  
-    
-    
-
-
-
-  
-
-  
-    
-    
-
-
-
-  
-
-  
-    
-    
-
-<section class="widget copyright  ">
-  <div class='content'>
-    
-      <blockquote>
-        
-          
-            <p>博客内容遵循 署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0) 协议</p>
-
-          
-        
-          
-            <p>本文永久链接是：<a href=http://myhanson.com/2018/03/14/%E9%80%9A%E8%BF%87RunScript%E7%BB%99iOS%E9%A1%B9%E7%9B%AE%E8%87%AA%E5%A2%9E%E7%89%88%E6%9C%AC%E5%8F%B7(Versioin%E5%92%8CBuild)/>http://myhanson.com/2018/03/14/%E9%80%9A%E8%BF%87RunScript%E7%BB%99iOS%E9%A1%B9%E7%9B%AE%E8%87%AA%E5%A2%9E%E7%89%88%E6%9C%AC%E5%8F%B7(Versioin%E5%92%8CBuild)/</a></p>
-          
-        
-      </blockquote>
-    
-  </div>
-</section>
-
-  
-
-  
-    
-    
-
-<section class="widget qrcode  desktop mobile">
-  
-
-  <div class='content article-entry'>
-    
+  <section class="article typo">
+    <div class="article-entry" itemprop="articleBody">
       
-        <div class='fancybox'><img src='https://cdn.jsdelivr.net/gh/zyphs21/cdn-assets/qrcode/HansonTalk.jpg'
-        
-          height='64px'
-        ></div>
-      
-    
-      
-        <div class='fancybox'><img src='https://cdn.jsdelivr.net/gh/zyphs21/cdn-assets/qrcode/iOSTypist.jpg'
-        
-          height='64px'
-        ></div>
-      
-    
-  </div>
-</section>
-
-  
-
-
-            
-          
-        </div>
-        
-          
-
-
-  <section class='meta' id="footer-meta">
-    <div class='new-meta-box'>
-      
-        
-          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2020-04-17T09:13:07+08:00">
-  <a class='notlink'>
-    <i class="fas fa-edit fa-fw" aria-hidden="true"></i>
-    <p>更新于：Apr 17, 2020</p>
-  </a>
-</div>
-
-        
-      
-        
-          
-
-        
-      
-        
-          
-
-        
-      
-        
-          
-  <div class="new-meta-item share -mob-share-list">
-  <div class="-mob-share-list share-body">
-    
-      
-        <a class="-mob-share-qq" title="" rel="external nofollow noopener noreferrer"
-          
-          href="http://connect.qq.com/widget/shareqq/index.html?url=http://myhanson.com/2018/03/14/%E9%80%9A%E8%BF%87RunScript%E7%BB%99iOS%E9%A1%B9%E7%9B%AE%E8%87%AA%E5%A2%9E%E7%89%88%E6%9C%AC%E5%8F%B7(Versioin%E5%92%8CBuild)/&title=通过RunScript给iOS项目自增版本号(Versioin和Build) - Hanson的博客&summary="
-          
-          >
-          
-            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/logo/128/qq.png">
-          
-        </a>
-      
-    
-      
-        <a class="-mob-share-qzone" title="" rel="external nofollow noopener noreferrer"
-          
-          href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://myhanson.com/2018/03/14/%E9%80%9A%E8%BF%87RunScript%E7%BB%99iOS%E9%A1%B9%E7%9B%AE%E8%87%AA%E5%A2%9E%E7%89%88%E6%9C%AC%E5%8F%B7(Versioin%E5%92%8CBuild)/&title=通过RunScript给iOS项目自增版本号(Versioin和Build) - Hanson的博客&summary="
-          
-          >
-          
-            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/logo/128/qzone.png">
-          
-        </a>
-      
-    
-      
-        <a class="-mob-share-weibo" title="" rel="external nofollow noopener noreferrer"
-          
-          href="http://service.weibo.com/share/share.php?url=http://myhanson.com/2018/03/14/%E9%80%9A%E8%BF%87RunScript%E7%BB%99iOS%E9%A1%B9%E7%9B%AE%E8%87%AA%E5%A2%9E%E7%89%88%E6%9C%AC%E5%8F%B7(Versioin%E5%92%8CBuild)/&title=通过RunScript给iOS项目自增版本号(Versioin和Build) - Hanson的博客&summary="
-          
-          >
-          
-            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/logo/128/weibo.png">
-          
-        </a>
-      
-    
-  </div>
-</div>
-
-
-
-        
+        <p>最近通过 Mac Catalyst 把 ImageGotcha 带到了 macOS 上，这里简单做点分享</p>
       
     </div>
+    
+      
+        <div class="button readmore">
+          <a href="/2020/12/13/MacCatalyst%E9%80%82%E9%85%8D%E7%BB%8F%E9%AA%8C%E5%88%86%E4%BA%AB/">
+            Read More <i class="fas fa-chevron-right"></i>
+          </a>
+        </div>
+      
+    
   </section>
+</article>
 
-
-        
-        
-          <div class="prev-next">
-            
-              <a class='prev' href='/2018/03/28/%E4%BD%BF%E7%94%A8SVN%E5%BB%BA%E7%AB%8B%E5%92%8C%E5%8F%91%E5%B8%83%E7%A7%81%E6%9C%89CocoaPods%E5%BA%93/'>
-                <p class='title'><i class="fas fa-chevron-left" aria-hidden="true"></i>使用SVN建立和发布私有CocoaPods库</p>
-                <p class='content'>SVN 项目结构首先，一般 SVN 项目有如下的结构：
-
-trunk：项目主干
-branches：开发或者 Bug 分支
-tags：发布的版本
-
-比如说我们已经写好了一个 CocoaPods 的...</p>
-              </a>
-            
-            
-              <a class='next' href='/2018/03/02/PathToGo%E8%AF%9E%E7%94%9F%E8%AE%B0/'>
-                <p class='title'>PathToGo诞生记<i class="fas fa-chevron-right" aria-hidden="true"></i></p>
-                <p class='content'>不知道大家在使用 Mac 的时候有没有这样的需求:
-
-经常需要获取当前文件或者文件夹的路径，并且复制到粘贴板。
-
-对于我来说经常有这种需要，然后我就从网上再结合自己的经验，找了好几种方法：
-
-
-...</p>
-              </a>
-            
           </div>
         
-      </section>
-    </article>
+      
+    
+  </section>
   
-
-  
-    <!-- 显示推荐文章和评论 -->
-
-
-
-  
-
+    
+    <!-- 根据主题中的设置决定是否在archive中针对摘要部分的MathJax公式加载mathjax.js文件 -->
+    
+    
 
   
 
 
-
-
-<!-- 根据页面mathjax变量决定是否加载MathJax数学公式js -->
-
-
-
-  <script>
-    window.subData = {
-      title: '通过RunScript给iOS项目自增版本号(Versioin和Build)',
-      tools: true
-    }
-  </script>
-
-
+	
 </div>
 <aside class='l_side'>
   
   
+    
+    
+
+<section class="widget blogger shadow desktop mobile">
+  <div class='content'>
+    
+      
+        <a class='avatar flat-box' href='/about/'>
+          <img no-lazy src='https://cdn.jsdelivr.net/gh/zyphs21/cdn-assets/avatar/avatar.png'/>
+        </a>
+      
+    
+    
+      <div class='text'>
+        
+          <h2>Hanson</h2>
+        
+        
+        
+      </div>
+    
+    
+      <div class="social-wrapper">
+        
+          
+            <a href="/atom.xml"
+              class="social fas fa-rss flat-btn"
+              target="_blank"
+              rel="external nofollow noopener noreferrer">
+            </a>
+          
+        
+          
+            <a href="mailto:hansenhs21@live.com"
+              class="social fas fa-envelope flat-btn"
+              target="_blank"
+              rel="external nofollow noopener noreferrer">
+            </a>
+          
+        
+          
+            <a href="https://github.com/zyphs21"
+              class="social fab fa-github flat-btn"
+              target="_blank"
+              rel="external nofollow noopener noreferrer">
+            </a>
+          
+        
+      </div>
+    
+  </div>
+</section>
+
+  
 
   
     
     
+  
 
-
-  <section class="widget toc-wrapper shadow desktop mobile">
+  <section class="widget category shadow desktop">
     
   <header>
     
-      <i class="fas fa-list fa-fw" aria-hidden="true"></i><span class='name'>本文目录</span>
+      <a href='/blog/categories/'><i class="fas fa-folder-open fa-fw" aria-hidden="true"></i><span class='name'>文章分类</span></a>
     
   </header>
 
 
     <div class='content'>
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#需求分析"><span class="toc-text">需求分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#添加-RunScript"><span class="toc-text">添加 RunScript</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#注意"><span class="toc-text">注意</span></a></li></ol>
+      <ul class="entry navigation">
+        
+          <li><a class="flat-box"
+            title="/categories/OpenGL/" href="/categories/OpenGL/"
+            id="categoriesOpenGL"
+            ><div class='name'>OpenGL</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box"
+            title="/categories/Swift/" href="/categories/Swift/"
+            id="categoriesSwift"
+            ><div class='name'>Swift</div><div class='badge'>(3)</div></a></li>
+        
+          <li><a class="flat-box"
+            title="/categories/iOS%E5%BC%80%E5%8F%91/" href="/categories/iOS%E5%BC%80%E5%8F%91/"
+            id="categoriesiOSE5BC80E58F91"
+            ><div class='name'>iOS开发</div><div class='badge'>(8)</div></a></li>
+        
+          <li><a class="flat-box"
+            title="/categories/%E5%B7%A5%E5%85%B7%E6%95%99%E7%A8%8B/" href="/categories/%E5%B7%A5%E5%85%B7%E6%95%99%E7%A8%8B/"
+            id="categoriesE5B7A5E585B7E69599E7A88B"
+            ><div class='name'>工具教程</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box"
+            title="/categories/%E5%BC%80%E6%BA%90-%E4%BA%A7%E5%93%81/" href="/categories/%E5%BC%80%E6%BA%90-%E4%BA%A7%E5%93%81/"
+            id="categoriesE5BC80E6BA90-E4BAA7E59381"
+            ><div class='name'>开源/产品</div><div class='badge'>(5)</div></a></li>
+        
+          <li><a class="flat-box"
+            title="/categories/%E6%95%B0%E5%AD%A6/" href="/categories/%E6%95%B0%E5%AD%A6/"
+            id="categoriesE695B0E5ADA6"
+            ><div class='name'>数学</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box"
+            title="/categories/%E7%AE%97%E6%B3%95%E5%AE%9E%E8%B7%B5/" href="/categories/%E7%AE%97%E6%B3%95%E5%AE%9E%E8%B7%B5/"
+            id="categoriesE7AE97E6B395E5AE9EE8B7B5"
+            ><div class='name'>算法实践</div><div class='badge'>(3)</div></a></li>
+        
+      </ul>
     </div>
   </section>
 
+
+  
+
+  
+    
+    
+
+  
 
   
 
@@ -658,6 +575,14 @@ tags：发布的版本
   </footer>
 
 <script>setLoadingBarProgress(80);</script>
+
+
+
+
+	<!-- 根据主题中的设置决定是否在archive中针对摘要部分的MathJax公式加载mathjax.js文件 -->
+	
+
+	
 
 
       <script>setLoadingBarProgress(60);</script>

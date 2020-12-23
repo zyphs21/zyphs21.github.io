@@ -16,11 +16,14 @@
 
   <!-- 页面元数据 -->
   
-    <title>HSStockChart介绍 - Hanson的博客</title>
+    <title>CoreLocation 中的 Course 和 Heading 简析 - Hanson的博客</title>
   
   
-    <meta name="description" content="HSStockChart 是一个绘制股票分时图、K 线图的库。支持流畅的回弹拖动，长按十字线，捏合放大缩小等功能，主要使用了 CAShapeLayer 来绘图，相比使用 Core Graphics 和重写 drawRect 的方法更高效，占用内存更小。GitHub 地址：HSStockChart  
-">
+    <meta name="description" content="很多地图 App 都会有一个当前定位的标记，该标记可以根据用户手持手机的朝向不同而改变方向。如图：
+
+
+
+如果要实现这个带方向定位的标记点，需要什么数据呢？">
   
 
   <!-- feed -->
@@ -280,8 +283,8 @@
           
   
     <h1 class="title">
-      <a href="/2017/05/03/HSStockChart%E4%BB%8B%E7%BB%8D/">
-        HSStockChart介绍
+      <a href="/2020/04/15/CoreLocation%20%E4%B8%AD%E7%9A%84%20Course%20%E5%92%8C%20Heading%20%E7%AE%80%E6%9E%90/">
+        CoreLocation 中的 Course 和 Heading 简析
       </a>
     </h1>
   
@@ -307,9 +310,9 @@
               
   
   <div class='new-meta-item category'>
-    <a href='/categories/%E5%BC%80%E6%BA%90-%E4%BA%A7%E5%93%81/' rel="nofollow">
+    <a href='/categories/iOS%E5%BC%80%E5%8F%91/' rel="nofollow">
       <i class="fas fa-folder-open fa-fw" aria-hidden="true"></i>
-      <p>开源/产品</p>
+      <p>iOS开发</p>
     </a>
   </div>
 
@@ -320,7 +323,7 @@
               <div class="new-meta-item date">
   <a class='notlink'>
     <i class="fas fa-calendar-alt fa-fw" aria-hidden="true"></i>
-    <p>发布于：May 3, 2017</p>
+    <p>发布于：Apr 15, 2020</p>
   </a>
 </div>
 
@@ -343,47 +346,38 @@
       <section class="article typo">
         <div class="article-entry" itemprop="articleBody">
           
-          <p>HSStockChart 是一个绘制股票分时图、K 线图的库。支持流畅的回弹拖动，长按十字线，捏合放大缩小等功能，主要使用了 CAShapeLayer 来绘图，相比使用 Core Graphics 和重写 drawRect 的方法更高效，占用内存更小。<br><a href="https://github.com/zyphs21/HSStockChart" target="_blank" rel="noopener">GitHub 地址：HSStockChart</a>  </p>
-<p><img src="https://cdn.jsdelivr.net/gh/zyphs21/HSStockChart/DemoScreenshot/HSStockChart.gif" alt=""></p>
+          <p>很多地图 App 都会有一个当前定位的标记，该标记可以根据用户手持手机的朝向不同而改变方向。如图：</p>
+<img src="https://imgkr.cn-bj.ufileos.com/6a305cfc-4d8e-4f17-ad25-d40534e29aec.png" width = "80" height = "80" alt="带方向的定位标记" align=center />
+
+
+<p>如果要实现这个带方向定位的标记点，需要什么数据呢？</p>
 <a id="more"></a>
 
-<h2 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h2><ul>
-<li><input checked="" disabled="" type="checkbox"> 支持绘制分时图，五日分时图，K 线图，MA 线指标，交易量柱等。</li>
-<li><input checked="" disabled="" type="checkbox"> 支持横屏查看。</li>
-<li><input checked="" disabled="" type="checkbox"> K 线图利用 <code>UIScrollView</code> 达到流畅的滑动查看效果。</li>
-<li><input checked="" disabled="" type="checkbox"> 使用 <code>CAShapeLayer</code> 绘图，内存占用更小，效率更高。</li>
-</ul>
-<h2 id="版本需求"><a href="#版本需求" class="headerlink" title="版本需求"></a>版本需求</h2><ul>
-<li>iOS 8.0+</li>
-<li>Swift 3</li>
-</ul>
-<h2 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h2><ol>
-<li><p>之前绘图的方法是重写 <code>drawRect</code> 方法，在方法里获取 <code>CGContext</code> 然后利用Core Graphics 来进行绘图，调用 <code>setNeedsDisplay</code> 来刷新。但是这种方法有个问题是：</p>
-<blockquote>
-<p>一旦你实现了 CALayerDelegate 协议中的 -drawLayer:inContext: 方法或者 UIView 中的 -drawRect: 方法（其实就是前者的包装方法），图层就创建了一个绘制上下文，这个上下文需要的内存可从这个公式得出：图层宽x图层高x4字节，宽高的单位均为像素。对于一个在 Retina iPad 上的全屏图层来说，这个内存量就是 2048x1526x4字节，相当于12MB内存，图层每次重绘的时候都需要重新抹掉内存然后重新分配。【摘自 iOS Core Animation- Advanced Techniques 中文译本 高效绘图一章】</p>
-</blockquote>
-<p>因为我要达到流畅滑动查看的效果，所以在 <code>UIScrollView</code> 上添加了一个 <code>UIView</code> 这个 View 的宽度会依据当前展示数据的多少而变化，结合 <code>UIScrollView</code> 的 <code>ContentSize</code> 就能达到很好的滑动效果。</p>
-</li>
-</ol>
-<p><img src="https://cdn.jsdelivr.net/gh/zyphs21/HSStockChart/DemoScreenshot/scrollTheory.png" alt=""></p>
-<p>  如果我用之前重写 <code>drawRect</code> 的方法，那么这个 View 会根据数据量的变大而变大，从而导致绘图内存急剧上升，数据量大的时候会崩溃。基于此，我采用了 <code>CAShapeLayer</code> 的方式绘图，此方式的特点如下：</p>
-<blockquote>
-<p>CAShapeLayer 是一个通过矢量图形而不是 bitmap 来绘制的图层子类。你指定诸如颜色和线宽等属性，用 CGPath 来定义想要绘制的图形，最后就自动渲染出来了。当然，你也可以用 Core Graphics 直接向原始的内容中绘制一个路径，相比之下，使用 CAShapeLayer 有以下一些优点:</p>
 <ul>
-<li>渲染快速。CAShapeLayer 使用了硬件加速，绘制同一图形会比用 Core Graphics 快很多。</li>
-<li>高效使用内存。一个 CAShapeLayer 不需要像普通 CALayer 一样创建一个寄宿图形，所以无论有多大，都不会占用太多的内存。 </li>
-<li>不会被图层边界剪裁掉，一个 CAShapeLayer 可以在边界之外绘制。你的图层路径不会像在使用 Core Graphics 的普通 CALayer 一样被剪裁掉。</li>
-<li>不会出现像素化。当你给 CAShapeLayer 做3D变换时，它不像一个有寄宿图的普通图层一样变得像素化</li>
+<li>定位数据</li>
+<li>手机朝向数据</li>
 </ul>
+<p>定位数据获取很简单，调用 <code>CLLocationManager</code> 的 <code>startUpdatingLocation()</code> 方法，然后在 <code>didUpdateLocations</code> 的回调方法中可以得到的 <code>CLLocation</code> 属性值。</p>
+<p><code>CLLocation</code> 对象中，除了有我们需要的 coordinate 位置数据外，还有一个 <code>course</code> 属性。</p>
+<p>这个 <code>course</code> 属性是不是我们需要的手机朝向数据呢？</p>
+<blockquote>
+<p>course:<br>The direction in which the device is traveling, measured in degrees and relative to due north.</p>
 </blockquote>
-<p>  最终在真机上测试(注意是在真机上测试)两种方式的结果如图，内存大大降低并且稳定在13M左右</p>
-<p><img src="https://cdn.jsdelivr.net/gh/zyphs21/HSStockChart/DemoScreenshot/memoryUseExample.png" alt=""></p>
-<ol start="2">
-<li>自定义 CAShapeLayer，重写 action(forKey event: String) 方法。目的是 关闭 CAShapeLayer 的隐式动画，避免滑动时候或者十字线出现时有残影的现象(实际上是因为 Layer 的 position 属性变化而产生的隐式动画)</li>
-</ol>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">HSCAShapeLayer</span>: <span class="title">CAShapeLayer</span> </span>&#123;</span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">action</span><span class="params">(forKey event: String)</span></span> -&gt; <span class="type">CAAction?</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="License"><a href="#License" class="headerlink" title="License"></a>License</h2><p>Released under MIT License.</p>
+<blockquote>
+<p>Course values are measured in degrees starting at due north and continue clockwise around the compass. Thus, north is 0 degrees, east is 90 degrees, south is 180 degrees, and so on. Course values may not be available on all devices. A negative value indicates that the course information is invalid.</p>
+</blockquote>
+<p>从文档的解释来看，它是一个相对于地理北极以顺时针方向的角度数据，手机朝着正北方是 0 度，朝着东边是 90度，依次类推。</p>
+<p>看起来是我们想要的值。但是从实际测试(真机室内测试)结果看，<strong>这个值一直是返回 -1 。（负数代表此值当前不可用）</strong></p>
+<p>排除使用方式的不对，我们从文档 <a href="https://developer.apple.com/documentation/corelocation/getting_heading_and_course_information" target="_blank" rel="noopener">Getting Heading and Course Information</a> 发现，我们要获取的其实是 <code>heading</code>  的数据。</p>
+<p>通过调用 CLLocationManager 中的 </p>
+<pre><code>startUpdatingHeading()</code></pre><p>然后在 <code>locationManager(_:didUpdateHeading:)</code> 的回调方法中就可以获取到 heading 的数据了。</p>
+<h2 id="Course-和-Heading"><a href="#Course-和-Heading" class="headerlink" title="Course 和 Heading"></a>Course 和 Heading</h2><p>从字面意思上我们可以将它们区分为 <code>航向</code> 和 <code>朝向</code></p>
+<p><code>Course(航向)信息</code> 反映的是设备移动的速度和方向，并且仅在具有GPS硬件条件的设备上可用。</p>
+<p>注意不要将 <code>Course(航向)</code> 与 <code>Heading(朝向)</code> 混淆。Course(航向) 反映的是设备移动时的方向，是<strong>从GPS信息中获取到，它与设备的物理方向无关</strong>。</p>
+<p>而 <code>Heading(朝向)信息</code> 则是通过计算手机上传感器的值而获取到的相对于地理北极的角度信息。</p>
+<h3 id="Course"><a href="#Course" class="headerlink" title="Course"></a>Course</h3><p>Course 常常是用在进行导航的情况下。比如平时我们开车进行导航的时候，有时候车子转弯过快，会发现导航上的朝向并没有及时更新到正确的方向，要过一会才会更新，这就是因为 GPS 信息没有及时更新过来，故 Course 信息也就无法有足够的数据支持它更新。</p>
+<h3 id="Heading"><a href="#Heading" class="headerlink" title="Heading"></a>Heading</h3><p>Heading 是与物理设备有关的值，所以我们在获取 Heading 信息的时候，注意要配置 CLLocationManager 的 <code>headingOrientation</code> 属性。</p>
+<p>headingOrientation 默认值是 <code>portrait</code> ，即我们平时正面拿着手机。而当我们正面横着拿手机的时候，需要将 <code>headingOrientation</code> 属性根据实际情况改成 <code>landscapeLeft</code> 或者 <code>landscapeRight</code>，这样系统才能通过手机的持有方位计算正确的 <code>Heading</code> 值，不然 Heading 就一直是默认以 portrait 的形式计算得到。</p>
 
           
             <br>
@@ -420,7 +414,7 @@
           
         
           
-            <p>本文永久链接是：<a href=http://myhanson.com/2017/05/03/HSStockChart%E4%BB%8B%E7%BB%8D/>http://myhanson.com/2017/05/03/HSStockChart%E4%BB%8B%E7%BB%8D/</a></p>
+            <p>本文永久链接是：<a href=http://myhanson.com/2020/04/15/CoreLocation%20%E4%B8%AD%E7%9A%84%20Course%20%E5%92%8C%20Heading%20%E7%AE%80%E6%9E%90/>http://myhanson.com/2020/04/15/CoreLocation%20%E4%B8%AD%E7%9A%84%20Course%20%E5%92%8C%20Heading%20%E7%AE%80%E6%9E%90/</a></p>
           
         
       </blockquote>
@@ -470,10 +464,10 @@
     <div class='new-meta-box'>
       
         
-          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2020-10-06T18:24:14+08:00">
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2020-04-17T09:11:12+08:00">
   <a class='notlink'>
     <i class="fas fa-edit fa-fw" aria-hidden="true"></i>
-    <p>更新于：Oct 6, 2020</p>
+    <p>更新于：Apr 17, 2020</p>
   </a>
 </div>
 
@@ -497,8 +491,11 @@
       
         <a class="-mob-share-qq" title="" rel="external nofollow noopener noreferrer"
           
-          href="http://connect.qq.com/widget/shareqq/index.html?url=http://myhanson.com/2017/05/03/HSStockChart%E4%BB%8B%E7%BB%8D/&title=HSStockChart介绍 - Hanson的博客&summary=HSStockChart 是一个绘制股票分时图、K 线图的库。支持流畅的回弹拖动，长按十字线，捏合放大缩小等功能，主要使用了 CAShapeLayer 来绘图，相比使用 Core Graphics 和重写 drawRect 的方法更高效，占用内存更小。GitHub 地址：HSStockChart  
-"
+          href="http://connect.qq.com/widget/shareqq/index.html?url=http://myhanson.com/2020/04/15/CoreLocation%20%E4%B8%AD%E7%9A%84%20Course%20%E5%92%8C%20Heading%20%E7%AE%80%E6%9E%90/&title=CoreLocation 中的 Course 和 Heading 简析 - Hanson的博客&summary=很多地图 App 都会有一个当前定位的标记，该标记可以根据用户手持手机的朝向不同而改变方向。如图：
+
+
+
+如果要实现这个带方向定位的标记点，需要什么数据呢？"
           
           >
           
@@ -510,8 +507,11 @@
       
         <a class="-mob-share-qzone" title="" rel="external nofollow noopener noreferrer"
           
-          href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://myhanson.com/2017/05/03/HSStockChart%E4%BB%8B%E7%BB%8D/&title=HSStockChart介绍 - Hanson的博客&summary=HSStockChart 是一个绘制股票分时图、K 线图的库。支持流畅的回弹拖动，长按十字线，捏合放大缩小等功能，主要使用了 CAShapeLayer 来绘图，相比使用 Core Graphics 和重写 drawRect 的方法更高效，占用内存更小。GitHub 地址：HSStockChart  
-"
+          href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://myhanson.com/2020/04/15/CoreLocation%20%E4%B8%AD%E7%9A%84%20Course%20%E5%92%8C%20Heading%20%E7%AE%80%E6%9E%90/&title=CoreLocation 中的 Course 和 Heading 简析 - Hanson的博客&summary=很多地图 App 都会有一个当前定位的标记，该标记可以根据用户手持手机的朝向不同而改变方向。如图：
+
+
+
+如果要实现这个带方向定位的标记点，需要什么数据呢？"
           
           >
           
@@ -523,8 +523,11 @@
       
         <a class="-mob-share-weibo" title="" rel="external nofollow noopener noreferrer"
           
-          href="http://service.weibo.com/share/share.php?url=http://myhanson.com/2017/05/03/HSStockChart%E4%BB%8B%E7%BB%8D/&title=HSStockChart介绍 - Hanson的博客&summary=HSStockChart 是一个绘制股票分时图、K 线图的库。支持流畅的回弹拖动，长按十字线，捏合放大缩小等功能，主要使用了 CAShapeLayer 来绘图，相比使用 Core Graphics 和重写 drawRect 的方法更高效，占用内存更小。GitHub 地址：HSStockChart  
-"
+          href="http://service.weibo.com/share/share.php?url=http://myhanson.com/2020/04/15/CoreLocation%20%E4%B8%AD%E7%9A%84%20Course%20%E5%92%8C%20Heading%20%E7%AE%80%E6%9E%90/&title=CoreLocation 中的 Course 和 Heading 简析 - Hanson的博客&summary=很多地图 App 都会有一个当前定位的标记，该标记可以根据用户手持手机的朝向不同而改变方向。如图：
+
+
+
+如果要实现这个带方向定位的标记点，需要什么数据呢？"
           
           >
           
@@ -548,12 +551,17 @@
         
           <div class="prev-next">
             
-              <a class='prev' href='/2017/05/09/%E8%87%AA%E5%AE%9A%E4%B9%89%20UISegmentedControl%20%E6%A0%B7%E5%BC%8F/'>
-                <p class='title'><i class="fas fa-chevron-left" aria-hidden="true"></i>自定义 UISegmentedControl 样式</p>
-                <p class='content'>系统的 UISegmentedControl 是个挺方便的控件，这里来讲讲在 Swift3 下自定义 UISegmentedControl 的样式，包括修改底色，边框颜色等等。
-要了解 UISe...</p>
+              <a class='prev' href='/2020/06/08/%E5%88%A9%E7%94%A8%20Vision%20%E7%BB%99%E6%97%A0%E4%BA%BA%E6%9C%BA%E5%9B%BE%E4%BC%A0%E5%8A%A0%E4%B8%8A%E4%BA%BA%E8%84%B8%E8%AF%86%E5%88%AB%E5%8A%9F%E8%83%BD/'>
+                <p class='title'><i class="fas fa-chevron-left" aria-hidden="true"></i>利用 Vision给无人机图传加上人脸识别功能</p>
+                <p class='content'>Vision 是 iOS 上一个机器视觉的框架，它可以对图片和视频进行多种机器视觉相关的任务处理。Vision 里的人脸识别功能是最常用的功能之一，经过几次的迭代，它的识别效果已经很不错了，具体...</p>
               </a>
             
+            
+              <a class='next' href='/2019/05/08/%E8%AE%A1%E7%AE%97%E5%9C%B0%E5%9B%BE%E7%BC%A9%E6%94%BE%E7%AD%89%E7%BA%A7%20zoomLevel/'>
+                <p class='title'>计算地图缩放等级 zoomLevel<i class="fas fa-chevron-right" aria-hidden="true"></i></p>
+                <p class='content'>背景及问题分析在一些第三方的地图 SDK 中，往往会有 zoomLevel 这样一个属性，常用于设置地图的缩放等级。
+但是在 iOS 自带的地图控件 MKMapView 是没有这样一个属性的。取...</p>
+              </a>
             
           </div>
         
@@ -580,7 +588,7 @@
 
   <script>
     window.subData = {
-      title: 'HSStockChart介绍',
+      title: 'CoreLocation 中的 Course 和 Heading 简析',
       tools: true
     }
   </script>
@@ -606,7 +614,7 @@
 
 
     <div class='content'>
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#功能"><span class="toc-text">功能</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#版本需求"><span class="toc-text">版本需求</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#说明"><span class="toc-text">说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#License"><span class="toc-text">License</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Course-和-Heading"><span class="toc-text">Course 和 Heading</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Course"><span class="toc-text">Course</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Heading"><span class="toc-text">Heading</span></a></li></ol></li></ol>
     </div>
   </section>
 

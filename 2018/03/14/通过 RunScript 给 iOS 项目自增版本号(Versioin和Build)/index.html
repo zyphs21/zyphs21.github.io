@@ -16,10 +16,10 @@
 
   <!-- 页面元数据 -->
   
-    <title>使用SVN建立和发布私有CocoaPods库 - Hanson的博客</title>
+    <title>通过RunScript给iOS项目自增版本号(Versioin和Build) - Hanson的博客</title>
   
   
-    <meta name="description" content="现在应该没有人用 SVN 了吧">
+    <meta name="description" content="RunScript给iOS项目自增版本号">
   
 
   <!-- feed -->
@@ -279,8 +279,8 @@
           
   
     <h1 class="title">
-      <a href="/2018/03/28/%E4%BD%BF%E7%94%A8SVN%E5%BB%BA%E7%AB%8B%E5%92%8C%E5%8F%91%E5%B8%83%E7%A7%81%E6%9C%89CocoaPods%E5%BA%93/">
-        使用SVN建立和发布私有CocoaPods库
+      <a href="/2018/03/14/%E9%80%9A%E8%BF%87%20RunScript%20%E7%BB%99%20iOS%20%E9%A1%B9%E7%9B%AE%E8%87%AA%E5%A2%9E%E7%89%88%E6%9C%AC%E5%8F%B7(Versioin%E5%92%8CBuild)/">
+        通过RunScript给iOS项目自增版本号(Versioin和Build)
       </a>
     </h1>
   
@@ -306,9 +306,9 @@
               
   
   <div class='new-meta-item category'>
-    <a href='/categories/%E5%B7%A5%E5%85%B7%E6%95%99%E7%A8%8B/' rel="nofollow">
+    <a href='/categories/iOS%E5%BC%80%E5%8F%91/' rel="nofollow">
       <i class="fas fa-folder-open fa-fw" aria-hidden="true"></i>
-      <p>工具教程</p>
+      <p>iOS开发</p>
     </a>
   </div>
 
@@ -319,7 +319,7 @@
               <div class="new-meta-item date">
   <a class='notlink'>
     <i class="fas fa-calendar-alt fa-fw" aria-hidden="true"></i>
-    <p>发布于：Mar 28, 2018</p>
+    <p>发布于：Mar 14, 2018</p>
   </a>
 </div>
 
@@ -342,35 +342,16 @@
       <section class="article typo">
         <div class="article-entry" itemprop="articleBody">
           
-          <h2 id="SVN-项目结构"><a href="#SVN-项目结构" class="headerlink" title="SVN 项目结构"></a>SVN 项目结构</h2><p>首先，一般 SVN 项目有如下的结构：</p>
-<ul>
-<li>trunk：项目主干</li>
-<li>branches：开发或者 Bug 分支</li>
-<li>tags：发布的版本</li>
+          <h2 id="需求分析"><a href="#需求分析" class="headerlink" title="需求分析"></a>需求分析</h2><ul>
+<li>在打包应用之后，需要自增 <strong>Version 的最后一位</strong> 和 <strong>Build</strong> 的值。<br><img src="https://user-gold-cdn.xitu.io/2018/3/14/162201d291ebc6c1?w=690&h=136&f=png&s=11268" alt=""></li>
+<li>只在 Archive(Release) 的时候触发该自增。</li>
 </ul>
-<p>比如说我们已经写好了一个 CocoaPods 的库，它的名字是 xxxKit，那么它应该在看起来是这样的：<br><img src="" alt=""></p>
-<h2 id="建立-CocoaPods-库"><a href="#建立-CocoaPods-库" class="headerlink" title="建立 CocoaPods 库"></a>建立 CocoaPods 库</h2><p>我们在 trunk 的目录下执行 </p>
-<p><code>pod lib create xxxKit</code></p>
-<p>按照提示输入后，在该目录下就会利用 CocoaPods 的模板生成了一个项目。我们主要关注<code>xxxKit.podspec</code> 这个文件。</p>
-<p>修改 <code>xxxKit.podspec</code>，比如：   </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Pod::Spec.new do |s|</span><br><span class="line">  s.name         &#x3D; &quot;xxxKit&quot;</span><br><span class="line">  s.version      &#x3D; &quot;0.1.1&quot;</span><br><span class="line">  s.summary      &#x3D; &quot;xxxKit.&quot;</span><br><span class="line">  s.homepage     &#x3D; &quot;https:&#x2F;&#x2F;github.com&#x2F;zyphs21&#x2F;&quot;</span><br><span class="line">  s.author       &#x3D; &#123; &quot;zyphs21&quot; &#x3D;&gt; &quot;hansenhs21@live.com&quot; &#125;</span><br><span class="line">  s.source       &#x3D; &#123; :svn &#x3D;&gt; &quot;http:&#x2F;&#x2F;xxxx&#x2F;xxxKit&#x2F;&quot;, :tag &#x3D;&gt; s.version.to_s &#125;</span><br><span class="line">  s.source_files  &#x3D; &quot;xxxKit&#x2F;**&#x2F;*.&#123;swift&#125;&quot;</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+<h2 id="添加-RunScript"><a href="#添加-RunScript" class="headerlink" title="添加 RunScript"></a>添加 RunScript</h2><p>在 <code>项目Target</code> -&gt; <code>Build Phases</code> -&gt; <code>点击+号</code> -&gt; <code>New Run Script Phase</code></p>
+<p>然后添加如下内容：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> [ <span class="variable">$CONFIGURATION</span> == Release ]; <span class="keyword">then</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"当前为 Release Configuration,开始自增 Build"</span></span><br><span class="line">plist=<span class="variable">$&#123;INFOPLIST_FILE&#125;</span></span><br><span class="line">buildnum=$(/usr/libexec/PlistBuddy -c <span class="string">"Print CFBundleVersion"</span> <span class="string">"<span class="variable">$&#123;plist&#125;</span>"</span>)</span><br><span class="line"><span class="keyword">if</span> [[ <span class="string">"<span class="variable">$&#123;buildnum&#125;</span>"</span> == <span class="string">""</span> ]]; <span class="keyword">then</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"Error：在Plist文件里没有 Build 值"</span></span><br><span class="line"><span class="built_in">exit</span> 2</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line">buildnum=$(expr <span class="variable">$buildnum</span> + 1)</span><br><span class="line">/usr/libexec/PlistBuddy -c <span class="string">"Set CFBundleVersion <span class="variable">$buildnum</span>"</span> <span class="string">"<span class="variable">$&#123;plist&#125;</span>"</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"开始自增 Version 最后一位"</span></span><br><span class="line">versionNum=$(/usr/libexec/PlistBuddy -c <span class="string">"Print CFBundleShortVersionString"</span> <span class="string">"<span class="variable">$&#123;plist&#125;</span>"</span>)</span><br><span class="line">thirdPartVersonNum=`<span class="built_in">echo</span> <span class="variable">$versionNum</span> | awk -F <span class="string">"."</span> <span class="string">'&#123;print $3&#125;'</span>`</span><br><span class="line">thirdPartVersonNum=$((<span class="variable">$thirdPartVersonNum</span> + 1))</span><br><span class="line">newVersionStr=`<span class="built_in">echo</span> <span class="variable">$versionNum</span> | awk -F <span class="string">"."</span> <span class="string">'&#123;print $1 "." $2 ".'</span><span class="variable">$thirdPartVersonNum</span><span class="string">'" &#125;'</span>`</span><br><span class="line">/usr/libexec/PlistBuddy -c <span class="string">"Set CFBundleShortVersionString <span class="variable">$newVersionStr</span>"</span> <span class="string">"<span class="variable">$&#123;plist&#125;</span>"</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$CONFIGURATION</span> <span class="string">"当前不为 Release Configuration"</span></span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
 
-<p>主要注意是指定 source 那里，路径填的是 SVN 仓库的地址，并加上 tag。</p>
-<p><code>s.source = { :svn =&gt; &quot;http://xxxx/xxxKit/&quot;, :tag =&gt; s.version.to_s }</code></p>
-<h2 id="打-tags-发布一个版本"><a href="#打-tags-发布一个版本" class="headerlink" title="打 tags 发布一个版本"></a>打 tags 发布一个版本</h2><p>这里以 <code>Cornerstone</code> 这个 Mac 端的 SVN 工具来说明。</p>
-<ol>
-<li><p>去到远程库里进行打 tags，注意只有在远程库操作才能打 tag。</p>
-<p> <img src="" alt=""></p>
-</li>
-<li><p>选择在 trunk 主干上 <code>右键</code> -&gt; <code>Tag…</code>，然后输入 tag 标签，比如 v0.1.1</p>
-<p> <img src="" alt=""></p>
-</li>
-</ol>
-<p>之后只要有开发到了新的版本了，按照这样先打 tag。</p>
-<h2 id="使用私有库"><a href="#使用私有库" class="headerlink" title="使用私有库"></a>使用私有库</h2><p>去到需要使用该库的项目里，在 Podfile 里指定该版本：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pod &#39;xxxKit&#39;, :svn &#x3D;&gt; &#39;http:&#x2F;&#x2F;xxxx&#x2F;xxxKit&#x2F;&#39;, :tag &#x3D;&gt; &#39;0.1.1&#39;</span><br></pre></td></tr></table></figure>
-
-<p>然后执行 <code>pod install</code></p>
+<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>因为我的版本号是<code>xx.xx.xx</code>这样的形式，所以我以 <code>.</code> 拆分版本号后，取出第三个值来增加，最后再拼接回来。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">versionNum&#x3D;$(&#x2F;usr&#x2F;libexec&#x2F;PlistBuddy -c &quot;Print CFBundleShortVersionString&quot; &quot;$&#123;plist&#125;&quot;)</span><br><span class="line"># 这里取出第三个值</span><br><span class="line">thirdPartVersonNum&#x3D;&#96;echo $versionNum | awk -F &quot;.&quot; &#39;&#123;print $3&#125;&#39;&#96;</span><br></pre></td></tr></table></figure>
 
           
             <br>
@@ -407,7 +388,7 @@
           
         
           
-            <p>本文永久链接是：<a href=http://myhanson.com/2018/03/28/%E4%BD%BF%E7%94%A8SVN%E5%BB%BA%E7%AB%8B%E5%92%8C%E5%8F%91%E5%B8%83%E7%A7%81%E6%9C%89CocoaPods%E5%BA%93/>http://myhanson.com/2018/03/28/%E4%BD%BF%E7%94%A8SVN%E5%BB%BA%E7%AB%8B%E5%92%8C%E5%8F%91%E5%B8%83%E7%A7%81%E6%9C%89CocoaPods%E5%BA%93/</a></p>
+            <p>本文永久链接是：<a href=http://myhanson.com/2018/03/14/%E9%80%9A%E8%BF%87%20RunScript%20%E7%BB%99%20iOS%20%E9%A1%B9%E7%9B%AE%E8%87%AA%E5%A2%9E%E7%89%88%E6%9C%AC%E5%8F%B7(Versioin%E5%92%8CBuild)/>http://myhanson.com/2018/03/14/%E9%80%9A%E8%BF%87%20RunScript%20%E7%BB%99%20iOS%20%E9%A1%B9%E7%9B%AE%E8%87%AA%E5%A2%9E%E7%89%88%E6%9C%AC%E5%8F%B7(Versioin%E5%92%8CBuild)/</a></p>
           
         
       </blockquote>
@@ -457,7 +438,7 @@
     <div class='new-meta-box'>
       
         
-          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2020-04-17T09:12:35+08:00">
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2020-04-17T09:13:07+08:00">
   <a class='notlink'>
     <i class="fas fa-edit fa-fw" aria-hidden="true"></i>
     <p>更新于：Apr 17, 2020</p>
@@ -484,7 +465,7 @@
       
         <a class="-mob-share-qq" title="" rel="external nofollow noopener noreferrer"
           
-          href="http://connect.qq.com/widget/shareqq/index.html?url=http://myhanson.com/2018/03/28/%E4%BD%BF%E7%94%A8SVN%E5%BB%BA%E7%AB%8B%E5%92%8C%E5%8F%91%E5%B8%83%E7%A7%81%E6%9C%89CocoaPods%E5%BA%93/&title=使用SVN建立和发布私有CocoaPods库 - Hanson的博客&summary="
+          href="http://connect.qq.com/widget/shareqq/index.html?url=http://myhanson.com/2018/03/14/%E9%80%9A%E8%BF%87%20RunScript%20%E7%BB%99%20iOS%20%E9%A1%B9%E7%9B%AE%E8%87%AA%E5%A2%9E%E7%89%88%E6%9C%AC%E5%8F%B7(Versioin%E5%92%8CBuild)/&title=通过RunScript给iOS项目自增版本号(Versioin和Build) - Hanson的博客&summary="
           
           >
           
@@ -496,7 +477,7 @@
       
         <a class="-mob-share-qzone" title="" rel="external nofollow noopener noreferrer"
           
-          href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://myhanson.com/2018/03/28/%E4%BD%BF%E7%94%A8SVN%E5%BB%BA%E7%AB%8B%E5%92%8C%E5%8F%91%E5%B8%83%E7%A7%81%E6%9C%89CocoaPods%E5%BA%93/&title=使用SVN建立和发布私有CocoaPods库 - Hanson的博客&summary="
+          href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://myhanson.com/2018/03/14/%E9%80%9A%E8%BF%87%20RunScript%20%E7%BB%99%20iOS%20%E9%A1%B9%E7%9B%AE%E8%87%AA%E5%A2%9E%E7%89%88%E6%9C%AC%E5%8F%B7(Versioin%E5%92%8CBuild)/&title=通过RunScript给iOS项目自增版本号(Versioin和Build) - Hanson的博客&summary="
           
           >
           
@@ -508,7 +489,7 @@
       
         <a class="-mob-share-weibo" title="" rel="external nofollow noopener noreferrer"
           
-          href="http://service.weibo.com/share/share.php?url=http://myhanson.com/2018/03/28/%E4%BD%BF%E7%94%A8SVN%E5%BB%BA%E7%AB%8B%E5%92%8C%E5%8F%91%E5%B8%83%E7%A7%81%E6%9C%89CocoaPods%E5%BA%93/&title=使用SVN建立和发布私有CocoaPods库 - Hanson的博客&summary="
+          href="http://service.weibo.com/share/share.php?url=http://myhanson.com/2018/03/14/%E9%80%9A%E8%BF%87%20RunScript%20%E7%BB%99%20iOS%20%E9%A1%B9%E7%9B%AE%E8%87%AA%E5%A2%9E%E7%89%88%E6%9C%AC%E5%8F%B7(Versioin%E5%92%8CBuild)/&title=通过RunScript给iOS项目自增版本号(Versioin和Build) - Hanson的博客&summary="
           
           >
           
@@ -532,19 +513,28 @@
         
           <div class="prev-next">
             
-              <a class='prev' href='/2018/05/18/%E4%B8%8A%E6%9E%B6%E4%B8%AA%E5%B0%8F%E5%B7%A5%E5%85%B7-ImageGotcha/'>
-                <p class='title'><i class="fas fa-chevron-left" aria-hidden="true"></i>上架个小工具-ImageGotcha</p>
-                <p class='content'>上架了个小工具。ImageGotcha 是一个 Safari 的 Action Extension，它可以提取当前网页的图片方便查看和批量保存，比如可以去某些 Instagram 用户的主页批量...</p>
+              <a class='prev' href='/2018/03/28/%E4%BD%BF%E7%94%A8%20SVN%20%E5%BB%BA%E7%AB%8B%E5%92%8C%E5%8F%91%E5%B8%83%E7%A7%81%E6%9C%89%20CocoaPods%20%E5%BA%93/'>
+                <p class='title'><i class="fas fa-chevron-left" aria-hidden="true"></i>使用SVN建立和发布私有CocoaPods库</p>
+                <p class='content'>SVN 项目结构首先，一般 SVN 项目有如下的结构：
+
+trunk：项目主干
+branches：开发或者 Bug 分支
+tags：发布的版本
+
+比如说我们已经写好了一个 CocoaPods 的...</p>
               </a>
             
             
-              <a class='next' href='/2018/03/14/%E9%80%9A%E8%BF%87RunScript%E7%BB%99iOS%E9%A1%B9%E7%9B%AE%E8%87%AA%E5%A2%9E%E7%89%88%E6%9C%AC%E5%8F%B7(Versioin%E5%92%8CBuild)/'>
-                <p class='title'>通过RunScript给iOS项目自增版本号(Versioin和Build)<i class="fas fa-chevron-right" aria-hidden="true"></i></p>
-                <p class='content'>需求分析
-在打包应用之后，需要自增 Version 的最后一位 和 Build 的值。
-只在 Archive(Release) 的时候触发该自增。
+              <a class='next' href='/2018/03/02/PathToGo%20%E8%AF%9E%E7%94%9F%E8%AE%B0/'>
+                <p class='title'>PathToGo诞生记<i class="fas fa-chevron-right" aria-hidden="true"></i></p>
+                <p class='content'>不知道大家在使用 Mac 的时候有没有这样的需求:
 
-添加 RunScript在 项目Target...</p>
+经常需要获取当前文件或者文件夹的路径，并且复制到粘贴板。
+
+对于我来说经常有这种需要，然后我就从网上再结合自己的经验，找了好几种方法：
+
+
+...</p>
               </a>
             
           </div>
@@ -572,7 +562,7 @@
 
   <script>
     window.subData = {
-      title: '使用SVN建立和发布私有CocoaPods库',
+      title: '通过RunScript给iOS项目自增版本号(Versioin和Build)',
       tools: true
     }
   </script>
@@ -598,7 +588,7 @@
 
 
     <div class='content'>
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#SVN-项目结构"><span class="toc-text">SVN 项目结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#建立-CocoaPods-库"><span class="toc-text">建立 CocoaPods 库</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#打-tags-发布一个版本"><span class="toc-text">打 tags 发布一个版本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用私有库"><span class="toc-text">使用私有库</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#需求分析"><span class="toc-text">需求分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#添加-RunScript"><span class="toc-text">添加 RunScript</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#注意"><span class="toc-text">注意</span></a></li></ol>
     </div>
   </section>
 

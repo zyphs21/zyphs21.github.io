@@ -16,10 +16,10 @@
 
   <!-- 页面元数据 -->
   
-    <title>为什么OpenGL里旋转等变换矩阵是4x4的矩阵 - Hanson的博客</title>
+    <title>PathToGo “没什么卵用” 的更新 - Hanson的博客</title>
   
   
-    <meta name="description" content="在直观上的认知里，表达一个三维空间的坐标用 x,y,z 就足够了，那在三维空间里进行矩阵变换，用 3x3 的矩阵就够了，为什么需要 4x4 呢？为了回答这个问题，下面我们先在几何意义上理解向量和矩阵之间的关系，然后通过推导旋转矩阵和平移矩阵，一步步来解开这个疑惑。">
+    <meta name="description" content="PathToGo 是一个可以复制当前选中文件的路径到粘贴板的小 Mac App。具体可以看看之前写的文章 《PathToGo诞生记》 。">
   
 
   <!-- feed -->
@@ -279,8 +279,8 @@
           
   
     <h1 class="title">
-      <a href="/2020/10/23/%E4%B8%BA%E4%BB%80%E4%B9%88OpenGL%E9%87%8C%E6%97%8B%E8%BD%AC%E7%AD%89%E5%8F%98%E6%8D%A2%E7%9F%A9%E9%98%B5%E6%98%AF4x4%E7%9A%84%E7%9F%A9%E9%98%B5/">
-        为什么OpenGL里旋转等变换矩阵是4x4的矩阵
+      <a href="/2020/06/28/PathToGo%20%E6%B2%A1%E4%BB%80%E4%B9%88%E5%8D%B5%E7%94%A8%E7%9A%84%E6%9B%B4%E6%96%B0/">
+        PathToGo “没什么卵用” 的更新
       </a>
     </h1>
   
@@ -306,9 +306,9 @@
               
   
   <div class='new-meta-item category'>
-    <a href='/categories/OpenGL/' rel="nofollow">
+    <a href='/categories/%E5%BC%80%E6%BA%90-%E4%BA%A7%E5%93%81/' rel="nofollow">
       <i class="fas fa-folder-open fa-fw" aria-hidden="true"></i>
-      <p>OpenGL</p>
+      <p>开源/产品</p>
     </a>
   </div>
 
@@ -319,7 +319,7 @@
               <div class="new-meta-item date">
   <a class='notlink'>
     <i class="fas fa-calendar-alt fa-fw" aria-hidden="true"></i>
-    <p>发布于：Oct 23, 2020</p>
+    <p>发布于：Jun 28, 2020</p>
   </a>
 </div>
 
@@ -342,73 +342,48 @@
       <section class="article typo">
         <div class="article-entry" itemprop="articleBody">
           
-          <p>OpenGL ES 的很多教程里都会有这样一个例子来讲解纹理：将一张图片作为纹理显示在屏幕上。</p>
-<p>因为纹理坐标和实际屏幕显示的坐标不一样，把图片渲染在屏幕上后，图片是上下颠倒的。</p>
-<p>一个解决方法是对当前的顶点坐标，乘以绕 z 轴旋转180度的矩阵，这样图片就能正确显示了。</p>
-<p>$$<br>\begin{bmatrix}<br>cos\theta &amp; -sin\theta &amp; 0 &amp; 0 \\ sin\theta &amp; cos\theta &amp; 0 &amp; 0 \\ 0 &amp; 0 &amp; 1 &amp; 0 \\ 0 &amp; 0 &amp; 0 &amp; 1 \<br>\end{bmatrix}<br>$$</p>
-<p>那么如何理解这个旋转矩阵呢？</p>
-<p>影响我们理解这个矩阵的第一个问题是：</p>
-<p><strong>为什么这个矩阵是 4x4 的？</strong> 而且我们发现旋转，缩放、平移等变换矩阵都是 4x4 的。</p>
-<p>在直观上的认知里，表达一个三维空间的坐标用 x,y,z 就足够了，那在三维空间里进行矩阵变换，用 3x3 的矩阵就够了，为什么需要 4x4 呢？</p>
-<p>为了回答这个问题，下面我们先在几何意义上理解<strong><u>向量和矩阵</u></strong>之间的关系，然后通过<strong><u>推导旋转矩阵</u></strong>和<u><strong>平移矩阵</strong></u>，一步步来解开这个疑惑。</p>
-<h2 id="向量和矩阵"><a href="#向量和矩阵" class="headerlink" title="向量和矩阵"></a>向量和矩阵</h2><p>在几何平面上，我们可以把平面上任意一<code>点</code>，当作<u>与原点组成</u>的一个 <code>向量</code> 来理解。</p>
-<p>如图 ，A 点可以表示成向量  $\vec{OA}$  ；在 x 轴和 y 轴上各有 i 点（1， 0）和  j 点（0，1），同样的，让它们与原点组成向量，为了简化，我们用  $\vec{i}$  和 $\vec{j}$ 表示这两个向量。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/zhenwanping/cdn-assets@master/photo/20201022184245.png" alt="image-20201022184243547"></p>
-<p>因为 A 点的坐标为 (3, 2)，如果我们要用  $\vec{i}$  和 $\vec{j}$  表示 $\vec{OA}$ ，那是这样的：<br>$$<br>3\vec{i} + 2\vec{j} = \vec{OA}<br>$$<br>这里的几何意义是 $\vec{i}$ 延展到 $3\vec{i}$  ，$\vec{j}$ 延展到 $2\vec{j}$ ，然后把这两个向量相加即可得到 $\vec{OA}$</p>
-<p>i  坐标是 （1， 0），j 坐标是 （0，1），我们把上面这个等式转换成竖列的形式：<br>$$<br>3<br>\begin{bmatrix}1\\0\end{bmatrix}<br>+<br>2<br>\begin{bmatrix}<br>0\\1<br>\end{bmatrix}<br>=<br>\begin{bmatrix}<br>3 \\ 2<br>\end{bmatrix}<br>$$<br>这里其实是向量的简单运算，运算过程如下：<br>$$<br>\begin{bmatrix}<br>3 \times  1 \\ 3 \times 0<br>\end{bmatrix}<br>+<br>\begin{bmatrix}<br>2 \times 0\\2 \times 1<br>\end{bmatrix}<br>=<br>\begin{bmatrix}<br>3 \times 1 + 2 \times 0\\3 \times 0 + 2 \times 1<br>\end{bmatrix}<br>=<br>\begin{bmatrix}<br>3\\2<br>\end{bmatrix}<br>$$<br>看到运算过程是否有种似曾相识的感觉？这不就是矩阵与向量的乘法计算吗？这个运算其实就是将<code>向量左乘一个矩阵</code> 的计算：<br>$$<br>\begin{bmatrix}<br>1 &amp; 0\\0 &amp; 1<br>\end{bmatrix}<br>\begin{bmatrix}<br>3\\2<br>\end{bmatrix}<br>=<br>\begin{bmatrix}<br>3 \times 1 + 2 \times 0 \\3 \times 0 + 2 \times 1<br>\end{bmatrix}<br>=<br>\begin{bmatrix}<br>3 \\ 2<br>\end{bmatrix}<br>$$<br>这里 $\begin{bmatrix} 1 &amp; 0 \\ 0 &amp; 1 \end{bmatrix}$  其实就是<code>单元矩阵</code>，左乘一个单元矩阵并不会改变原来的值。而这个单元矩阵以两个竖列来看，<strong>正是 i 和 j 点的坐标</strong>，也是向量  $\vec{i}$  和  $\vec{j}$ ，在数学上将  $\vec{i}$  和  $\vec{j}$  称为此坐标系的 <code>基向量</code>。</p>
-<h2 id="推导旋转矩阵"><a href="#推导旋转矩阵" class="headerlink" title="推导旋转矩阵"></a>推导旋转矩阵</h2><p>我们现在把整个坐标轴绕原点逆时针旋转  $45^o$ ：</p>
-<p><img src="https://cdn.jsdelivr.net/gh/zhenwanping/cdn-assets@master/photo/20201022220658.png" alt="image-20201022220656758"></p>
-<p>旋转后  i 点和 j 点对应  $i^\prime$  和  $j^\prime$ 位置。</p>
-<p>通过简单的三角函数计算得到： $i^\prime$ 坐标为 $\begin{bmatrix}cos45^o \\ sin45^o\end{bmatrix}$ ，$j^\prime$ 坐标为 $\begin{bmatrix} -sin45^o \\ cons45^o \end{bmatrix}$</p>
-<p>旋转后，A 点的坐标是多少呢？回顾上面的做法， $\vec{i^\prime}$ 延展到 $3\vec{i^\prime}$  ，$\vec{j^\prime}$ 延展到 $2\vec{j^\prime}$ ，然后把这两个向量相加即可得到 $\vec{OA^\prime}$ 。结合上面一节矩阵和向量的推演，可以变成下面的形式：<br>$$<br>\begin{bmatrix}<br>cos45^o &amp; -sin45^o \\sin45^o &amp; cos45^o<br>\end{bmatrix}<br>\begin{bmatrix}<br>3 \\ 2<br>\end{bmatrix}<br>$$<br>我们发现，左边的矩阵不正是开头所看到的 <code>旋转矩阵</code> 吗？只不过这是二维平面上的旋转矩阵:<br>$$<br>\begin{bmatrix}<br>cos\theta &amp; -sin\theta \\sin\theta &amp; cos\theta<br>\end{bmatrix}<br>$$<br>结合图形和计算，我们可以这样理解这个二维矩阵：二维矩阵代表一个坐标系里的两个基向量，而在这个坐标系里的点与原点组成的向量，都可以用这两个基向量的变换来表示。那么旋转一个点，可以转换成旋转这个点所在的坐标系，从而通过变化的基向量求出旋转后的点的位置。</p>
-<p>其实这种变换在数学上称作 <code>线性变换</code> ，线性变换是通过 <code>矩阵乘法</code> 来实现</p>
+          <p>PathToGo 是一个可以复制当前选中文件的路径到粘贴板的小 Mac App。具体可以看看之前写的文章 <a href="">《PathToGo诞生记》</a> 。</p>
+<a id="more"></a>
+
+<h3 id="用户反馈"><a href="#用户反馈" class="headerlink" title="用户反馈"></a>用户反馈</h3><p>PathToGo 解决的是一个很冷门的需求，即便是我，也不会经常用它。甚至很多人觉得它 <code>“没有什么卵用”</code>。但是它仍然收获了一部分用户，甚至还收到用户的反馈：</p>
+<p><img src="https://imgkr.cn-bj.ufileos.com/ccdab9e6-bae4-4fa5-9f4c-a245b16894e7.png" alt=""></p>
+<p>这个用户的需求是希望复制出来的文件路径可以带上 <code>反斜杠转义符</code>，这样他可以直接复制到他的终端里跳转路径使用。</p>
+<p>很明显，这个用户并不知道 <code>Go2Shell</code> ，这款给了 <code>PathToGo</code> 诞生灵感的 App。如果他使用 <code>Go2Shell</code>  的话应该能够很好地解决他真正的需求。</p>
+<h3 id="我的吐槽"><a href="#我的吐槽" class="headerlink" title="我的吐槽"></a>我的吐槽</h3><p>Anyway，既然有用户反馈，我有了一点点更新它的动力。不过最大的动力还是来自于我对 <code>PathToGo</code> 的不满：<strong>它实在太丑了！</strong></p>
+<p>因为 <code>PathToGo</code> 的使用场景，注定它要常驻在 Finder 的 Toolbar 上。而当初在设计图标的时候，脑抽地给它设置了一个<strong>半透明背景</strong> 😂。在 macOS 的浅色模式下还好，但是在深色模式下的样子真的一言难尽：</p>
+<p><img src="https://imgkr.cn-bj.ufileos.com/a416976a-2092-4f0c-801a-057cbfc20a4a.png" alt="浅色模式下显示"></p>
+<p><img src="https://imgkr.cn-bj.ufileos.com/62b41f1b-cbf7-4cce-9b06-0863befd9df6.png" alt="深色模式下显示"></p>
+<p>如上图，真的太丑了！而且图标的大小与 Toolbar 上的其它 icon 相比显得是如此的格格不入。</p>
+<h3 id="重新设计图标"><a href="#重新设计图标" class="headerlink" title="重新设计图标"></a>重新设计图标</h3><p>所以，更新 PathToGo 的首要任务是重新设计图标！</p>
+<p>设计不是我的长项，所以我给自己订的只有两个要求：</p>
+<ol>
+<li>改掉背景色 </li>
+<li>图标尺寸在 Finder 上不要显得那么突兀</li>
+</ol>
+<p>打开 Sketch，一顿操作后，PathToGo 的图标现在长这样了：</p>
+<p><img src="https://imgkr.cn-bj.ufileos.com/8459c5a7-cd62-4bf6-a9d9-a32766274a5c.png" alt="PathToGo图标"></p>
+<p>然后它在 Finder 上是这样子的：</p>
+<p><img src="https://imgkr.cn-bj.ufileos.com/9fd7a8c4-f2ad-4cf5-8587-f139480f978e.png" alt=""></p>
+<p>嗯嗯，看着还可以。</p>
+<p>不过还能更进一步吗？能在好看的同时又能够满足上面用户反馈的需求吗？</p>
+<p>这时候，我发现了一个东西：<strong><a href="https://developer.apple.com/library/archive/documentation/General/Conceptual/ExtensibilityPG/Finder.html" target="_blank" rel="noopener">FinderSync</a></strong></p>
+<h3 id="用-FinderSync-改造"><a href="#用-FinderSync-改造" class="headerlink" title="用 FinderSync 改造"></a>用 FinderSync 改造</h3><p>FinderSync 是苹果提供的一个扩展功能，它的目的是可以让开发者自定义 Finder 文件的界面，以提示用户文件的监听使用状态等。比如你的 App 可以进行文件同步的功能，你希望让用户知道当前文件是否已经同步完成了，可以通过 FinderSync 这个扩展来给文件添加 icon 以达到提示的作用：</p>
+<p><img src="https://imgkr.cn-bj.ufileos.com/f2ad6a3f-ef5c-4c0d-9ec6-5f78b9774ea3.png" alt=""></p>
+<p>我注意到 FinderSync 可以给 Finder 添加一个原生的 Toolbar！如果 PathToGo 可以做成一个原生样式的 Toolbar 按钮，那不就太完美了吗？</p>
+<p>不过 FinderSync 只支持有下拉选项的 Toolbar 按钮样式，那其实可以将上面用户反馈的功能做到这里：</p>
+<p>点击下拉出两个选项，一个是复制纯文本，一个是复制出带有反斜杠转义的文本。</p>
+<p>这样就既能保留 PathToGo 原有的功能基础上，扩展出了新的功能，尽管与 PathToGo <code>一点击即达</code> 的初衷有点违背，但是我认为这是<strong>在权衡好看和功能性两者之间的最好妥协</strong>。</p>
+<p>于是，PathToGo 在支持原来拖动放置在 Finder Toolbar 的形式的基础上，多了一种以 FinderSync 为踏板的新形式，<strong>终于让它很好地融入了 Toolbar 上</strong>：</p>
+<p><img src="https://imgkr.cn-bj.ufileos.com/51709307-f8e5-4715-90a8-a1eea46296ba.png" alt="PathToGo 在 Finder Toolbar 上"></p>
+<p>添加的方式是：右击 Finder Toolbar 空白处，进入自定义 Toolbar，找到 PathToGo 并拖动添加到 Toolbar 上就可以啦！</p>
+<p><img src="https://imgkr.cn-bj.ufileos.com/464ba02e-a880-425c-8da3-9032d820fd1e.png" alt=""></p>
+<h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>尽管在很多人看来 PathToGo 还是一个没什么卵用的东西，但是这次从出现更新的念头，到最后利用 FinderSync “曲线救国”的实现过程，我是觉得很有意思的。</p>
 <blockquote>
-<p><strong>线性变换</strong>：是在两个<a href="https://zh.wikipedia.org/wiki/向量空间" target="_blank" rel="noopener">向量空间</a>（包括由函数构成的抽象的向量空间）之间的一种保持向量加法和标量乘法的特殊映射</p>
+<p>PathToGo 下载地址：<code>https://github.com/HansonStudio/PathToGo/releases</code></p>
 </blockquote>
 <blockquote>
-<p>线性变换在几何直观上有如下特点：</p>
-<ul>
-<li><p>变换前后，直线仍然保持是直线的状态</p>
-</li>
-<li><p>变换前后，原点保持固定，不会变化</p>
-</li>
-</ul>
+<p>欢迎关注我的公众号：HansonTalk<br><img src="https://cdn.jsdelivr.net/gh/zyphs21/cdn-assets/qrcode/HansonTalk.jpg" alt=""></p>
 </blockquote>
-<p>我们从二维平面，推导到三维坐标也是同理，只不过是多了个 z 轴<br>$$<br>\begin{bmatrix}<br>1 &amp; 0 &amp; 0 \\0 &amp; 1 &amp; 0 \\0 &amp; 0 &amp; 1<br>\end{bmatrix}<br>$$<br>竖着来看这个矩阵，是 x，y，z轴上的三个基向量，同时它又是一个单元矩阵。</p>
-<p>同理上面二维平面的推导，三维坐标绕 z 轴的旋转矩阵为：<br>$$<br>\begin{bmatrix}<br>cos\theta&amp;-sin\theta&amp;0\\sin\theta&amp;cos\theta&amp;0\\0&amp;0&amp;1<br>\end{bmatrix}<br>$$</p>
-<h2 id="推导平移矩阵"><a href="#推导平移矩阵" class="headerlink" title="推导平移矩阵"></a>推导平移矩阵</h2><p>那么平移操作，能不能也用这种矩阵与向量相乘的形式呢？我们再次回到二维平面，看看将 A 点平移到 B 点的情况是怎样的。</p>
-<img src="https://cdn.jsdelivr.net/gh/zhenwanping/cdn-assets@master/photo/20201022222202.png" alt="image-20201022222139291" style="zoom: 33%;" />
-
-<p>要将 A 点（3，2）平移到 B 点(4，5)，实际上就是先将 A 点往右移动 1 ，再往上移动 3，即 x 坐标值增加 1，y坐标值增加 3<br>$$<br>\begin{bmatrix}<br>x + 1 \\ y + 3<br>\end{bmatrix}<br>=<br>\begin{bmatrix}<br>x \\ y<br>\end{bmatrix}<br>+<br>\begin{bmatrix}<br>1 \\ 3<br>\end{bmatrix}<br>=<br>\begin{bmatrix}<br>3 + 1 \\ 2 + 3<br>\end{bmatrix}<br>=<br>\begin{bmatrix}<br>4 \\ 5<br>\end{bmatrix}<br>$$<br>从上面的运算来看，平移这种操作实际上是 <code>向量的加法</code>，即:<br>$$<br>\vec{OA} + \vec{OC} = \vec{OB}<br>$$</p>
-<p>$$<br>\begin{bmatrix} 3 \\ 2 \end{bmatrix} + \begin{bmatrix} 1 \\ 3 \end{bmatrix}=\begin{bmatrix} 4 \\ 5 \end{bmatrix}<br>$$</p>
-<p>我们可以通过向量加法的 <code>平行四边形法则</code> 加深理解，如下图：</p>
-<img src="https://cdn.jsdelivr.net/gh/zhenwanping/cdn-assets@master/photo/20201022223037.png" alt="image-20201022223035113" style="zoom:50%;" />
-
-<p>对于平移这种操作，<strong>我们无法仅仅通过矩阵乘法来实现</strong>。</p>
-<p>而实际上，平移这种操作属于 <code>仿射变换</code> 。</p>
-<blockquote>
-<p><strong>仿射变换</strong>，又称<strong>仿射映射</strong>，是指在几何中，对一个向量空间进行一次<a href="https://zh.wikipedia.org/wiki/线性变换" target="_blank" rel="noopener">线性变换</a>并接上一个平移，变换为另一个向量空间。</p>
-</blockquote>
-<p>仿射变换在几何直观上，相比线性变换，它不需要保证变换前后坐标原点不变。</p>
-<p>如下图，从 A 点平移到 B 点，我们换一个角度思考，这次不移动点，而是<code>移动整个坐标轴</code>，同样可以达到平移 A 点到 B 点的需求，但是坐标原点移动到了 O’ 点（1，3）。</p>
-<img src="https://cdn.jsdelivr.net/gh/zhenwanping/cdn-assets@master/photo/20201022230510.png" alt="image-20201022230432040" style="zoom: 33%;" />
-
-
-
-<p>我们希望构造的是像下面这种矩阵乘法的等式，这样才能用一个通用的计算模式来处理坐标点的变换。<br>$$<br>\begin{bmatrix}<br>矩阵<br>\end{bmatrix}<br>\begin{bmatrix}<br>3\\2<br>\end{bmatrix}<br>=<br>\begin{bmatrix}<br>4\\5<br>\end{bmatrix}<br>$$<br>到这里，我们终于要请出 <code>齐次坐标</code> 了。</p>
-<blockquote>
-<p>齐次坐标就是将一个原本是 n 维的向量用一个 n+1 维向量来表示，是指一个用于投影几何里的坐标系统，如同用于欧氏几何里的笛卡儿坐标一般。</p>
-</blockquote>
-<p>用一个通俗的讲法是，我们需要 <code>升维</code> 来处理这个问题。</p>
-<blockquote>
-<p>通过增加一个维度，我们可以在<code>高维度</code>上，通过线性变换来处理<code>低维度</code>的仿射变换。</p>
-</blockquote>
-<p>这句话咋一听感觉很有哲理，但是通过下面的数学等式就能知道其中的奥妙：<br>$$<br>\begin{bmatrix}<br>1 &amp; 0 &amp; 1 \\0 &amp; 1 &amp; 3 \\0 &amp; 0 &amp; 1<br>\end{bmatrix}<br>\begin{bmatrix}<br>3 \\ 2 \\ 1<br>\end{bmatrix}<br>=<br>\begin{bmatrix}<br>1 \times 3 + 0 \times 2 + 1 \times 1 \\0 \times 3 + 1 \times 2 + 3 \times 1 \\0 \times 3 + 0 \times 2 + 1 \times 1<br>\end{bmatrix}<br>=<br>\begin{bmatrix}<br>4 \\ 5 \\ 1<br>\end{bmatrix}<br>$$<br>观察上面的运算过程，结果 $\begin{bmatrix}4\\5\\1 \end{bmatrix}$ 不正是我们上面所得的 $\begin{bmatrix} 4\\5 \end{bmatrix}$ 吗？只不过多了一个 z 轴的坐标值。</p>
-<p>我们通过升级一个维度，将在二维平面上的平移问题转换成了在三维坐标的矩阵和向量乘法。那么在二维平面上，这个平移矩阵就为：<br>$$<br>\begin{bmatrix}<br>1 &amp; 0 &amp; tx \\0 &amp; 1 &amp; ty \\0 &amp; 0 &amp; 1<br>\end{bmatrix}<br>$$<br>tx 和 ty 就对应在 x 轴 和 y 轴上的移动距离。</p>
-<p>同理推广到三维坐标系，要实现三维坐标的平移操作，同样需要通过升维，引入齐次坐标来计算。那么三维坐标下的平移矩阵就为：<br>$$<br>\begin{bmatrix}<br>1 &amp; 0 &amp; 0 &amp; tx \\0 &amp; 1 &amp; 0 &amp; ty \\0 &amp; 0 &amp; 1 &amp; tz \\0 &amp; 0 &amp; 0 &amp; 1 \<br>\end{bmatrix}<br>$$</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>至此，我们可以回答最开始的问题了，为什么 OpenGL 里的矩阵变换是 4x4 的矩阵呢？</p>
-<p>我们来想象这样一个场景：如果我要让顶点坐标旋转一定角度后，再平移一段距离，那么这里面的操作就涉及 3x3 矩阵的计算和 4x4 矩阵的计算，如果不统一起来，这种连续变换的计算操作将很复杂。</p>
-<p>所以如果要用矩阵乘法来统一所有的平移、旋转等等变换计算，为了照顾到平移这类仿射变换，统一用 4x4 矩阵来计算既能满足场景又方便计算。</p>
 
           
             <br>
@@ -445,7 +420,7 @@
           
         
           
-            <p>本文永久链接是：<a href=http://myhanson.com/2020/10/23/%E4%B8%BA%E4%BB%80%E4%B9%88OpenGL%E9%87%8C%E6%97%8B%E8%BD%AC%E7%AD%89%E5%8F%98%E6%8D%A2%E7%9F%A9%E9%98%B5%E6%98%AF4x4%E7%9A%84%E7%9F%A9%E9%98%B5/>http://myhanson.com/2020/10/23/%E4%B8%BA%E4%BB%80%E4%B9%88OpenGL%E9%87%8C%E6%97%8B%E8%BD%AC%E7%AD%89%E5%8F%98%E6%8D%A2%E7%9F%A9%E9%98%B5%E6%98%AF4x4%E7%9A%84%E7%9F%A9%E9%98%B5/</a></p>
+            <p>本文永久链接是：<a href=http://myhanson.com/2020/06/28/PathToGo%20%E6%B2%A1%E4%BB%80%E4%B9%88%E5%8D%B5%E7%94%A8%E7%9A%84%E6%9B%B4%E6%96%B0/>http://myhanson.com/2020/06/28/PathToGo%20%E6%B2%A1%E4%BB%80%E4%B9%88%E5%8D%B5%E7%94%A8%E7%9A%84%E6%9B%B4%E6%96%B0/</a></p>
           
         
       </blockquote>
@@ -495,10 +470,10 @@
     <div class='new-meta-box'>
       
         
-          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2020-10-23T09:23:43+08:00">
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2020-06-25T17:34:09+08:00">
   <a class='notlink'>
     <i class="fas fa-edit fa-fw" aria-hidden="true"></i>
-    <p>更新于：Oct 23, 2020</p>
+    <p>更新于：Jun 25, 2020</p>
   </a>
 </div>
 
@@ -522,7 +497,7 @@
       
         <a class="-mob-share-qq" title="" rel="external nofollow noopener noreferrer"
           
-          href="http://connect.qq.com/widget/shareqq/index.html?url=http://myhanson.com/2020/10/23/%E4%B8%BA%E4%BB%80%E4%B9%88OpenGL%E9%87%8C%E6%97%8B%E8%BD%AC%E7%AD%89%E5%8F%98%E6%8D%A2%E7%9F%A9%E9%98%B5%E6%98%AF4x4%E7%9A%84%E7%9F%A9%E9%98%B5/&title=为什么OpenGL里旋转等变换矩阵是4x4的矩阵 - Hanson的博客&summary="
+          href="http://connect.qq.com/widget/shareqq/index.html?url=http://myhanson.com/2020/06/28/PathToGo%20%E6%B2%A1%E4%BB%80%E4%B9%88%E5%8D%B5%E7%94%A8%E7%9A%84%E6%9B%B4%E6%96%B0/&title=PathToGo “没什么卵用” 的更新 - Hanson的博客&summary=PathToGo 是一个可以复制当前选中文件的路径到粘贴板的小 Mac App。具体可以看看之前写的文章 《PathToGo诞生记》 。"
           
           >
           
@@ -534,7 +509,7 @@
       
         <a class="-mob-share-qzone" title="" rel="external nofollow noopener noreferrer"
           
-          href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://myhanson.com/2020/10/23/%E4%B8%BA%E4%BB%80%E4%B9%88OpenGL%E9%87%8C%E6%97%8B%E8%BD%AC%E7%AD%89%E5%8F%98%E6%8D%A2%E7%9F%A9%E9%98%B5%E6%98%AF4x4%E7%9A%84%E7%9F%A9%E9%98%B5/&title=为什么OpenGL里旋转等变换矩阵是4x4的矩阵 - Hanson的博客&summary="
+          href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://myhanson.com/2020/06/28/PathToGo%20%E6%B2%A1%E4%BB%80%E4%B9%88%E5%8D%B5%E7%94%A8%E7%9A%84%E6%9B%B4%E6%96%B0/&title=PathToGo “没什么卵用” 的更新 - Hanson的博客&summary=PathToGo 是一个可以复制当前选中文件的路径到粘贴板的小 Mac App。具体可以看看之前写的文章 《PathToGo诞生记》 。"
           
           >
           
@@ -546,7 +521,7 @@
       
         <a class="-mob-share-weibo" title="" rel="external nofollow noopener noreferrer"
           
-          href="http://service.weibo.com/share/share.php?url=http://myhanson.com/2020/10/23/%E4%B8%BA%E4%BB%80%E4%B9%88OpenGL%E9%87%8C%E6%97%8B%E8%BD%AC%E7%AD%89%E5%8F%98%E6%8D%A2%E7%9F%A9%E9%98%B5%E6%98%AF4x4%E7%9A%84%E7%9F%A9%E9%98%B5/&title=为什么OpenGL里旋转等变换矩阵是4x4的矩阵 - Hanson的博客&summary="
+          href="http://service.weibo.com/share/share.php?url=http://myhanson.com/2020/06/28/PathToGo%20%E6%B2%A1%E4%BB%80%E4%B9%88%E5%8D%B5%E7%94%A8%E7%9A%84%E6%9B%B4%E6%96%B0/&title=PathToGo “没什么卵用” 的更新 - Hanson的博客&summary=PathToGo 是一个可以复制当前选中文件的路径到粘贴板的小 Mac App。具体可以看看之前写的文章 《PathToGo诞生记》 。"
           
           >
           
@@ -570,15 +545,17 @@
         
           <div class="prev-next">
             
-              <a class='prev' href='/2020/11/19/%E8%87%AA%E7%84%B6%E5%B8%B8%E6%95%B0e%20%E4%B8%BA%E4%BB%80%E4%B9%88%E5%86%A0%E4%BB%A5%E8%87%AA%E7%84%B6%E4%BA%8C%E5%AD%97/'>
-                <p class='title'><i class="fas fa-chevron-left" aria-hidden="true"></i>自然常数 e 为什么冠以“自然”二字</p>
-                <p class='content'> $\pi$ 应该是我们最熟悉的数学常数了，但是除了 $\pi$ 以外，还有一个数学常数  $e$，它同样重要，同样与我们生活息息相关，甚至被冠名为 自然常数，它是对数函数的底数，有时候也称它为...</p>
+              <a class='prev' href='/2020/09/12/OpenGLES%20%E5%92%8C%20Swift%20%E5%AE%9E%E7%8E%B0%E5%85%A8%E6%99%AF%E5%9B%BE%E6%B5%8F%E8%A7%88(%E5%85%A8%E6%99%AF%E7%90%83,360%E5%BA%A6%E6%B5%8F%E8%A7%88,%E5%B0%8F%E8%A1%8C%E6%98%9F)/'>
+                <p class='title'><i class="fas fa-chevron-left" aria-hidden="true"></i>OpenGLES和Swift实现全景图浏览(全景球,360度浏览,小行星)</p>
+                <p class='content'>最近在学习 OpenGLES，其实也就学到纹理那里，所以想着做个小项目来巩固一下知识。而一个全景浏览器正好囊括顶点坐标，纹理坐标，索引绘图，MVP 矩阵变换等等知识，是一个很不错的练手项目。我选...</p>
               </a>
             
             
-              <a class='next' href='/2020/09/12/OpenGLES%E5%92%8CSwift%E5%AE%9E%E7%8E%B0%E5%85%A8%E6%99%AF%E5%9B%BE%E6%B5%8F%E8%A7%88(%E5%85%A8%E6%99%AF%E7%90%83,360%E5%BA%A6%E6%B5%8F%E8%A7%88,%E5%B0%8F%E8%A1%8C%E6%98%9F)/'>
-                <p class='title'>OpenGLES和Swift实现全景图浏览(全景球,360度浏览,小行星)<i class="fas fa-chevron-right" aria-hidden="true"></i></p>
-                <p class='content'>最近在学习 OpenGLES，其实也就学到纹理那里，所以想着做个小项目来巩固一下知识。而一个全景浏览器正好囊括顶点坐标，纹理坐标，索引绘图，MVP 矩阵变换等等知识，是一个很不错的练手项目。我选...</p>
+              <a class='next' href='/2020/06/12/%E9%80%9A%E8%BF%87%20DeveloperID%20%E8%AF%81%E4%B9%A6%E5%88%86%E5%8F%91%20Mac%20App%20%E7%9A%84%E7%BB%8F%E9%AA%8C/'>
+                <p class='title'>通过 DeveloperID证书分发 Mac App 的经验<i class="fas fa-chevron-right" aria-hidden="true"></i></p>
+                <p class='content'>对 Mac App 打包后，我们可以选择通过 Developer ID 方式直接向我们的客户分发 Mac App 而不用将 App 传到 Mac App Store。
+
+在这个过程中遇到了一些坑...</p>
               </a>
             
           </div>
@@ -602,32 +579,11 @@
 
 <!-- 根据页面mathjax变量决定是否加载MathJax数学公式js -->
 
-  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<!-- MathJax配置，可通过单美元符号书写行内公式等 -->
-<script>
-window.MathJax = {
-  tex: {
-    inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
-    displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
-    processEscapes: true,
-    tags: "ams",
-    macros: {
-      href: "{}"
-    }
-  },
-  options: {
-    ignoreHtmlClass: "tex2jax_ignore|dno",
-    skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-  }
-};
-</script>
-
-
 
 
   <script>
     window.subData = {
-      title: '为什么OpenGL里旋转等变换矩阵是4x4的矩阵',
+      title: 'PathToGo “没什么卵用” 的更新',
       tools: true
     }
   </script>
@@ -653,7 +609,7 @@ window.MathJax = {
 
 
     <div class='content'>
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#向量和矩阵"><span class="toc-text">向量和矩阵</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#推导旋转矩阵"><span class="toc-text">推导旋转矩阵</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#推导平移矩阵"><span class="toc-text">推导平移矩阵</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#用户反馈"><span class="toc-text">用户反馈</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#我的吐槽"><span class="toc-text">我的吐槽</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#重新设计图标"><span class="toc-text">重新设计图标</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#用-FinderSync-改造"><span class="toc-text">用 FinderSync 改造</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#最后"><span class="toc-text">最后</span></a></li></ol>
     </div>
   </section>
 
