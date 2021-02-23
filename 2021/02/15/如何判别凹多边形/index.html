@@ -16,10 +16,10 @@
 
   <!-- 页面元数据 -->
   
-    <title>一点 MacCatalyst 适配经验分享 - Hanson的博客</title>
+    <title>如何判别凹多边形 - Hanson的博客</title>
   
   
-    <meta name="description" content="最近通过 Mac Catalyst 把 ImageGotcha 带到了 macOS 上，这里简单做点分享">
+    <meta name="description" content="如何判断一个多边形是否为`凹多边形`？首先我们先要明确凹多边形是如何定义的，以及它的特征……">
   
 
   <!-- feed -->
@@ -279,8 +279,8 @@
           
   
     <h1 class="title">
-      <a href="/2020/12/13/MacCatalyst%E9%80%82%E9%85%8D%E7%BB%8F%E9%AA%8C%E5%88%86%E4%BA%AB/">
-        一点 MacCatalyst 适配经验分享
+      <a href="/2021/02/15/%E5%A6%82%E4%BD%95%E5%88%A4%E5%88%AB%E5%87%B9%E5%A4%9A%E8%BE%B9%E5%BD%A2/">
+        如何判别凹多边形
       </a>
     </h1>
   
@@ -306,9 +306,9 @@
               
   
   <div class='new-meta-item category'>
-    <a href='/categories/iOS%E5%BC%80%E5%8F%91/' rel="nofollow">
+    <a href='/categories/%E7%AE%97%E6%B3%95%E5%AE%9E%E8%B7%B5/' rel="nofollow">
       <i class="fas fa-folder-open fa-fw" aria-hidden="true"></i>
-      <p>iOS开发</p>
+      <p>算法实践</p>
     </a>
   </div>
 
@@ -319,7 +319,7 @@
               <div class="new-meta-item date">
   <a class='notlink'>
     <i class="fas fa-calendar-alt fa-fw" aria-hidden="true"></i>
-    <p>发布于：Dec 13, 2020</p>
+    <p>发布于：Feb 15, 2021</p>
   </a>
 </div>
 
@@ -342,41 +342,51 @@
       <section class="article typo">
         <div class="article-entry" itemprop="articleBody">
           
-          <p>最近把我做的一个小App：<a href="https://apps.apple.com/cn/app/imagegotcha/id1384107130" target="_blank" rel="noopener">ImageGotcha</a> 的 macOS 版本提交审核了。通过 Mac Catalyst 把 iOS App 带到 macOS 上，整体体验还不错，当然也可能是因为我的 App 相对简单，但是还是有不少坑和需要适配的地方，这里简单做点分享。</p>
-<h2 id="移除-TitleBar"><a href="#移除-TitleBar" class="headerlink" title="移除 TitleBar"></a>移除 TitleBar</h2><p>运行在 macOS 上默认会生成一个 TileBar，如果我们使用了 NavigationBar  则会出现两个头的现象，很不美观，所以可以移除这个 TiltleBar。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/zhenwanping/cdn-assets@master/photo/20201112103950.png" alt="隐藏TitleBar"></p>
-<p>可以在合适的地方加入下面的代码，比如在 SceneDelegate 的 sceneWillConnectToSession 里：</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">scene</span><span class="params">(<span class="number">_</span> scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions)</span></span> &#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">guard</span> <span class="keyword">let</span> windowScene = (scene <span class="keyword">as</span>? <span class="type">UIWindowScene</span>) <span class="keyword">else</span> &#123; <span class="keyword">return</span> &#125;</span><br><span class="line"></span><br><span class="line">  #<span class="keyword">if</span> targetEnvironment(macCatalyst)</span><br><span class="line">  <span class="keyword">if</span> <span class="keyword">let</span> titlebar = windowScene.titlebar &#123;</span><br><span class="line">    titlebar.titleVisibility = .hidden</span><br><span class="line">    titlebar.toolbar = <span class="literal">nil</span></span><br><span class="line">  &#125;</span><br><span class="line">  #endif</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="CollectionViewLayout-布局问题"><a href="#CollectionViewLayout-布局问题" class="headerlink" title="CollectionViewLayout 布局问题"></a>CollectionViewLayout 布局问题</h2><p>macOS 上运行的 App 如果不加限制，App 的窗口几乎是可以随意拉伸，拖到拖小的。这就导致原本布局好的 CollectionViewCell 可能不是很美观，最好的情况是可以适配窗口大小的变化而变化。</p>
-<p>在 UICollectionViewLayout 里有个方法</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@available</span>(iOS <span class="number">7.0</span>, macCatalyst <span class="number">13.0</span>, *)</span><br><span class="line"><span class="keyword">open</span> <span class="function"><span class="keyword">func</span> <span class="title">invalidateLayout</span><span class="params">(with context: UICollectionViewLayoutInvalidationContext)</span></span></span><br></pre></td></tr></table></figure>
-
-<p>这个方法会在每次 App 窗口大小变化的时候被触发，可以在这里面进行重新布局。</p>
-<p>这里就涉及如何获取当前的窗口大小问题了，我们常用的 <code>UIScreen.main.bounds</code> 在 macOS 上已经不适用了。</p>
-<h2 id="获取窗口实际大小"><a href="#获取窗口实际大小" class="headerlink" title="获取窗口实际大小"></a>获取窗口实际大小</h2><p>这里需要获取当前 Active 的 <code>UIWindowScene</code> ，然后通过它的 <code>coordinateSpace</code> 拿到 bounds 信息：</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">UIApplication</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> activeWindowScene: <span class="type">UIWindowScene?</span> &#123;</span><br><span class="line">        <span class="keyword">self</span>.connectedScenes</span><br><span class="line">            .<span class="built_in">filter</span> &#123; $<span class="number">0</span>.activationState == .foregroundActive &#125;</span><br><span class="line">            .compactMap &#123; $<span class="number">0</span> <span class="keyword">as</span>? <span class="type">UIWindowScene</span> &#125;.first</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">UIApplication</span>.shared.activeWindowScene.coordinateSpace.bounds</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="UICollectionView-多选交互问题"><a href="#UICollectionView-多选交互问题" class="headerlink" title="UICollectionView 多选交互问题"></a>UICollectionView 多选交互问题</h2><p>在 macOS 上，多选 CollectionView，是需要按住 commad 键进行点击，或者按住 Shift 键区间选择。这个与在 iOS 上的交互是不一样的。可以参考下面的内容：</p>
+          <h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>如何判断一个多边形是否为<code>凹多边形</code>？首先我们先要明确凹多边形是如何定义的，以及它的特征。</p>
+<p>在 <a href="https://book.douban.com/subject/1392483/" target="_blank" rel="noopener">《计算机图形学》</a> 的 <code>3.15.1 多边形分类</code> 这一小节里有这样的描述：</p>
 <blockquote>
-<p><a href="https://stackoverflow.com/questions/60856636/mac-catalyst-tableview-allowmultipleselection-not-working" target="_blank" rel="noopener">https://stackoverflow.com/questions/60856636/mac-catalyst-tableview-allowmultipleselection-not-working</a></p>
-<p>Multiple selection on macOS Catalyst does not work in quite the same way as on iOS and iPadOS and this appears to be either a bug or an unfortunate choice of intended behavior.</p>
-<p>On macOS Catalyst, if you have enabled multiple selection in edit mode by setting tableView.allowsMultipleSelectionDuringEditing to true, only one row at a time can be directly selected by clicking with the pointer. However, multiple selection of contiguous rows is enabled by selecting a first row and then holding down SHIFT while selecting a second row, and multiple selection of non-contiguous rows is enabled by selecting a first row and then holding down COMMAND while selecting additional rows. This is Mac-like behavior in that it is how multiple selection generally works on macOS. So it is possible that this was intended behavior. But if that is the case, it is behavior that is hard to discover, not what an iOS/iPadOS user might expect, and works differently than on iOS and iPadOS. And it causes other problems - for example, in code I have a “Select All” function that is able to select all rows from code on iOS/iPadOS, and this code doesn’t work on macOS Catalyst.</p>
-<p>I filed Feedback on this. There is a simple project on GitHub at <a href="https://github.com/WB2ISS/MultipleSelection" target="_blank" rel="noopener">WB2ISS/MultipleSelection</a> that demonstrates the problem.</p>
+<p>多边形的一个<code>内角</code>是由两条相邻边形成的多边形边界之内的角。如果一个多边形的所有内角均小于180°，则该多边形为凸 (convex) 多边形。…  不是凸多边形的多边形称为凹 (concave) 多边形。如下图:<br><img src="https://cdn.jsdelivr.net/gh/zhenwanping/cdn-assets@master/photo/20210215165547.png" alt="image-20210215165538523"></p>
 </blockquote>
-<h2 id="App-icon-提示缺失-1024像素的问题"><a href="#App-icon-提示缺失-1024像素的问题" class="headerlink" title="App icon 提示缺失 1024像素的问题"></a>App icon 提示缺失 1024像素的问题</h2><p>一切就绪，提交审核的时候，突然遇到了这个无法审核的提示：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Xcode 的素材目录中必须添加 1024 x 1024 像素的 App 图标。</span><br></pre></td></tr></table></figure>
+<p>接着在 <code>3.15.2 识别凹多边形</code> 这一小节里，简单地描述了通过多边形<code>边向量叉积</code>的方法来判断多边形是否为凹多边形：</p>
+<blockquote>
+<p>如果为多边形每一边建立一个向量，则可使用相邻边的叉积来测试凸凹性。凸多边形的所有向量叉积均同号。因此，如果某些叉积取正值而另一些为负值，可确定其为凹多边形。</p>
+</blockquote>
+<p>接着该小节也给出了网上流传甚广，却很少说明出处的一张图来解释边向量叉积的方法：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zhenwanping/cdn-assets@master/photo/20210215170535.png" alt="image-20210215170533474"></p>
+<p>如果没有相关知识背景的人，看到这里可能会有点懵。为什么从凹多边形存在内角大于 180 度这一特征，能引出边向量的同向性的方法来判断凹多边形？这里的思路转化是怎么样的？下面以我粗浅的理解来给大家说说。</p>
+<h2 id="理解边向量叉积方法"><a href="#理解边向量叉积方法" class="headerlink" title="理解边向量叉积方法"></a>理解边向量叉积方法</h2><h3 id="1-移动边向量"><a href="#1-移动边向量" class="headerlink" title="1. 移动边向量"></a>1. 移动边向量</h3><p>首先我们绘制一个简单的<strong>凸多边形</strong>：[P0, P1, P2, P3, P4]，然后从第一个点 P0 开始，将每两个点组成的线段作为一个向量，方向为按照组成多边形的点的顺序方向，如下图所示：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zhenwanping/cdn-assets@master/photo/20210215185532.png" alt="image-20210215173750268"></p>
+<p>接着，保持向量的大小和方向不变，将所有边向量的起点移动到坐标系的<strong>原点</strong>：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zhenwanping/cdn-assets@master/photo/20210215185539.png" alt="image-20210215174835151"></p>
+<p>我们可以观察到向量 u、v、w、a、b 呈现的是<strong>顺时针</strong>的顺序。这个现象很重要，在继续之前我们先回顾一下<strong>向量叉积</strong>的知识。</p>
+<h3 id="2-回顾叉积"><a href="#2-回顾叉积" class="headerlink" title="2. 回顾叉积"></a>2. 回顾叉积</h3><p>我们只需知道叉积的结果是有正负的，比如我们以向量  $\vec{v}$ 为标准，有如下特征：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>向量  $\vec{w}$  在  $\vec{v}$ 的 <strong>顺时针方向</strong>，那么   $\vec{v} \times \vec{w} &lt; 0$</td>
+<td><img src="https://cdn.jsdelivr.net/gh/zhenwanping/cdn-assets@master/photo/20210127164851.png" alt="image-20210127164850158"></td>
+</tr>
+<tr>
+<td>如果向量 $\vec{w}$  在  $\vec{v}$ 的 <strong>逆时针方向</strong>，那么 $\vec{v} \times \vec{w} &gt; 0$</td>
+<td><img src="https://cdn.jsdelivr.net/gh/zhenwanping/cdn-assets@master/photo/20210127164829.png" alt="image-20210127164827320"></td>
+</tr>
+</tbody></table>
+<h3 id="3-凸多边形边向量叉积均同号"><a href="#3-凸多边形边向量叉积均同号" class="headerlink" title="3. 凸多边形边向量叉积均同号"></a>3. 凸多边形边向量叉积均同号</h3><p>上面我们将一个凸多边形的边向量的起点都移动到了坐标原点，发现所有的向量都是按照顺时针的顺序呈现的。</p>
+<p>结合向量叉积的知识，我们可以得出：所有边向量按顺序两两进行叉积，得出的结果都是小于 0 的，即该凸多边形的所有边向量叉积均同号：<br>$$<br>\vec{u} \times \vec{v} &lt; 0 \<br>\vec{v} \times \vec{w} &lt; 0 \<br>\vec{w} \times \vec{a} &lt; 0 \<br>\vec{a} \times \vec{b} &lt; 0 \<br>$$<br>那么，如果是凹多边形会是怎么样呢？</p>
+<h3 id="4-凹多边形边向量叉积不同号"><a href="#4-凹多边形边向量叉积不同号" class="headerlink" title="4. 凹多边形边向量叉积不同号"></a>4. 凹多边形边向量叉积不同号</h3><p>同样的，我们把一个凹多边形的边向量也移动到坐标原点进行观察：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zhenwanping/cdn-assets@master/photo/20210215185614.png" alt="image-20210215183618853"></p>
+<p>如上图，<strong>凹多边形</strong> [P0, P1, P2, P3, P4]，观察其移动后边向量，会发现向量 u、v、w、a、b 并不是严格按照顺时针顺序的。 $\vec{w}$  出现在  $\vec{u}$  和 $\vec{v}$ 之间。</p>
+<p>那么如果所有边向量按顺序两两进行叉积，得出的结果就会出现不同号的情况：<br>$$<br>\vec{u} \times \vec{v} &lt; 0 \<br>\vec{v} \times \vec{w} &gt; 0 \<br>\vec{w} \times \vec{a} &lt; 0 \<br>\vec{a} \times \vec{b} &lt; 0 \<br>$$</p>
+<p>正是因为凹多边形内存在大于180度的内角，导致凹多边形失去了凸多边形才有的边向量同号特性，因此我们可以利用这一特性来判别多边形是凹还是凸。</p>
+<h3 id="5-代码实现判别凹多边形"><a href="#5-代码实现判别凹多边形" class="headerlink" title="5. 代码实现判别凹多边形"></a>5. 代码实现判别凹多边形</h3><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// 判断是否凹多边形</span></span><br><span class="line"><span class="comment">/// 凸多边形的所有边的向量叉积均同号，一个多边形的所有边向量的叉积结果存在不同号,则可判定其为凹多边形</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">isConcavePolygon</span><span class="params">(vertexs: [CGPoint])</span></span> -&gt; <span class="type">Bool</span> &#123;</span><br><span class="line">    <span class="keyword">var</span> allLines = [(<span class="type">CGPoint</span>, <span class="type">CGPoint</span>)]()</span><br><span class="line">    <span class="comment">// 根据前后两点确定所有线段</span></span><br><span class="line">    <span class="keyword">for</span> (pointIndex, point) <span class="keyword">in</span> vertexs.enumerated() &#123;</span><br><span class="line">        <span class="keyword">let</span> p1 = point</span><br><span class="line">        <span class="keyword">let</span> p2 = vertexs[(pointIndex + <span class="number">1</span>) % vertexs.<span class="built_in">count</span>]</span><br><span class="line">        allLines.append((p1, p2))</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 计算前后两邻边向量叉积，判断是否凹多边形</span></span><br><span class="line">    <span class="keyword">var</span> preValue = crossproduct(vector1: allLines[<span class="number">0</span>], vector2: allLines[<span class="number">1</span>])</span><br><span class="line">    <span class="keyword">for</span> lineIndex <span class="keyword">in</span> <span class="number">1</span>..&lt;allLines.<span class="built_in">count</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> current = allLines[lineIndex]</span><br><span class="line">        <span class="keyword">let</span> next = allLines[(lineIndex + <span class="number">1</span>) % allLines.<span class="built_in">count</span>]</span><br><span class="line">        <span class="keyword">let</span> currentValue = crossproduct(vector1: current, vector2: next)</span><br><span class="line">        <span class="comment">// 如果当前两邻边叉积与上两邻边叉积不相等，即不同号，则为凹多边形</span></span><br><span class="line">        <span class="keyword">if</span> preValue != currentValue &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">        &#125;</span><br><span class="line">        preValue = currentValue</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">crossproduct</span><span class="params">(vector1: <span class="params">(CGPoint, CGPoint)</span></span></span>, vector2: (<span class="type">CGPoint</span>, <span class="type">CGPoint</span>)) -&gt; <span class="type">CGFloat</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> p1 = vector1.<span class="number">0</span></span><br><span class="line">    <span class="keyword">let</span> p2 = vector1.<span class="number">1</span></span><br><span class="line">    <span class="keyword">let</span> q1 = vector2.<span class="number">0</span></span><br><span class="line">    <span class="keyword">let</span> q2 = vector2.<span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> crossproduct = (p2.x - p1.x) * (q2.y - q1.y) - (q2.x - q1.x) * (p2.y - p1.y)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> crossproduct &gt;= <span class="number">0</span> ? <span class="number">1</span> : -<span class="number">1</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>但是实际上我的 Assets.xcassets 里的 AppIcon 里已经包含这个 1024x1024 的图标了。</p>
-<p>后面发现需要在 AppIcon 的 Attribute Inspector 里勾上 Mac：</p>
-<p><img src="https://cdn.jsdelivr.net/gh/zhenwanping/cdn-assets@master/photo/20201212130544.png" alt="image-20201212130453439"></p>
-<p>然后就会发现多了 Mac App Store 需要的 1024x1024 图标了，把它添加进去，重新打包上传到 App Store Connect 就行</p>
-<p><img src="https://cdn.jsdelivr.net/gh/zhenwanping/cdn-assets@master/photo/20201212130656.png" alt="image-20201212130653774"></p>
-<p>要是这个提示能早点提示就好，没想到是等到最后提交审核的时候才会提示。</p>
+
+
 
           
             <br>
@@ -413,7 +423,7 @@
           
         
           
-            <p>本文永久链接是：<a href=http://myhanson.com/2020/12/13/MacCatalyst%E9%80%82%E9%85%8D%E7%BB%8F%E9%AA%8C%E5%88%86%E4%BA%AB/>http://myhanson.com/2020/12/13/MacCatalyst%E9%80%82%E9%85%8D%E7%BB%8F%E9%AA%8C%E5%88%86%E4%BA%AB/</a></p>
+            <p>本文永久链接是：<a href=http://myhanson.com/2021/02/15/%E5%A6%82%E4%BD%95%E5%88%A4%E5%88%AB%E5%87%B9%E5%A4%9A%E8%BE%B9%E5%BD%A2/>http://myhanson.com/2021/02/15/%E5%A6%82%E4%BD%95%E5%88%A4%E5%88%AB%E5%87%B9%E5%A4%9A%E8%BE%B9%E5%BD%A2/</a></p>
           
         
       </blockquote>
@@ -463,10 +473,10 @@
     <div class='new-meta-box'>
       
         
-          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2020-12-23T10:26:02+08:00">
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2021-02-23T09:48:49+08:00">
   <a class='notlink'>
     <i class="fas fa-edit fa-fw" aria-hidden="true"></i>
-    <p>更新于：Dec 23, 2020</p>
+    <p>更新于：Feb 23, 2021</p>
   </a>
 </div>
 
@@ -490,7 +500,7 @@
       
         <a class="-mob-share-qq" title="" rel="external nofollow noopener noreferrer"
           
-          href="http://connect.qq.com/widget/shareqq/index.html?url=http://myhanson.com/2020/12/13/MacCatalyst%E9%80%82%E9%85%8D%E7%BB%8F%E9%AA%8C%E5%88%86%E4%BA%AB/&title=一点 MacCatalyst 适配经验分享 - Hanson的博客&summary="
+          href="http://connect.qq.com/widget/shareqq/index.html?url=http://myhanson.com/2021/02/15/%E5%A6%82%E4%BD%95%E5%88%A4%E5%88%AB%E5%87%B9%E5%A4%9A%E8%BE%B9%E5%BD%A2/&title=如何判别凹多边形 - Hanson的博客&summary="
           
           >
           
@@ -502,7 +512,7 @@
       
         <a class="-mob-share-qzone" title="" rel="external nofollow noopener noreferrer"
           
-          href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://myhanson.com/2020/12/13/MacCatalyst%E9%80%82%E9%85%8D%E7%BB%8F%E9%AA%8C%E5%88%86%E4%BA%AB/&title=一点 MacCatalyst 适配经验分享 - Hanson的博客&summary="
+          href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://myhanson.com/2021/02/15/%E5%A6%82%E4%BD%95%E5%88%A4%E5%88%AB%E5%87%B9%E5%A4%9A%E8%BE%B9%E5%BD%A2/&title=如何判别凹多边形 - Hanson的博客&summary="
           
           >
           
@@ -514,7 +524,7 @@
       
         <a class="-mob-share-weibo" title="" rel="external nofollow noopener noreferrer"
           
-          href="http://service.weibo.com/share/share.php?url=http://myhanson.com/2020/12/13/MacCatalyst%E9%80%82%E9%85%8D%E7%BB%8F%E9%AA%8C%E5%88%86%E4%BA%AB/&title=一点 MacCatalyst 适配经验分享 - Hanson的博客&summary="
+          href="http://service.weibo.com/share/share.php?url=http://myhanson.com/2021/02/15/%E5%A6%82%E4%BD%95%E5%88%A4%E5%88%AB%E5%87%B9%E5%A4%9A%E8%BE%B9%E5%BD%A2/&title=如何判别凹多边形 - Hanson的博客&summary="
           
           >
           
@@ -538,18 +548,17 @@
         
           <div class="prev-next">
             
-              <a class='prev' href='/2021/02/15/%E5%A6%82%E4%BD%95%E5%88%A4%E5%88%AB%E5%87%B9%E5%A4%9A%E8%BE%B9%E5%BD%A2/'>
-                <p class='title'><i class="fas fa-chevron-left" aria-hidden="true"></i>如何判别凹多边形</p>
-                <p class='content'>问题描述如何判断一个多边形是否为凹多边形？首先我们先要明确凹多边形是如何定义的，以及它的特征。
-在 《计算机图形学》 的 3.15.1 多边形分类 这一小节里有这样的描述：
-
-多边形的一个内角是...</p>
+              <a class='prev' href='/2021/02/16/%E5%A6%82%E4%BD%95%E5%88%87%E5%89%B2%E5%87%B9%E5%A4%9A%E8%BE%B9%E5%BD%A2/'>
+                <p class='title'><i class="fas fa-chevron-left" aria-hidden="true"></i>如何切割凹多边形</p>
+                <p class='content'>问题描述如何把一个凹多边形切割成多个凸多边形？
+切割凹多边形，常用的方法有向量方法（Vector Method） 和旋转法（Rotational Method）。
+基本思路都是每次利用切割方法切...</p>
               </a>
             
             
-              <a class='next' href='/2020/11/19/%E8%87%AA%E7%84%B6%E5%B8%B8%E6%95%B0e%20%E4%B8%BA%E4%BB%80%E4%B9%88%E5%86%A0%E4%BB%A5%E8%87%AA%E7%84%B6%E4%BA%8C%E5%AD%97/'>
-                <p class='title'>自然常数 e 为什么冠以“自然”二字<i class="fas fa-chevron-right" aria-hidden="true"></i></p>
-                <p class='content'> $\pi$ 应该是我们最熟悉的数学常数了，但是除了 $\pi$ 以外，还有一个数学常数  $e$，它同样重要，同样与我们生活息息相关，甚至被冠名为 自然常数，它是对数函数的底数，有时候也称它为...</p>
+              <a class='next' href='/2020/12/13/MacCatalyst%E9%80%82%E9%85%8D%E7%BB%8F%E9%AA%8C%E5%88%86%E4%BA%AB/'>
+                <p class='title'>一点 MacCatalyst 适配经验分享<i class="fas fa-chevron-right" aria-hidden="true"></i></p>
+                <p class='content'>最近把我做的一个小App：ImageGotcha 的 macOS 版本提交审核了。通过 Mac Catalyst 把 iOS App 带到 macOS 上，整体体验还不错，当然也可能是因为我的 ...</p>
               </a>
             
           </div>
@@ -573,11 +582,32 @@
 
 <!-- 根据页面mathjax变量决定是否加载MathJax数学公式js -->
 
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+    displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+    processEscapes: true,
+    tags: "ams",
+    macros: {
+      href: "{}"
+    }
+  },
+  options: {
+    ignoreHtmlClass: "tex2jax_ignore|dno",
+    skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+  }
+};
+</script>
+
+
 
 
   <script>
     window.subData = {
-      title: '一点 MacCatalyst 适配经验分享',
+      title: '如何判别凹多边形',
       tools: true
     }
   </script>
@@ -603,7 +633,7 @@
 
 
     <div class='content'>
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#移除-TitleBar"><span class="toc-text">移除 TitleBar</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CollectionViewLayout-布局问题"><span class="toc-text">CollectionViewLayout 布局问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#获取窗口实际大小"><span class="toc-text">获取窗口实际大小</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#UICollectionView-多选交互问题"><span class="toc-text">UICollectionView 多选交互问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#App-icon-提示缺失-1024像素的问题"><span class="toc-text">App icon 提示缺失 1024像素的问题</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#问题描述"><span class="toc-text">问题描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#理解边向量叉积方法"><span class="toc-text">理解边向量叉积方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-移动边向量"><span class="toc-text">1. 移动边向量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-回顾叉积"><span class="toc-text">2. 回顾叉积</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-凸多边形边向量叉积均同号"><span class="toc-text">3. 凸多边形边向量叉积均同号</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-凹多边形边向量叉积不同号"><span class="toc-text">4. 凹多边形边向量叉积不同号</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-代码实现判别凹多边形"><span class="toc-text">5. 代码实现判别凹多边形</span></a></li></ol></li></ol>
     </div>
   </section>
 

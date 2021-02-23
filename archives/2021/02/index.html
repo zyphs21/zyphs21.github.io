@@ -5,9 +5,7 @@
   <!-- SEO相关 -->
   
     
-      
-        <meta name="robots" content="noindex,follow">
-      
+      <meta name="robots" content="noindex,follow">
     
   
   <!-- 渲染优化 -->
@@ -20,7 +18,7 @@
 
   <!-- 页面元数据 -->
   
-    <title>Hanson的博客</title>
+    <title>Archive: 2021/2 - Hanson的博客</title>
   
   
 
@@ -265,9 +263,18 @@
       
 
 <div class='l_main'>
-  
+	
+		
   <section class="post-list ">
     
+      
+        
+          
+        
+          
+        
+      
+    
     
       
         
@@ -284,8 +291,8 @@
         
           
   <h2 class="title">
-    <a href="/2017/12/08/Swift%20%E5%AE%9E%E7%8E%B0%E5%90%AF%E5%8A%A8%E5%B1%8F%E5%8A%A8%E7%94%BB/">
-      Swift 实现启动屏动画
+    <a href="/2021/02/16/%E5%A6%82%E4%BD%95%E5%88%87%E5%89%B2%E5%87%B9%E5%A4%9A%E8%BE%B9%E5%BD%A2/">
+      如何切割凹多边形
     </a>
   </h2>
 
@@ -310,9 +317,9 @@
               
   
   <div class='new-meta-item category'>
-    <a href='/categories/iOS%E5%BC%80%E5%8F%91/' rel="nofollow">
+    <a href='/categories/%E7%AE%97%E6%B3%95%E5%AE%9E%E8%B7%B5/' rel="nofollow">
       <i class="fas fa-folder-open fa-fw" aria-hidden="true"></i>
-      <p>iOS开发</p>
+      <p>算法实践</p>
     </a>
   </div>
 
@@ -323,7 +330,7 @@
               <div class="new-meta-item date">
   <a class='notlink'>
     <i class="fas fa-calendar-alt fa-fw" aria-hidden="true"></i>
-    <p>发布于：Dec 8, 2017</p>
+    <p>发布于：Feb 16, 2021</p>
   </a>
 </div>
 
@@ -351,15 +358,13 @@
   <section class="article typo">
     <div class="article-entry" itemprop="articleBody">
       
-        <blockquote>
-<p>Github: <a href="https://github.com/zyphs21/SplashAnimate" target="_blank" rel="noopener">SplashAnimate</a></p>
-</blockquote>
+        <p>如何把一个凹多边形切割成多个凸多边形？ 切割凹多边形，常用的方法有`向量方法（Vector Method）` 和`旋转法（Rotational Method）`……</p>
       
     </div>
     
       
         <div class="button readmore">
-          <a href="/2017/12/08/Swift%20%E5%AE%9E%E7%8E%B0%E5%90%AF%E5%8A%A8%E5%B1%8F%E5%8A%A8%E7%94%BB/">
+          <a href="/2021/02/16/%E5%A6%82%E4%BD%95%E5%88%87%E5%89%B2%E5%87%B9%E5%A4%9A%E8%BE%B9%E5%BD%A2/">
             Read More <i class="fas fa-chevron-right"></i>
           </a>
         </div>
@@ -385,8 +390,8 @@
         
           
   <h2 class="title">
-    <a href="/2017/11/28/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%A4%B1%E8%B4%A5%E7%9A%84%20Swift%20%E5%85%83%E7%BB%84%E6%95%B0%E7%BB%84%E5%AE%9E%E8%B7%B5/">
-      记一次失败的 Swift 元组数组实践
+    <a href="/2021/02/15/%E5%A6%82%E4%BD%95%E5%88%A4%E5%88%AB%E5%87%B9%E5%A4%9A%E8%BE%B9%E5%BD%A2/">
+      如何判别凹多边形
     </a>
   </h2>
 
@@ -411,9 +416,9 @@
               
   
   <div class='new-meta-item category'>
-    <a href='/categories/Swift/' rel="nofollow">
+    <a href='/categories/%E7%AE%97%E6%B3%95%E5%AE%9E%E8%B7%B5/' rel="nofollow">
       <i class="fas fa-folder-open fa-fw" aria-hidden="true"></i>
-      <p>Swift</p>
+      <p>算法实践</p>
     </a>
   </div>
 
@@ -424,7 +429,7 @@
               <div class="new-meta-item date">
   <a class='notlink'>
     <i class="fas fa-calendar-alt fa-fw" aria-hidden="true"></i>
-    <p>发布于：Nov 28, 2017</p>
+    <p>发布于：Feb 15, 2021</p>
   </a>
 </div>
 
@@ -452,219 +457,13 @@
   <section class="article typo">
     <div class="article-entry" itemprop="articleBody">
       
-        <p>想建立一个元组的数组，来简单存放构建 TabViewController 的信息首先我的做法是</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> homeTab = (vc: <span class="type">VYHomeViewController</span>(), title: <span class="string">"Home"</span>, image: <span class="string">"home_gray"</span>, selectedImage: <span class="string">"home_blue"</span>)</span><br><span class="line"><span class="keyword">let</span> infoTab = (vc: <span class="type">VYInformationViewController</span>(), title: <span class="string">"Info"</span>, image: <span class="string">"home_gray"</span>, selectedImage: <span class="string">"home_blue"</span>)</span><br><span class="line"><span class="keyword">let</span> marketTab = (vc: <span class="type">VYMarketViewController</span>(), title: <span class="string">"Market"</span>, image: <span class="string">"home_gray"</span>, selectedImage: <span class="string">"home_blue"</span>)</span><br><span class="line"><span class="keyword">let</span> userTab = (vc: <span class="type">VYUserCenterViewController</span>(), title: <span class="string">"Me"</span>, image: <span class="string">"home_gray"</span>, selectedImage: <span class="string">"home_blue"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 下面报错：Heterogeneous collection literal could only be inferred to '[Any]'; add explicit type annotation if this is intentional</span></span><br><span class="line"><span class="keyword">let</span> data = [homeTab, infoTab, marketTab, userTab]</span><br></pre></td></tr></table></figure>
-<p>但是会报错，Xcode 的修改提示是后面添加  <code>as [Any]</code></p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> data = [selfSelectedTab, infoTab, marketTab, userTab] <span class="keyword">as</span> [<span class="type">Any</span>]</span><br></pre></td></tr></table></figure>
-<p>但是这样做已经不是原来的做一个元组数组的初衷了。无法在遍历数组的时候使用命名元组来获取信息</p>
+        <p>如何判断一个多边形是否为`凹多边形`？首先我们先要明确凹多边形是如何定义的，以及它的特征……</p>
       
     </div>
     
       
         <div class="button readmore">
-          <a href="/2017/11/28/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%A4%B1%E8%B4%A5%E7%9A%84%20Swift%20%E5%85%83%E7%BB%84%E6%95%B0%E7%BB%84%E5%AE%9E%E8%B7%B5/">
-            Read More <i class="fas fa-chevron-right"></i>
-          </a>
-        </div>
-      
-    
-  </section>
-</article>
-
-          </div>
-        
-      
-        
-          <div class='post-wrapper'>
-            <article class="post white-box shadow reveal ">
-  
-
-
-  <section class='meta'>
-    
-      
-      
-      <div class="meta" id="header-meta">
-        
-          
-  <h2 class="title">
-    <a href="/2017/05/09/%E8%87%AA%E5%AE%9A%E4%B9%89%20UISegmentedControl%20%E6%A0%B7%E5%BC%8F/">
-      自定义 UISegmentedControl 样式
-    </a>
-  </h2>
-
-
-        
-        <div class='new-meta-box'>
-          
-            
-          
-            
-              
-<div class='new-meta-item author'>
-  <a href="http://www.myhanson.com" target="_blank" rel="nofollow noopener">
-    <img src="https://cdn.jsdelivr.net/gh/zyphs21/cdn-assets/avatar/avatar.png">
-    <p>Hanson</p>
-  </a>
-</div>
-
-            
-          
-            
-              
-  
-  <div class='new-meta-item category'>
-    <a href='/categories/iOS%E5%BC%80%E5%8F%91/' rel="nofollow">
-      <i class="fas fa-folder-open fa-fw" aria-hidden="true"></i>
-      <p>iOS开发</p>
-    </a>
-  </div>
-
-
-            
-          
-            
-              <div class="new-meta-item date">
-  <a class='notlink'>
-    <i class="fas fa-calendar-alt fa-fw" aria-hidden="true"></i>
-    <p>发布于：May 9, 2017</p>
-  </a>
-</div>
-
-            
-          
-            
-              
-
-            
-          
-            
-              
-
-            
-          
-        </div>
-        
-          <hr>
-        
-      </div>
-    
-  </section>
-
-
-  <section class="article typo">
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>系统的 UISegmentedControl 是个挺方便的控件，这里来讲讲在 Swift3 下自定义 UISegmentedControl 的样式，包括修改底色，边框颜色等等。</p>
-<p>要了解 UISegmentedControl 各个部分的组成，可以在官方的文档中找到 <a href="https://developer.apple.com/library/content/documentation/UserExperience/Conceptual/UIKitUICatalog/UISegmentedControl.html" target="_blank" rel="noopener">UISegmentedControl 文档</a> 。着重注意这个图：</p>
-<p>   <img src="https://cdn.jsdelivr.net/gh/zyphs21/cdn-assets/photo/uisegment/uisegment.png" alt="image.png"></p>
-<p>上面这幅图明确的列出了 UISegmentedControl 各个部分所控制的方法。下面就开始自定义吧。  </p>
-      
-    </div>
-    
-      
-        <div class="button readmore">
-          <a href="/2017/05/09/%E8%87%AA%E5%AE%9A%E4%B9%89%20UISegmentedControl%20%E6%A0%B7%E5%BC%8F/">
-            Read More <i class="fas fa-chevron-right"></i>
-          </a>
-        </div>
-      
-    
-  </section>
-</article>
-
-          </div>
-        
-      
-        
-          <div class='post-wrapper'>
-            <article class="post white-box shadow reveal ">
-  
-
-
-  <section class='meta'>
-    
-      
-      
-      <div class="meta" id="header-meta">
-        
-          
-  <h2 class="title">
-    <a href="/2017/05/03/HSStockChart%20%E4%BB%8B%E7%BB%8D/">
-      HSStockChart介绍
-    </a>
-  </h2>
-
-
-        
-        <div class='new-meta-box'>
-          
-            
-          
-            
-              
-<div class='new-meta-item author'>
-  <a href="http://www.myhanson.com" target="_blank" rel="nofollow noopener">
-    <img src="https://cdn.jsdelivr.net/gh/zyphs21/cdn-assets/avatar/avatar.png">
-    <p>Hanson</p>
-  </a>
-</div>
-
-            
-          
-            
-              
-  
-  <div class='new-meta-item category'>
-    <a href='/categories/%E5%BC%80%E6%BA%90-%E4%BA%A7%E5%93%81/' rel="nofollow">
-      <i class="fas fa-folder-open fa-fw" aria-hidden="true"></i>
-      <p>开源/产品</p>
-    </a>
-  </div>
-
-
-            
-          
-            
-              <div class="new-meta-item date">
-  <a class='notlink'>
-    <i class="fas fa-calendar-alt fa-fw" aria-hidden="true"></i>
-    <p>发布于：May 3, 2017</p>
-  </a>
-</div>
-
-            
-          
-            
-              
-
-            
-          
-            
-              
-
-            
-          
-        </div>
-        
-          <hr>
-        
-      </div>
-    
-  </section>
-
-
-  <section class="article typo">
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>HSStockChart 是一个绘制股票分时图、K 线图的库。支持流畅的回弹拖动，长按十字线，捏合放大缩小等功能，主要使用了 CAShapeLayer 来绘图，相比使用 Core Graphics 和重写 drawRect 的方法更高效，占用内存更小。<br><a href="https://github.com/zyphs21/HSStockChart" target="_blank" rel="noopener">GitHub 地址：HSStockChart</a>  </p>
-<p><img src="https://cdn.jsdelivr.net/gh/zyphs21/HSStockChart/DemoScreenshot/HSStockChart.gif" alt=""></p>
-      
-    </div>
-    
-      
-        <div class="button readmore">
-          <a href="/2017/05/03/HSStockChart%20%E4%BB%8B%E7%BB%8D/">
+          <a href="/2021/02/15/%E5%A6%82%E4%BD%95%E5%88%A4%E5%88%AB%E5%87%B9%E5%A4%9A%E8%BE%B9%E5%BD%A2/">
             Read More <i class="fas fa-chevron-right"></i>
           </a>
         </div>
@@ -679,29 +478,36 @@
     
   </section>
   
-    
-      <br>
-      <div class="prev-next">
-        
-          <a class="prev" rel="prev" href="/page/2/">
-            <section class="post prev white-box shadow" >
-              <i class="fas fa-chevron-left" aria-hidden="true"></i>&nbsp;Previous&nbsp;
-            </section>
-          </a>
-        
-        <p class="current">
-          3 / 3
-        </p>
-        
-      </div>
     
     <!-- 根据主题中的设置决定是否在archive中针对摘要部分的MathJax公式加载mathjax.js文件 -->
     
     
+      <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+    displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+    processEscapes: true,
+    tags: "ams",
+    macros: {
+      href: "{}"
+    }
+  },
+  options: {
+    ignoreHtmlClass: "tex2jax_ignore|dno",
+    skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+  }
+};
+</script>
+
+    
 
   
 
 
+	
 </div>
 <aside class='l_side'>
   
@@ -891,6 +697,35 @@
   </footer>
 
 <script>setLoadingBarProgress(80);</script>
+
+
+
+
+	<!-- 根据主题中的设置决定是否在archive中针对摘要部分的MathJax公式加载mathjax.js文件 -->
+	
+
+	
+	    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+    displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+    processEscapes: true,
+    tags: "ams",
+    macros: {
+      href: "{}"
+    }
+  },
+  options: {
+    ignoreHtmlClass: "tex2jax_ignore|dno",
+    skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+  }
+};
+</script>
+
+	
 
 
       <script>setLoadingBarProgress(60);</script>

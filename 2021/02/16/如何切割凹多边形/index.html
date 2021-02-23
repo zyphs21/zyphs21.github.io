@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html>
+<head hexo-theme='https://volantis.js.org/#2.6.1'>
+  <meta charset="utf-8">
+  <!-- SEO相关 -->
+  
+    
+  
+  <!-- 渲染优化 -->
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <!-- 页面元数据 -->
+  
+    <title>如何切割凹多边形 - Hanson的博客</title>
+  
+  
+    <meta name="description" content="如何把一个凹多边形切割成多个凸多边形？ 切割凹多边形，常用的方法有`向量方法（Vector Method）` 和`旋转法（Rotational Method）`……">
+  
+
+  <!-- feed -->
+  
+
+  <!-- import meta -->
+  
+
+  <!-- link -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13/css/all.min.css">
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
+
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-waves@0.7.6/dist/waves.min.css">
+
+  
+
+  
+
+  
+
+  <!-- import link -->
+  
+
+  
+  
+    
+<link rel="stylesheet" href="/css/style.css">
+
+  
+
+  <script>
+    function setLoadingBarProgress(num) {
+      document.getElementById('loading-bar').style.width=num+"%";
+    }
+  </script>
+
+  
+  
+</head>
+
+<body>
+  
+  <div id="loading-bar-wrapper">
+  <div id="loading-bar"></div>
+</div>
+<header class="l_header shadow blur">
+  <div class='container'>
+  <div class='wrapper'>
+    <div class='nav-sub'>
+      <p class="title"></p>
+      <ul class='switcher nav-list-h'>
+        <li><a class="s-comment fas fa-comments fa-fw" target="_self" href='javascript:void(0)'></a></li>
+        
+          <li><a class="s-toc fas fa-list fa-fw" target="_self" href='javascript:void(0)'></a></li>
+        
+      </ul>
+    </div>
+		<div class="nav-main">
+      
+        
+        <a class="title flat-box" target="_self" href='/'>
+          
+          
+          
+            Hanson
+          
+          
+        </a>
+      
+
+			<div class='menu navigation'>
+				<ul class='nav-list-h'>
+          
+          
+          
+            
+            
+              <li>
+                <a class="flat-box" href=/archives/
+                  
+                  
+                  
+                    id="archives"
+                  >
+                  <i class='fas fa-list-alt fa-fw'></i>所有文章
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="flat-box" href=/product/
+                  
+                  
+                  
+                    id="product"
+                  >
+                  <i class='fas fa-laptop-code fa-fw'></i>我的项目
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="flat-box" href=/categories/
+                  
+                  
+                  
+                    id="categories"
+                  >
+                  <i class='fas fa-folder-open fa-fw'></i>分类
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="flat-box" href=/about/
+                  
+                  
+                  
+                    id="about"
+                  >
+                  <i class='fas fa-info-circle fa-fw'></i>关于
+                </a>
+                
+              </li>
+            
+          
+          
+				</ul>
+			</div>
+
+      <div class="m_search">
+        <form name="searchform" class="form u-search-form">
+          <i class="icon fas fa-search fa-fw"></i>
+          <input type="text" class="input u-search-input" placeholder="Search..." />
+        </form>
+      </div>
+
+			<ul class='switcher nav-list-h'>
+				
+					<li><a class="s-search fas fa-search fa-fw" target="_self" href='javascript:void(0)'></a></li>
+				
+				<li>
+          <a class="s-menu fas fa-bars fa-fw" target="_self" href='javascript:void(0)'></a>
+          <ul class="menu-phone list-v navigation white-box">
+            
+              
+            
+              <li>
+                <a class="flat-box" href=/archives/
+                  
+                  
+                  
+                    id="archives"
+                  >
+                  <i class='fas fa-list-alt fa-fw'></i>所有文章
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="flat-box" href=/product/
+                  
+                  
+                  
+                    id="product"
+                  >
+                  <i class='fas fa-laptop-code fa-fw'></i>我的项目
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="flat-box" href=/categories/
+                  
+                  
+                  
+                    id="categories"
+                  >
+                  <i class='fas fa-folder-open fa-fw'></i>分类
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="flat-box" href=/about/
+                  
+                  
+                  
+                    id="about"
+                  >
+                  <i class='fas fa-info-circle fa-fw'></i>关于
+                </a>
+                
+              </li>
+            
+          
+            
+          </ul>
+        </li>
+			</ul>
+		</div>
+	</div>
+  </div>
+</header>
+
+<script>setLoadingBarProgress(40);</script>
+
+
+
+  <div class="l_body nocover">
+    <div class='body-wrapper'>
+      
+
+<div class='l_main'>
+  
+
+  
+    <article id="post" class="post white-box shadow article-type-post" itemscope itemprop="blogPost">
+      
+
+
+  <section class='meta'>
+    
+      
+      
+      <div class="meta" id="header-meta">
+        
+          
+  
+    <h1 class="title">
+      <a href="/2021/02/16/%E5%A6%82%E4%BD%95%E5%88%87%E5%89%B2%E5%87%B9%E5%A4%9A%E8%BE%B9%E5%BD%A2/">
+        如何切割凹多边形
+      </a>
+    </h1>
+  
+
+
+        
+        <div class='new-meta-box'>
+          
+            
+          
+            
+              
+<div class='new-meta-item author'>
+  <a href="http://www.myhanson.com" target="_blank" rel="nofollow noopener">
+    <img src="https://cdn.jsdelivr.net/gh/zyphs21/cdn-assets/avatar/avatar.png">
+    <p>Hanson</p>
+  </a>
+</div>
+
+            
+          
+            
+              
+  
+  <div class='new-meta-item category'>
+    <a href='/categories/%E7%AE%97%E6%B3%95%E5%AE%9E%E8%B7%B5/' rel="nofollow">
+      <i class="fas fa-folder-open fa-fw" aria-hidden="true"></i>
+      <p>算法实践</p>
+    </a>
+  </div>
+
+
+            
+          
+            
+              <div class="new-meta-item date">
+  <a class='notlink'>
+    <i class="fas fa-calendar-alt fa-fw" aria-hidden="true"></i>
+    <p>发布于：Feb 16, 2021</p>
+  </a>
+</div>
+
+            
+          
+            
+              
+
+            
+          
+        </div>
+        
+          <hr>
+        
+      </div>
+    
+  </section>
+
+
+      <section class="article typo">
+        <div class="article-entry" itemprop="articleBody">
+          
+          <h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>如何把一个凹多边形切割成多个凸多边形？</p>
+<p>切割凹多边形，常用的方法有<code>向量方法（Vector Method）</code> 和<code>旋转法（Rotational Method）</code>。</p>
+<p>基本思路都是每次利用切割方法切割一次凹多边形，然后判断切割后的图形是否为凹多边形，若仍有凹多边形，则继续切割。</p>
+<p>所以这里需要一个前置知识：如何判断任意多边形是否为凹多边形，具体可以看我之前的文章 <a href="">《如何判别凹多边形》</a>。</p>
+<p>本文主要介绍利用 <code>向量方法</code> 来切割凹多边形。</p>
+<h2 id="向量方法"><a href="#向量方法" class="headerlink" title="向量方法"></a>向量方法</h2><h3 id="1-找出异号的边向量叉积"><a href="#1-找出异号的边向量叉积" class="headerlink" title="1. 找出异号的边向量叉积"></a>1. 找出异号的边向量叉积</h3><p>回顾《如何判别凹多边形》一文，我们知道凹多边形的边向量叉积存在<strong>异号</strong>的情况，如下图：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zhenwanping/cdn-assets@master/photo/20210216190427.png" alt=""></p>
+<p>多边形 [P0, P1, P2, P3, P4] 的边向量叉积情况如下：<br>$$<br>\vec{u} \times \vec{v} &gt; 0 \<br>\vec{v} \times \vec{w} &lt; 0 \<br>\vec{w} \times \vec{a} &lt; 0 \<br>\vec{a} \times \vec{b} &lt; 0 \<br>$$<br>可以看到 $\vec{u} \times \vec{v}$ 的结果是大于 0 的，其余都是小于零。p0p1 和 p1p2 的边向量叉积结果是这里唯一异号的。</p>
+<p>我们这里约定组成该凹多边形的点是按照<strong>顺时针排列</strong>的，所以如果边向量叉积中出现*<em>大于 0 *</em>的情况，则可以判断这两条边是凹进去的位置。即 p0p1 边是开始凹进去的位置，记录这条边的位置，接着对这条边进行下一步的处理。</p>
+<blockquote>
+<p>注意：如果组成凹多边形的点是按照逆时针排列的，在按顺序计算的边向量的结果中，应该是以小于 0 的叉积结果作为判断。</p>
+</blockquote>
+<h3 id="2-延长异号边进行切割"><a href="#2-延长异号边进行切割" class="headerlink" title="2. 延长异号边进行切割"></a>2. 延长异号边进行切割</h3><p>上一步骤中，我们找到了 p0p1 这条 “异号边”。我们将它延长，延长至跟多边形的一条边相交为止，如下图：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zhenwanping/cdn-assets@master/photo/20210216190447.png" alt=""></p>
+<p>从图中可以看到，p0p1 延长线相交于 p2p3 上的一点 A。</p>
+<p>这条延长线就是凹多边形的切割线，它把该凹多边形切割成 [p1, p2, A] 和 [p0, A, p3, p4] 两个多边形。</p>
+<p>接着我们判断切割后的两个多边形是否仍存在凹多边形，发现并没有，则该凹多边形切割完成。</p>
+<p>这里的描述看似简单，但是如果要把该问题抽象到代码中去处理，需要明确解决两个问题：</p>
+<ol>
+<li>如何找到<strong>交点位置</strong>，即交点所在的边和交点的坐标。</li>
+<li>得到交点坐标后，如何<strong>分割原数组</strong>，且得出点顺序是正确的两个多边形数组。</li>
+</ol>
+<h3 id="3-找到交点位置"><a href="#3-找到交点位置" class="headerlink" title="3. 找到交点位置"></a>3. 找到交点位置</h3><p>为了找到 p0p1的延长线相交于多边形上的哪一条边上，我们先回顾一下 <a href="">《如何判断一个多边形是否合法》</a> 一文中关于如何判断线段是否相交的方法：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zhenwanping/cdn-assets@master/photo/20210127164656.png" alt=""></p>
+<p>如果要判断 P1P2 和 Q1Q2 这两条线段是否相交，其中有一个步骤是这样的：</p>
+<blockquote>
+<p>因为  $\vec{P_1Q_1}$  在  $\vec{P_1P_2}$ 的逆时针方向，那么：$\vec{P_1P_2} \times \vec{P_1Q_1} &gt; 0$ </p>
+<p>因为 $\vec{P_1Q_2}$  在  $\vec{P_1P_2}$ 的顺时针方向，那么：$\vec{P_1P_2} \times \vec{P_1Q_2} &lt; 0$   </p>
+<p>用 A 表示 $\vec{P_1P_2} \times \vec{P_1Q_1} $  的叉积结果，用 B 表示 $\vec{P_1P_2} \times \vec{P_1Q_2}$ 的叉积结果，那么 <strong>一条的线段的两个端点在另外一条线段两侧</strong> 这个几何现象可以用这个公式表示 ：$A{\times}B&lt;0$</p>
+</blockquote>
+<p>我们回顾到这一步就够了，这里的 P1P2 其实就相当于我们上面所用来切割多边形的延长线，Q1Q2 就相当于多边形上的任意一边。</p>
+<p>为了找到延长线与多边形的一条边上的交点，我们可以利用这个方法，让延长线与多边形的边按顺序逐个进行计算，找到第一个结果为 $A{\times}B&lt;0$ 的边，即可得知交点在哪里。</p>
+<p>根据这里的判断方法，我们回到刚刚的凹多边形：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zhenwanping/cdn-assets@master/photo/20210216190447.png" alt=""></p>
+<p>如上图，$cp1 = \vec{P_0P_1} \times \vec{ P_0P_2} &gt; 0$ ，$cp2 = \vec{P_0P_1} \times \vec{ P_0P_3} &lt; 0$，</p>
+<p>得出 cp1 乘以 cp2 的结果是小于 0 的，则交点会在 p2p3 边上。</p>
+<p>然后我们就可以利用 p0、p1、p2、p3 这四个点，计算出直线函数，求出交点坐标 A 了，具体如何通过两个直线函数求交点坐标，这里就不赘述了。</p>
+<p>这里上点代码来按照这个步骤进行理解：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// 切割凹多边形为多个凸多边形，向量切割法</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">divideConcavePolygon</span><span class="params">(vertexs: [CGPoint])</span></span> -&gt; [[<span class="type">CGPoint</span>]] &#123;</span><br><span class="line">    <span class="keyword">guard</span> vertexs.<span class="built_in">count</span> &gt; <span class="number">3</span> <span class="keyword">else</span> &#123; <span class="keyword">return</span> [] &#125;</span><br><span class="line">    <span class="comment">// 跳出外层循环的标志</span></span><br><span class="line">    <span class="keyword">var</span> breakFlag = <span class="literal">false</span></span><br><span class="line">    <span class="comment">// 注意 vertexs 的点是顺时针排列的</span></span><br><span class="line">    <span class="keyword">for</span> index <span class="keyword">in</span> <span class="number">0</span>..&lt;vertexs.<span class="built_in">count</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> index1 = (index + <span class="number">1</span>) % vertexs.<span class="built_in">count</span></span><br><span class="line">        <span class="keyword">let</span> index2 = (index + <span class="number">2</span>) % vertexs.<span class="built_in">count</span></span><br><span class="line">        <span class="keyword">let</span> p0 = vertexs[index]</span><br><span class="line">        <span class="keyword">let</span> p1 = vertexs[index1]</span><br><span class="line">        <span class="keyword">let</span> p2 = vertexs[index2]</span><br><span class="line">        <span class="keyword">let</span> crossProduct = crossproduct(vector1: (p0, p1), vector2: (p1, p2))</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 如果叉积大于 0，说明 向量 p1p2 在 向量 p0p1 的逆时针方向</span></span><br><span class="line">        <span class="comment">// 即 p0p1 为异号边</span></span><br><span class="line">        <span class="keyword">if</span> crossProduct &gt; <span class="number">0</span> &#123;</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// 与多边形的其它边进行计算，找出交点位置</span></span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..&lt;vertexs.<span class="built_in">count</span> &#123;</span><br><span class="line">                <span class="keyword">let</span> current = vertexs[i]</span><br><span class="line">                <span class="keyword">let</span> next = vertexs[(i + <span class="number">1</span>) % vertexs.<span class="built_in">count</span>]</span><br><span class="line">                </span><br><span class="line">                <span class="comment">// 跳过当前边（延长线的边）</span></span><br><span class="line">                <span class="keyword">if</span> index == i || index == (i + <span class="number">1</span>) % vertexs.<span class="built_in">count</span> &#123;</span><br><span class="line">                    <span class="keyword">continue</span></span><br><span class="line">                &#125;</span><br><span class="line">                </span><br><span class="line">                <span class="keyword">let</span> cp1 = crossproduct(vector1: (p0, p1), vector2: (p0, current))</span><br><span class="line">                <span class="keyword">let</span> cp2 = crossproduct(vector1: (p0, p1), vector2: (p0, next))</span><br><span class="line"></span><br><span class="line">                <span class="comment">// 找到交点所在的边 即 current 和 next 组成的边</span></span><br><span class="line">                <span class="keyword">if</span> cp1 * cp2 &lt; <span class="number">0</span> &#123;</span><br><span class="line">                    <span class="comment">// <span class="doctag">TODO:</span> - 根据延长线和交点所在的边，计算出交点坐标 newPoint</span></span><br><span class="line">                    <span class="comment">// <span class="doctag">TODO:</span> - 切割多边形数组，把 newPoint 添加到数组里</span></span><br><span class="line">                    <span class="comment">// 跳出内嵌套的循环，并标记需要跳出外循环</span></span><br><span class="line">                    breakFlag = <span class="literal">true</span></span><br><span class="line">                    <span class="keyword">break</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> breakFlag &#123; <span class="keyword">break</span> &#125;</span><br><span class="line">    &#125;</span><br><span class="line">	</span><br><span class="line">    <span class="comment">// <span class="doctag">TODO:</span> - 返回切割后的凸多边形数组</span></span><br><span class="line">    <span class="keyword">return</span> polygons</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="4-分割原数组"><a href="#4-分割原数组" class="headerlink" title="4. 分割原数组"></a>4. 分割原数组</h3><p>通过异号边延长线进行切割，得到交点坐标 A 后，我们还需要分割原数组，得到两个多边形的数组。</p>
+<p>我们再次回到上面的凹多边形：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zhenwanping/cdn-assets@master/photo/20210216190447.png" alt=""></p>
+<p>我们希望分割原坐标数组为 [p1, p2, A] 和 [p0, A, p3, p4] ，观察数组的点都是按照<strong>顺时针</strong>排列的，这个顺序很重要，一来可以确保多边形的形状，二来可以继续用我们上面的切割方法继续对剩下的多边形切割。</p>
+<p>原多边形数组是 [P0, P1, P2, P3, P4] ，将其转换成数组索引查看为 [0, 1, 2, 3, 4]，观察可知，我们需要截取出  [1, 2] ，然后剩下 [0, 3, 4 ] ，再在合适的位置插入 A 的坐标即可。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zhenwanping/cdn-assets@master/photo/20210216191039.png" alt=""></p>
+<p>我们添加个 splice 的扩展方法，可以截取数组里的一个区间，这个方法是 <code>mutating</code> 的，也会改变原数组：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">RangeReplaceableCollection</span> </span>&#123;</span><br><span class="line">    <span class="keyword">mutating</span> <span class="function"><span class="keyword">func</span> <span class="title">splice</span>&lt;R: RangeExpression&gt;<span class="params">(range: R)</span></span> -&gt; <span class="type">SubSequence</span> <span class="keyword">where</span> <span class="type">R</span>.<span class="type">Bound</span> == <span class="type">Index</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> result = <span class="keyword">self</span>[range]</span><br><span class="line">        <span class="keyword">self</span>.removeSubrange(range)</span><br><span class="line">        <span class="keyword">return</span> result</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>结合上面的凹多边形图片观察，交点 A 是在 p2p3 上的，即在数组索引 <code>current = 2</code> 和 <code>next = 3</code> 之间，至于异号边的索引为 <code>index0 = 0</code> 和 <code>index1 = 1</code></p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> polygon2 = vertexs</span><br><span class="line"><span class="keyword">var</span> polygon1 = <span class="type">Array</span>(polygon2.splice(range: index1...current))</span><br><span class="line"><span class="comment">// 插入交点 A 坐标</span></span><br><span class="line">polygon1.append(<span class="type">A</span>)</span><br><span class="line">polygon2.insert(<span class="type">A</span>, at: index0 + <span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+
+
+
+<p>这里还要注意一种情况，就是交点坐标所在边的索引<strong>小于</strong>异号边索引的情况，可以用这样一副图说明：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zhenwanping/cdn-assets@master/photo/20210216191908.png" alt=""></p>
+<p>如图所示的凹多边形，交点 A 在 p0p1 上，即在数组索引 <code>current = 0</code> 和 <code>next = 1</code> 之间，至于异号边的索引为 <code>index0 = 2</code> 和 <code>index1 = 3</code></p>
+<p>这里贴出一段代码，便于理解这里区间的截取：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> current &gt; index0 &#123;</span><br><span class="line">    <span class="keyword">var</span> polygon2 = vertexs</span><br><span class="line">    <span class="comment">// current 大于 index0，则分割区间为 [index1, current]</span></span><br><span class="line">    <span class="keyword">var</span> polygon1 = <span class="type">Array</span>(polygon2.splice(range: index1...current))</span><br><span class="line">    <span class="comment">// 插入交点 A 坐标</span></span><br><span class="line">    polygon1.append(<span class="type">A</span>)</span><br><span class="line">    polygon2.insert(<span class="type">A</span>, at: index0 + <span class="number">1</span>)</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">var</span> polygon2 = vertexs</span><br><span class="line">    <span class="comment">// current 小于 index0，则分割区间为 [current+1, index0]</span></span><br><span class="line">    <span class="keyword">var</span> polygon1 = <span class="type">Array</span>(polygon2.splice(range: current + <span class="number">1</span>...index0))</span><br><span class="line">    <span class="comment">// 插入交点 A 坐标</span></span><br><span class="line">    polygon1.append(<span class="type">A</span>)</span><br><span class="line">    polygon2.insert(<span class="type">A</span>, at: index0 + <span class="number">1</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="5-注意坐标系"><a href="#5-注意坐标系" class="headerlink" title="5. 注意坐标系"></a>5. 注意坐标系</h3><p>至此，分割凹多边形的向量方法已经讲解完毕了。我在 iOS 上做个 Demo 验证这个算法的时候，一开始发现切割的位置不太对，如下图： </p>
+<p><img src="https://cdn.jsdelivr.net/gh/zhenwanping/cdn-assets@master/photo/20210216191025.png" alt=""></p>
+<p>从图中可以看出，实际切割的位置跟我推演算法时想象的位置是相反的，我百思不得其解。</p>
+<p>后面才想起 iOS 的 x y 坐标系跟几何上的是不一样的，Y 轴的正方向是向下的。因此在算法的眼里，这个绘制出来的图形其实是上下颠倒的，因此算法并没有问题。这里特意提醒注意一下。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/zhenwanping/cdn-assets@master/photo/20210216191010.png" alt=""></p>
+
+          
+            <br>
+            
+              
+  
+    
+    
+
+
+
+  
+
+  
+    
+    
+
+
+
+  
+
+  
+    
+    
+
+<section class="widget copyright  ">
+  <div class='content'>
+    
+      <blockquote>
+        
+          
+            <p>博客内容遵循 署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0) 协议</p>
+
+          
+        
+          
+            <p>本文永久链接是：<a href=http://myhanson.com/2021/02/16/%E5%A6%82%E4%BD%95%E5%88%87%E5%89%B2%E5%87%B9%E5%A4%9A%E8%BE%B9%E5%BD%A2/>http://myhanson.com/2021/02/16/%E5%A6%82%E4%BD%95%E5%88%87%E5%89%B2%E5%87%B9%E5%A4%9A%E8%BE%B9%E5%BD%A2/</a></p>
+          
+        
+      </blockquote>
+    
+  </div>
+</section>
+
+  
+
+  
+    
+    
+
+<section class="widget qrcode  desktop mobile">
+  
+
+  <div class='content article-entry'>
+    
+      
+        <div class='fancybox'><img src='https://cdn.jsdelivr.net/gh/zyphs21/cdn-assets/qrcode/HansonTalk.jpg'
+        
+          height='64px'
+        ></div>
+      
+    
+      
+        <div class='fancybox'><img src='https://cdn.jsdelivr.net/gh/zyphs21/cdn-assets/qrcode/iOSTypist.jpg'
+        
+          height='64px'
+        ></div>
+      
+    
+  </div>
+</section>
+
+  
+
+
+            
+          
+        </div>
+        
+          
+
+
+  <section class='meta' id="footer-meta">
+    <div class='new-meta-box'>
+      
+        
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2021-02-23T09:49:20+08:00">
+  <a class='notlink'>
+    <i class="fas fa-edit fa-fw" aria-hidden="true"></i>
+    <p>更新于：Feb 23, 2021</p>
+  </a>
+</div>
+
+        
+      
+        
+          
+
+        
+      
+        
+          
+
+        
+      
+        
+          
+  <div class="new-meta-item share -mob-share-list">
+  <div class="-mob-share-list share-body">
+    
+      
+        <a class="-mob-share-qq" title="" rel="external nofollow noopener noreferrer"
+          
+          href="http://connect.qq.com/widget/shareqq/index.html?url=http://myhanson.com/2021/02/16/%E5%A6%82%E4%BD%95%E5%88%87%E5%89%B2%E5%87%B9%E5%A4%9A%E8%BE%B9%E5%BD%A2/&title=如何切割凹多边形 - Hanson的博客&summary="
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/logo/128/qq.png">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-qzone" title="" rel="external nofollow noopener noreferrer"
+          
+          href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://myhanson.com/2021/02/16/%E5%A6%82%E4%BD%95%E5%88%87%E5%89%B2%E5%87%B9%E5%A4%9A%E8%BE%B9%E5%BD%A2/&title=如何切割凹多边形 - Hanson的博客&summary="
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/logo/128/qzone.png">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-weibo" title="" rel="external nofollow noopener noreferrer"
+          
+          href="http://service.weibo.com/share/share.php?url=http://myhanson.com/2021/02/16/%E5%A6%82%E4%BD%95%E5%88%87%E5%89%B2%E5%87%B9%E5%A4%9A%E8%BE%B9%E5%BD%A2/&title=如何切割凹多边形 - Hanson的博客&summary="
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-assets/logo/128/weibo.png">
+          
+        </a>
+      
+    
+  </div>
+</div>
+
+
+
+        
+      
+    </div>
+  </section>
+
+
+        
+        
+          <div class="prev-next">
+            
+            
+              <a class='next' href='/2021/02/15/%E5%A6%82%E4%BD%95%E5%88%A4%E5%88%AB%E5%87%B9%E5%A4%9A%E8%BE%B9%E5%BD%A2/'>
+                <p class='title'>如何判别凹多边形<i class="fas fa-chevron-right" aria-hidden="true"></i></p>
+                <p class='content'>问题描述如何判断一个多边形是否为凹多边形？首先我们先要明确凹多边形是如何定义的，以及它的特征。
+在 《计算机图形学》 的 3.15.1 多边形分类 这一小节里有这样的描述：
+
+多边形的一个内角是...</p>
+              </a>
+            
+          </div>
+        
+      </section>
+    </article>
+  
+
+  
+    <!-- 显示推荐文章和评论 -->
+
+
+
+  
+
+
+  
+
+
+
+
+<!-- 根据页面mathjax变量决定是否加载MathJax数学公式js -->
+
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+    displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+    processEscapes: true,
+    tags: "ams",
+    macros: {
+      href: "{}"
+    }
+  },
+  options: {
+    ignoreHtmlClass: "tex2jax_ignore|dno",
+    skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+  }
+};
+</script>
+
+
+
+
+  <script>
+    window.subData = {
+      title: '如何切割凹多边形',
+      tools: true
+    }
+  </script>
+
+
+</div>
+<aside class='l_side'>
+  
+  
+
+  
+    
+    
+
+
+  <section class="widget toc-wrapper shadow desktop mobile">
+    
+  <header>
+    
+      <i class="fas fa-list fa-fw" aria-hidden="true"></i><span class='name'>本文目录</span>
+    
+  </header>
+
+
+    <div class='content'>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#问题描述"><span class="toc-text">问题描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#向量方法"><span class="toc-text">向量方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-找出异号的边向量叉积"><span class="toc-text">1. 找出异号的边向量叉积</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-延长异号边进行切割"><span class="toc-text">2. 延长异号边进行切割</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-找到交点位置"><span class="toc-text">3. 找到交点位置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-分割原数组"><span class="toc-text">4. 分割原数组</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-注意坐标系"><span class="toc-text">5. 注意坐标系</span></a></li></ol></li></ol>
+    </div>
+  </section>
+
+
+  
+
+
+</aside>
+
+
+  
+  <footer class="clearfix">
+    <br><br>
+    
+      
+        <br>
+        <div class="social-wrapper">
+          
+            
+              <a href="/atom.xml"
+                class="social fas fa-rss flat-btn"
+                target="_blank"
+                rel="external nofollow noopener noreferrer">
+              </a>
+            
+          
+            
+              <a href="mailto:hansenhs21@live.com"
+                class="social fas fa-envelope flat-btn"
+                target="_blank"
+                rel="external nofollow noopener noreferrer">
+              </a>
+            
+          
+            
+              <a href="https://github.com/zyphs21"
+                class="social fab fa-github flat-btn"
+                target="_blank"
+                rel="external nofollow noopener noreferrer">
+              </a>
+            
+          
+        </div>
+      
+    
+      
+        <div><p>Blog content follows the <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" target="_blank" rel="noopener">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) License</a></p>
+</div>
+      
+    
+      
+        Use
+        <a href="https://volantis.js.org/" target="_blank" class="codename">Volantis</a>
+        as theme, total visits
+          <span id="busuanzi_value_site_pv"><i class="fas fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span>
+          times
+        
+      
+    
+      
+        <div class='copyright'>
+        <p><a href="www.myhanson.com">Copyright © 2017-2020 Hanson</a></p>
+
+        </div>
+      
+    
+  </footer>
+
+<script>setLoadingBarProgress(80);</script>
+
+
+      <script>setLoadingBarProgress(60);</script>
+    </div>
+    <a class="s-top fas fa-arrow-up fa-fw" href='javascript:void(0)'></a>
+  </div>
+  
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4/dist/jquery.min.js"></script>
+
+
+  <script>
+    
+    var SEARCH_SERVICE = "hexo" || "hexo";
+    var ROOT = "/" || "/";
+    if (!ROOT.endsWith('/')) ROOT += '/';
+  </script>
+
+
+  <script async src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-volantis@2/js/instant_page.js" type="module" defer integrity="sha384-OeDn4XE77tdHo8pGtE1apMPmAipjoxUQ++eeJa6EtJCfHlvijigWiJpD7VDPWXV1"></script>
+
+
+
+  
+<script src="https://cdn.jsdelivr.net/npm/node-waves@0.7.6/dist/waves.min.js"></script>
+
+  <script type="text/javascript">
+    $(function() {
+      Waves.attach('.flat-btn', ['waves-button']);
+      Waves.attach('.float-btn', ['waves-button', 'waves-float']);
+      Waves.attach('.float-btn-light', ['waves-button', 'waves-float', 'waves-light']);
+      Waves.attach('.flat-box', ['waves-block']);
+      Waves.attach('.float-box', ['waves-block', 'waves-float']);
+      Waves.attach('.waves-image');
+      Waves.init();
+    });
+  </script>
+
+
+  <script async src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-busuanzi@2.3/js/busuanzi.pure.mini.js"></script>
+
+
+
+  
+  
+  
+    
+<script src="https://cdn.jsdelivr.net/npm/jquery-backstretch@2.1.18/jquery.backstretch.min.js"></script>
+
+    <script type="text/javascript">
+      $(function(){
+        var imgs=["https://cdn.jsdelivr.net/gh/xaoxuu/cdn-wallpaper/abstract/41F215B9-261F-48B4-80B5-4E86E165259E.jpeg"];
+        if ('true' == 'true') {
+          function shuffle(arr){
+            /*From countercurrent-time*/
+            var n = arr.length;
+            while(n--) {
+              var index = Math.floor(Math.random() * n);
+              var temp = arr[index];
+              arr[index] = arr[n];
+              arr[n] = temp;
+            }
+          }
+          shuffle(imgs);
+        }
+        if ('.cover') {
+          $('.cover').backstretch(
+            imgs,
+          {
+            duration: "20000",
+            fade: "1500"
+          });
+        } else {
+          $.backstretch(
+            imgs,
+          {
+            duration: "20000",
+            fade: "1500"
+          });
+        }
+      });
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+<script src="/js/app.js"></script>
+
+
+
+  
+<script src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-volantis@2.4/js/search.js"></script>
+
+
+
+  
+<script src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-volantis@2/js/comment_typing.js"></script>
+
+
+
+
+
+
+<!-- 复制 -->
+
+  <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="fas fa-copy"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('fa-copy');
+        $icon.addClass('fa-check-circle');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('fa-check-circle');
+          $icon.addClass('fa-copy');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('fa-copy');
+        $icon.addClass('fa-times-circle');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('fa-times-circle');
+          $icon.addClass('fa-copy');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+
+
+
+
+<!-- fancybox -->
+
+  <script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+<script>
+  let LAZY_LOAD_IMAGE = "";
+  $(".article-entry").find("div.fancybox").find("img").each(function () {
+      var element = document.createElement("a");
+      $(element).attr("data-fancybox", "gallery");
+      $(element).attr("href", $(this).attr("src"));
+      /* 图片采用懒加载处理时,
+       * 一般图片标签内会有个属性名来存放图片的真实地址，比如 data-original,
+       * 那么此处将原本的属性名src替换为对应属性名data-original,
+       * 修改如下
+       */
+       if (LAZY_LOAD_IMAGE) {
+         $(element).attr("href", $(this).attr("data-original"));
+       }
+      $(this).wrap(element);
+  });
+</script>
+
+
+
+
+
+
+  <script>setLoadingBarProgress(100);</script>
+</body>
+</html>
