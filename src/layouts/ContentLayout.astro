@@ -1,0 +1,21 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+const { title, description, date, topics = [] } = Astro.props;
+---
+<BaseLayout title={title} description={description}>
+  <article>
+    <header class="prose article-header">
+      <div class="eyebrow">Writing</div>
+      <h1>{title}</h1>
+      <p class="lead">{description}</p>
+      <div class="meta">
+        {date && <time datetime={date.toISOString()}>{date.toLocaleDateString('zh-CN')}</time>}
+        {topics.length > 0 && <> · {topics.join(' / ')}</>}
+      </div>
+    </header>
+    <div class="prose">
+      <slot />
+    </div>
+  </article>
+</BaseLayout>

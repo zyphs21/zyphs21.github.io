@@ -1,0 +1,14 @@
+---
+import { getCollection, render } from 'astro:content';
+import ContentLayout from '@/layouts/ContentLayout.astro';
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+<ContentLayout title={post.data.title} description={post.data.description} date={post.data.date} topics={post.data.topics}>
+  <Content />
+  {post.data.legacyPath && <p class="meta">旧链接：{post.data.legacyPath}</p>}
+</ContentLayout>

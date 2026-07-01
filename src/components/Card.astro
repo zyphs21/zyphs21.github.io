@@ -1,0 +1,9 @@
+---
+const { href, title, description, meta, badges = [] } = Astro.props;
+---
+<a class="card" href={href}>
+  <h3>{title}</h3>
+  <p>{description}</p>
+  {meta && <div class="meta">{meta}</div>}
+  {badges.length > 0 && <div class="badges">{badges.map((badge: string) => <span class="badge">{badge}</span>)}</div>}
+</a>

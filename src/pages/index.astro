@@ -1,0 +1,39 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Card from '@/components/Card.astro';
+import Section from '@/components/Section.astro';
+
+const posts = (await getCollection('blog')).filter((p) => p.data.featured).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const projects = (await getCollection('projects')).filter((p) => p.data.featured);
+const topics = (await getCollection('topics')).sort((a, b) => a.data.order - b.data.order);
+---
+<BaseLayout title="Hanson Zhang" description="Hanson Zhang 的技术花园：Swift、iOS、图形、几何算法和独立工具。">
+  <section class="hero container">
+    <div class="eyebrow">Engineering Garden</div>
+    <h1>写作、项目和长期生长的技术笔记。</h1>
+    <p class="lead">这里是 Hanson Zhang 的技术花园，记录 Swift / iOS、图形编程、几何算法、独立工具，以及一些仍在生长中的工程笔记。</p>
+    <div class="actions">
+      <a class="button primary" href="/topics/">从主题开始</a>
+      <a class="button" href="/projects/">查看项目</a>
+    </div>
+  </section>
+
+  <Section title="主题地图" description="不再只是按时间归档，而是把文章、笔记和项目聚合到长期主题下。" href="/topics/">
+    <div class="grid">
+      {topics.map((topic) => <Card href={`/topics/${topic.id}/`} title={topic.data.title} description={topic.data.description} />)}
+    </div>
+  </Section>
+
+  <Section title="精选文章" description="第一批迁移样例，用来验证新版文章排版、代码块和主题关联。" href="/blog/">
+    <div class="grid">
+      {posts.map((post) => <Card href={`/blog/${post.id}/`} title={post.data.title} description={post.data.description} meta={post.data.date.toLocaleDateString('zh-CN')} badges={post.data.topics} />)}
+    </div>
+  </Section>
+
+  <Section title="项目" description="把工具、App 和开源项目从博客附属页面提升为个人品牌站的核心模块。" href="/projects/">
+    <div class="grid">
+      {projects.map((project) => <Card href={`/projects/${project.id}/`} title={project.data.title} description={project.data.description} meta={project.data.status} badges={project.data.tech} />)}
+    </div>
+  </Section>
+</BaseLayout>

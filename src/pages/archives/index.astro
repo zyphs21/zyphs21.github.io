@@ -1,0 +1,10 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Card from '@/components/Card.astro';
+const posts = (await getCollection('blog')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+<BaseLayout title="归档" description="文章时间归档。">
+  <section class="hero container"><div class="eyebrow">Archive</div><h1>归档</h1><p class="lead">保留传统时间线入口，方便浏览历史文章。</p></section>
+  <section class="section"><div class="container grid">{posts.map((post) => <Card href={`/blog/${post.id}/`} title={post.data.title} description={post.data.description} meta={post.data.date.toLocaleDateString('zh-CN')} />)}</div></section>
+</BaseLayout>

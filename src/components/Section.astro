@@ -1,0 +1,15 @@
+---
+const { title, description, href, cta = '查看全部' } = Astro.props;
+---
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <h2>{title}</h2>
+        {description && <p>{description}</p>}
+      </div>
+      {href && <a class="button" href={href}>{cta} →</a>}
+    </div>
+    <slot />
+  </div>
+</section>

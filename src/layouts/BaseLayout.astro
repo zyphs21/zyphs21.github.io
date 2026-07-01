@@ -1,0 +1,42 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+const {
+  title = 'Hanson Zhang',
+  description = 'Hanson Zhang 的技术花园：Swift、iOS、图形、几何算法和独立工具。',
+} = Astro.props;
+const pageTitle = title === 'Hanson Zhang' ? title : `${title} · Hanson Zhang`;
+---
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <title>{pageTitle}</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="container nav" aria-label="主导航">
+        <a class="brand" href="/">Hanson</a>
+        <div class="nav-links">
+          <a href="/topics/">主题</a>
+          <a href="/blog/">文章</a>
+          <a href="/notes/">笔记</a>
+          <a href="/projects/">项目</a>
+          <a href="/about/">关于</a>
+        </div>
+      </nav>
+    </header>
+    <main>
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <div class="container">© {new Date().getFullYear()} Hanson Zhang. Built with Astro.</div>
+    </footer>
+  </body>
+</html>
