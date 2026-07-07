@@ -7,9 +7,17 @@ export async function getStaticPaths() {
 }
 const { project } = Astro.props;
 const { Content } = await render(project);
+const githubUrl = project.data.links.github ? new URL(project.data.links.github) : undefined;
+const githubLabel = githubUrl ? `${githubUrl.host}${githubUrl.pathname}` : '';
 ---
-<ContentLayout title={project.data.title} description={project.data.description} topics={project.data.tech}>
-  <p class="meta">状态：{project.data.status}</p>
+<ContentLayout title={project.data.title} description={project.data.description} topics={project.data.tech} eyebrow="Project">
+  {
+    project.data.links.github && (
+      <p>
+        GitHub：<a href={project.data.links.github} target="_blank" rel="noreferrer">{githubLabel}</a>
+      </p>
+    )
+  }
   <Content />
   {project.data.links.article && <p><a href={project.data.links.article}>阅读相关文章 →</a></p>}
 </ContentLayout>

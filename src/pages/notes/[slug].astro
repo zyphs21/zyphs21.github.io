@@ -8,7 +8,7 @@ export async function getStaticPaths() {
 const { note } = Astro.props;
 const { Content } = await render(note);
 ---
-<ContentLayout title={note.data.title} description={note.data.description} date={note.data.date} topics={note.data.topics}>
+<ContentLayout title={note.data.title} description={note.data.description} date={note.data.date} topics={note.data.topics} eyebrow="Note">
   <p class="meta">状态：{note.data.status}</p>
   <Content />
 </ContentLayout>

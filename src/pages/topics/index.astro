@@ -2,11 +2,22 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Card from '@/components/Card.astro';
+
 const topics = (await getCollection('topics')).sort((a, b) => a.data.order - b.data.order);
 ---
 <BaseLayout title="主题" description="按长期主题组织文章、笔记和项目。">
-  <section class="hero container"><div class="eyebrow">Topics</div><h1>主题地图</h1><p class="lead">从主题进入，而不是只按发布时间浏览。每个主题都会聚合相关文章、笔记和项目。</p></section>
-  <section class="section"><div class="container grid">
-    {topics.map((topic) => <Card href={`/topics/${topic.id}/`} title={topic.data.title} description={topic.data.description} />)}
-  </div></section>
+  <section class="page-header">
+    <h1>主题地图</h1>
+    <p>从主题进入，而不是只按发布时间浏览。每个主题都会聚合相关文章、笔记和项目。</p>
+  </section>
+  <ul class="post-list">
+    {topics.map((topic) => (
+      <Card
+        href={`/topics/${topic.id}/`}
+        title={topic.data.title}
+        description={topic.data.description}
+        variant="h2"
+      />
+    ))}
+  </ul>
 </BaseLayout>

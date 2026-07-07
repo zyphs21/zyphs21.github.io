@@ -2,11 +2,24 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Card from '@/components/Card.astro';
+
 const notes = (await getCollection('notes')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 ---
 <BaseLayout title="笔记" description="持续生长中的短笔记。">
-  <section class="hero container"><div class="eyebrow">Notes</div><h1>笔记</h1><p class="lead">短内容、半成品想法和持续补充中的知识点。</p></section>
-  <section class="section"><div class="container grid">
-    {notes.map((note) => <Card href={`/notes/${note.id}/`} title={note.data.title} description={note.data.description} meta={note.data.status} badges={note.data.topics} />)}
-  </div></section>
+  <section class="page-header">
+    <h1>笔记</h1>
+    <p>短内容、半成品想法和持续补充中的知识点。</p>
+  </section>
+  <ul class="post-list">
+    {notes.map((note) => (
+      <Card
+        href={`/notes/${note.id}/`}
+        title={note.data.title}
+        description={note.data.description}
+        meta={note.data.status}
+        badges={note.data.topics}
+        variant="h2"
+      />
+    ))}
+  </ul>
 </BaseLayout>

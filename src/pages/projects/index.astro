@@ -2,11 +2,23 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Card from '@/components/Card.astro';
+
 const projects = await getCollection('projects');
 ---
 <BaseLayout title="项目" description="独立工具、开源项目和产品复盘。">
-  <section class="hero container"><div class="eyebrow">Projects</div><h1>项目</h1><p class="lead">把工具、App 和开源项目作为技术品牌的一部分沉淀下来。</p></section>
-  <section class="section"><div class="container grid">
-    {projects.map((project) => <Card href={`/projects/${project.id}/`} title={project.data.title} description={project.data.description} meta={project.data.status} badges={project.data.tech} />)}
-  </div></section>
+  <section class="page-header">
+    <h1>项目</h1>
+    <p>把工具、App 和开源项目作为技术品牌的一部分沉淀下来。</p>
+  </section>
+  <ul class="post-list">
+    {projects.map((project) => (
+      <Card
+        href={`/projects/${project.id}/`}
+        title={project.data.title}
+        description={project.data.description}
+        badges={project.data.tech}
+        variant="h2"
+      />
+    ))}
+  </ul>
 </BaseLayout>

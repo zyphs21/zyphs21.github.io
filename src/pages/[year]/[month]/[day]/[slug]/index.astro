@@ -1,0 +1,32 @@
+---
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts
+    .filter((post) => post.data.legacyPath)
+    .map((post) => {
+      const [year, month, day, slug] = post.data.legacyPath.replace(/^\/|\/$/g, '').split('/');
+
+      return {
+        params: { year, month, day, slug },
+        props: { post },
+      };
+    });
+}
+
+const { post } = Astro.props;
+const target = `/blog/${post.id}/`;
+---
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content={`0; url=${target}`} />
+    <link rel="canonical" href={target} />
+    <title>{post.data.title} | Hanson Zhang</title>
+  </head>
+  <body>
+    <p><a href={target}>跳转到新文章地址</a></p>
+  </body>
+</html>

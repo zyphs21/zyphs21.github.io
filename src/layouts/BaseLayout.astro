@@ -5,38 +5,125 @@ interface Props {
   title?: string;
   description?: string;
 }
+
 const {
   title = 'Hanson Zhang',
   description = 'Hanson Zhang 的技术花园：Swift、iOS、图形、几何算法和独立工具。',
 } = Astro.props;
-const pageTitle = title === 'Hanson Zhang' ? title : `${title} · Hanson Zhang`;
+
+const pageTitle = title === 'Hanson Zhang' ? title : `${title} | Hanson Zhang`;
+const path = Astro.url.pathname;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://myhanson.com').href;
+
+const navItems = [
+  { href: '/blog/', label: '文章' },
+  { href: '/notes/', label: '笔记' },
+  { href: '/projects/', label: '项目' },
+  { href: '/topics/', label: '主题' },
+  { href: '/about/', label: '关于' },
+];
+
+const isActive = (href: string) => path === href || path.startsWith(href);
 ---
 <!doctype html>
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
+    <meta name="author" content="Hanson Zhang" />
+    <link rel="canonical" href={canonical} />
     <title>{pageTitle}</title>
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Hanson Zhang" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <script is:inline>
+      (function () {
+        try {
+          const stored = localStorage.getItem('theme');
+          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const theme = stored || (prefersDark ? 'dark' : 'light');
+          document.documentElement.setAttribute('data-theme', theme);
+        } catch (error) {
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      })();
+    </script>
   </head>
   <body>
+    <a id="skip-to-content" href="#main-content">跳到正文</a>
     <header class="site-header">
-      <nav class="container nav" aria-label="主导航">
-        <a class="brand" href="/">Hanson</a>
-        <div class="nav-links">
-          <a href="/topics/">主题</a>
-          <a href="/blog/">文章</a>
-          <a href="/notes/">笔记</a>
-          <a href="/projects/">项目</a>
-          <a href="/about/">关于</a>
-        </div>
-      </nav>
+      <div class="app-layout header-inner">
+        <a class="site-title" href="/">Hanson</a>
+        <button id="menu-button" class="menu-button" type="button" aria-label="打开导航" aria-expanded="false" aria-controls="site-nav">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 7h16M4 12h16M4 17h16" />
+          </svg>
+        </button>
+        <nav id="site-nav" class="site-nav" aria-label="主导航">
+          <ul>
+            {navItems.map((item) => (
+              <li>
+                <a href={item.href} class:list={{ 'active-nav': isActive(item.href) }}>{item.label}</a>
+              </li>
+            ))}
+            <li>
+              <a class="icon-link" href="/archives/" aria-label="归档" title="归档">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M4 5h16v4H4zM6 9v10h12V9M10 13h4" />
+                </svg>
+                <span>归档</span>
+              </a>
+            </li>
+            <li>
+              <button id="theme-button" class="theme-button" type="button" aria-label="切换深色模式">
+                <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M21 14.4A8 8 0 0 1 9.6 3a8.5 8.5 0 1 0 11.4 11.4z" />
+                </svg>
+                <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="12" cy="12" r="4" />
+                  <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+                </svg>
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </div>
     </header>
-    <main>
+    <main id="main-content" class="app-layout">
       <slot />
     </main>
-    <footer class="site-footer">
-      <div class="container">© {new Date().getFullYear()} Hanson Zhang. Built with Astro.</div>
+    <footer class="site-footer app-layout">
+      <span>Copyright © {new Date().getFullYear()} Hanson Zhang</span>
     </footer>
+    <script is:inline>
+      (function () {
+        const root = document.documentElement;
+        const menuButton = document.getElementById('menu-button');
+        const nav = document.getElementById('site-nav');
+        const themeButton = document.getElementById('theme-button');
+
+        function setTheme(theme) {
+          root.setAttribute('data-theme', theme);
+          try {
+            localStorage.setItem('theme', theme);
+          } catch (error) {}
+        }
+
+        menuButton?.addEventListener('click', function () {
+          const open = menuButton.getAttribute('aria-expanded') === 'true';
+          menuButton.setAttribute('aria-expanded', String(!open));
+          nav?.classList.toggle('open', !open);
+        });
+
+        themeButton?.addEventListener('click', function () {
+          const current = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+          setTheme(current === 'dark' ? 'light' : 'dark');
+        });
+      })();
+    </script>
   </body>
 </html>

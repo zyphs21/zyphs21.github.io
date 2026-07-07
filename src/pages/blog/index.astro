@@ -2,15 +2,24 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Card from '@/components/Card.astro';
+
 const posts = (await getCollection('blog')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 ---
 <BaseLayout title="文章" description="正式技术文章归档。">
-  <section class="hero container">
-    <div class="eyebrow">Writing</div>
+  <section class="page-header">
     <h1>文章</h1>
-    <p class="lead">更完整、更适合分享和长期引用的技术文章。</p>
+    <p>更完整、更适合分享和长期引用的技术文章。</p>
   </section>
-  <section class="section"><div class="container grid">
-    {posts.map((post) => <Card href={`/blog/${post.id}/`} title={post.data.title} description={post.data.description} meta={post.data.date.toLocaleDateString('zh-CN')} badges={post.data.topics} />)}
-  </div></section>
+  <ul class="post-list">
+    {posts.map((post) => (
+      <Card
+        href={`/blog/${post.id}/`}
+        title={post.data.title}
+        description={post.data.description}
+        meta={post.data.date.toLocaleDateString('zh-CN')}
+        badges={post.data.topics}
+        variant="h2"
+      />
+    ))}
+  </ul>
 </BaseLayout>

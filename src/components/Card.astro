@@ -1,9 +1,30 @@
 ---
-const { href, title, description, meta, badges = [] } = Astro.props;
+interface Props {
+  href: string;
+  title: string;
+  description?: string;
+  meta?: string;
+  badges?: string[];
+  variant?: 'h2' | 'h3';
+}
+
+const { href, title, description, meta, badges = [], variant = 'h3' } = Astro.props;
 ---
-<a class="card" href={href}>
-  <h3>{title}</h3>
-  <p>{description}</p>
-  {meta && <div class="meta">{meta}</div>}
-  {badges.length > 0 && <div class="badges">{badges.map((badge: string) => <span class="badge">{badge}</span>)}</div>}
-</a>
+<li class="post-item">
+  <a class="post-title" href={href}>
+    {variant === 'h2' ? <h2>{title}</h2> : <h3>{title}</h3>}
+  </a>
+  {(meta || badges.length > 0) && (
+    <div class="post-meta">
+      {meta && <span>{meta}</span>}
+      {meta && badges.length > 0 && <span aria-hidden="true">·</span>}
+      {badges.map((badge: string, index: number) => (
+        <>
+          <span>{badge}</span>
+          {index < badges.length - 1 && <span aria-hidden="true">/</span>}
+        </>
+      ))}
+    </div>
+  )}
+  {description && <p>{description}</p>}
+</li>

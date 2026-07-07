@@ -1,18 +1,41 @@
 ---
 import BaseLayout from './BaseLayout.astro';
 
-const { title, description, date, topics = [] } = Astro.props;
+interface Props {
+  title: string;
+  description?: string;
+  date?: Date;
+  topics?: string[];
+  eyebrow?: string;
+}
+
+const { title, description, date, topics = [], eyebrow = 'Writing' } = Astro.props;
+const backLinks: Record<string, { href: string; label: string }> = {
+  Writing: { href: '/blog/', label: '文章' },
+  Note: { href: '/notes/', label: '笔记' },
+  Project: { href: '/projects/', label: '项目' },
+};
+const backLink = backLinks[eyebrow] ?? backLinks.Writing;
 ---
 <BaseLayout title={title} description={description}>
-  <article>
-    <header class="prose article-header">
-      <div class="eyebrow">Writing</div>
+  <article class="post-page">
+    <a class="back-link" href={backLink.href}>← {backLink.label}</a>
+    <header class="article-header">
+      <p class="kicker">{eyebrow}</p>
       <h1>{title}</h1>
-      <p class="lead">{description}</p>
-      <div class="meta">
-        {date && <time datetime={date.toISOString()}>{date.toLocaleDateString('zh-CN')}</time>}
-        {topics.length > 0 && <> · {topics.join(' / ')}</>}
-      </div>
+      {(date || topics.length > 0) && (
+        <div class="post-meta">
+          {date && <time datetime={date.toISOString()}>{date.toLocaleDateString('zh-CN')}</time>}
+          {date && topics.length > 0 && <span aria-hidden="true">·</span>}
+          {topics.map((topic: string, index: number) => (
+            <>
+              <span>{topic}</span>
+              {index < topics.length - 1 && <span aria-hidden="true">/</span>}
+            </>
+          ))}
+        </div>
+      )}
+      {description && <p>{description}</p>}
     </header>
     <div class="prose">
       <slot />

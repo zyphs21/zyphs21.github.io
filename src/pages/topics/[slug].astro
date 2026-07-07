@@ -2,20 +2,47 @@
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Card from '@/components/Card.astro';
+import Section from '@/components/Section.astro';
+
 export async function getStaticPaths() {
   const topics = await getCollection('topics');
   return topics.map((topic) => ({ params: { slug: topic.id }, props: { topic } }));
 }
+
 const { topic } = Astro.props;
 const { Content } = await render(topic);
 const posts = (await getCollection('blog')).filter((post) => post.data.topics.includes(topic.data.title));
 const notes = (await getCollection('notes')).filter((note) => note.data.topics.includes(topic.data.title));
 ---
 <BaseLayout title={topic.data.title} description={topic.data.description}>
-  <section class="hero container"><div class="eyebrow">Topic</div><h1>{topic.data.title}</h1><p class="lead">{topic.data.description}</p></section>
-  <div class="prose"><Content /></div>
-  <section class="section"><div class="container"><div class="section-head"><h2>相关文章</h2></div><div class="grid">
-    {posts.map((post) => <Card href={`/blog/${post.id}/`} title={post.data.title} description={post.data.description} meta={post.data.date.toLocaleDateString('zh-CN')} />)}
-    {notes.map((note) => <Card href={`/notes/${note.id}/`} title={note.data.title} description={note.data.description} meta={note.data.status} />)}
-  </div></div></section>
+  <section class="page-header">
+    <a class="back-link" href="/topics/">← 主题</a>
+    <h1>{topic.data.title}</h1>
+    <p>{topic.data.description}</p>
+  </section>
+  <div class="prose">
+    <Content />
+  </div>
+  <Section title="相关文章">
+    <ul class="post-list">
+      {posts.map((post) => (
+        <Card
+          href={`/blog/${post.id}/`}
+          title={post.data.title}
+          description={post.data.description}
+          meta={post.data.date.toLocaleDateString('zh-CN')}
+          variant="h3"
+        />
+      ))}
+      {notes.map((note) => (
+        <Card
+          href={`/notes/${note.id}/`}
+          title={note.data.title}
+          description={note.data.description}
+          meta={note.data.status}
+          variant="h3"
+        />
+      ))}
+    </ul>
+  </Section>
 </BaseLayout>
